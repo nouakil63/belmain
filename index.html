@@ -1,0 +1,749 @@
+<title>Le Rituel Belmains</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap">
+
+<!-- ============================================================
+  SEO — BLOC À PLACER DANS <head> LORS DE LA MISE EN PRODUCTION
+  (l'aperçu Artifact génère son propre <head>, ce bloc est la
+  version prête à copier dans le thème Shopify / le site final)
+
+  <title>Gant de massage Belmains — Le rituel bien-être pour vos mains</title>
+  <meta name="description" content="Gant de massage des mains Belmains : 5 modes de massage, compresse chaude 3 niveaux, acupression. Compact, rechargeable en 15 min. Livraison offerte, retour gratuit 30 jours.">
+  <link rel="canonical" href="https://www.belmains.fr/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Gant de massage Belmains — Le rituel bien-être pour vos mains">
+  <meta property="og:description" content="5 modes de massage, compresse chaude 3 niveaux, acupression. Livraison offerte, retour gratuit 30 jours.">
+  <meta property="og:image" content="https://www.belmains.fr/images/og-belmains.jpg">
+  <meta property="og:locale" content="fr_FR">
+  <meta name="twitter:card" content="summary_large_image">
+
+  JSON-LD Produit — à compléter avec le prix réel avant publication :
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Gant de massage Belmains",
+    "brand": {"@type": "Brand", "name": "Belmains"},
+    "description": "Gant de massage des mains : 5 modes de massage, compresse chaude 3 niveaux, massage par acupression. Compact et rechargeable en 15 minutes.",
+    "image": ["https://www.belmains.fr/images/packshot.jpg"],
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "EUR",
+      "price": "PRIX_A_SAISIR",
+      "availability": "https://schema.org/InStock",
+      "shippingDetails": {"@type": "OfferShippingDetails", "shippingRate": {"@type": "MonetaryAmount", "value": "0", "currency": "EUR"}}
+    }
+  }
+  </script>
+============================================================ -->
+
+<style>
+/* ============ Charte Belmains — thème unique, peint explicitement ============ */
+:root{
+  --rouge:#a8121f; --rouge-f:#7d0c16;
+  --noir:#181d25; --noir-2:#1f2530;
+  --or:#bf9756; --or-c:#d4b06a; --or-pale:#e9dcc3;
+  --blanc:#ffffff; --ivoire:#f8f5ee; --ivoire-or:#f5eedf;
+  --gris:#6b6257; --ligne:#e6dfd2;
+  --display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --sans:"Jost","Avenir Next","Century Gothic",system-ui,sans-serif;
+  --ease:cubic-bezier(.22,.61,.21,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--blanc);color:var(--noir);font-family:var(--sans);
+  font-size:16.5px;font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%;display:block}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.08;margin:0;text-wrap:balance;letter-spacing:.01em}
+h1{font-size:clamp(2.6rem,6vw,4.6rem)}
+h2{font-size:clamp(2rem,4vw,3.1rem)}
+h3{font-size:1.45rem}
+h1 em,h2 em{font-style:italic;font-weight:600;color:var(--rouge)}
+p{margin:0}
+a{color:inherit;text-decoration:none;cursor:pointer}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:24px}
+.eyebrow{font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--or);
+  font-weight:500;display:flex;align-items:center;gap:14px}
+.eyebrow::before{content:"";width:34px;height:1px;background:var(--or);flex:none}
+.eyebrow.mid{justify-content:center}
+.eyebrow.mid::after{content:"";width:34px;height:1px;background:var(--or);flex:none}
+.intro{color:var(--gris);font-size:1.06rem;max-width:60ch;font-weight:300}
+.stars{color:var(--or);letter-spacing:3px;font-size:.95rem}
+.center{text-align:center}
+
+/* révélation au scroll — l'état masqué n'est posé QUE par JS (.pre),
+   donc sans JS / reduced-motion tout est visible dès le chargement */
+.pre{opacity:0;transform:translateY(26px)}
+.in{opacity:1;transform:none;transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.pre.d1{transition-delay:.08s}.pre.d2{transition-delay:.16s}.pre.d3{transition-delay:.24s}
+.pre.d4{transition-delay:.32s}.pre.d5{transition-delay:.4s}
+
+/* boutons */
+.btn{display:inline-flex;align-items:center;gap:12px;padding:17px 36px;border-radius:44px;
+  font-weight:500;font-size:.98rem;letter-spacing:.04em;border:1px solid transparent;
+  position:relative;overflow:hidden;transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.btn::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.35) 50%,transparent 65%);
+  transform:translateX(-110%);transition:transform .7s var(--ease)}
+.btn:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(24,29,37,.18)}
+.btn:hover::after{transform:translateX(110%)}
+.btn:focus-visible{outline:2px solid var(--or);outline-offset:3px}
+.btn-red{background:var(--rouge);color:#fff}
+.btn-red:hover{background:var(--rouge-f)}
+.btn-ghost{border-color:var(--noir);color:var(--noir)}
+.btn-gold{background:var(--or);color:var(--noir)}
+.btn .fl{font-size:1.1rem;line-height:0}
+.btn.big{padding:20px 36px;font-size:1.05rem;width:100%;justify-content:center}
+
+/* photos à fournir */
+.photo{background:
+  radial-gradient(120% 90% at 30% 20%,rgba(212,176,106,.16),transparent 55%),
+  repeating-linear-gradient(135deg,#f1ece2 0 16px,#ece5d7 16px 32px);
+  border:1px dashed var(--or);border-radius:14px;display:flex;flex-direction:column;gap:6px;
+  align-items:center;justify-content:center;text-align:center;color:var(--gris);
+  font-size:.82rem;line-height:1.45;padding:18px;width:100%;font-weight:300}
+.photo b{color:var(--noir);font-weight:500;font-family:var(--display);font-size:1rem;letter-spacing:.02em}
+.photo .cam{font-size:1.2rem;color:var(--or)}
+
+/* barre annonce + header */
+.annbar{background:var(--rouge);color:#fff;text-align:center;font-weight:500;font-size:.85rem;
+  letter-spacing:.08em;padding:10px 16px}
+.hdr{background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--ligne);
+  position:sticky;top:0;z-index:50;transition:box-shadow .3s}
+.hdr.scrolled{box-shadow:0 8px 30px rgba(24,29,37,.08)}
+.hdr-in{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;min-height:84px;gap:20px}
+.brand{font-family:var(--display);font-weight:700;font-size:1.7rem;letter-spacing:.24em;
+  text-transform:uppercase;justify-self:center}
+.brand span{color:var(--rouge)}
+.menu{display:flex;gap:30px;font-weight:400;font-size:.92rem;letter-spacing:.05em}
+.menu a{padding-block:6px;position:relative}
+.menu a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:0;background:var(--or);transition:width .35s var(--ease)}
+.menu a:hover::after,.menu a.on::after{width:100%}
+.acts{display:flex;justify-content:flex-end;align-items:center;gap:22px;font-size:.85rem;color:var(--gris)}
+.cart{color:var(--noir);font-weight:500;letter-spacing:.04em}
+
+/* ============ 1 · HERO ============ */
+.hero{background:
+  radial-gradient(90% 120% at 85% 10%,var(--ivoire-or) 0%,transparent 55%),var(--blanc);
+  padding-block:72px 96px;overflow:hidden;position:relative}
+.hero-in{display:grid;grid-template-columns:1.02fr .98fr;gap:64px;align-items:center}
+.hero-txt{display:flex;flex-direction:column;gap:30px;align-items:flex-start}
+.hero h1{max-width:15ch}
+.hline{display:block;overflow:hidden}
+.hline span{display:block;transform:translateY(110%);animation:rise 1s var(--ease) forwards}
+.hline:nth-child(2) span{animation-delay:.12s}
+.hline:nth-child(3) span{animation-delay:.24s}
+@keyframes rise{to{transform:none}}
+.hero-cta{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.proof{display:flex;align-items:center;gap:12px;color:var(--gris);font-size:.95rem;font-weight:300}
+.proof b{color:var(--noir);font-weight:500}
+.hero-media{position:relative}
+.hero-media .photo{aspect-ratio:4/5;max-width:520px;margin-inline:auto;box-shadow:0 40px 80px -30px rgba(24,29,37,.25)}
+.chip{position:absolute;background:#fff;border:1px solid var(--ligne);border-radius:12px;
+  padding:12px 18px;box-shadow:0 14px 34px rgba(24,29,37,.14);display:flex;flex-direction:column;gap:2px;
+  animation:floaty 6s ease-in-out infinite}
+.chip small{font-size:.62rem;letter-spacing:.2em;color:var(--or);font-weight:500;text-transform:uppercase}
+.chip b{font-size:.95rem;font-weight:500}
+.chip.c1{top:8%;left:-4%}
+.chip.c2{bottom:12%;right:-3%;animation-delay:-3s}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.seal{position:absolute;top:-46px;right:2%;width:128px;height:128px;pointer-events:none}
+.seal svg{animation:spin 22s linear infinite;overflow:visible}
+.seal text{font-family:var(--sans);font-size:9.2px;letter-spacing:.2em;fill:var(--or);text-transform:uppercase}
+.seal .heart{font-size:20px;fill:var(--rouge)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* marquee */
+.marquee{overflow:hidden;white-space:nowrap;background:var(--noir);padding-block:16px}
+.mq-track{display:inline-flex;animation:mq 32s linear infinite;will-change:transform}
+.mq-item{display:inline-flex;align-items:center;gap:26px;padding-inline:26px;
+  font-family:var(--display);font-style:italic;font-size:1.2rem;color:var(--or-c)}
+.mq-item i{font-style:normal;color:var(--rouge);font-size:.8rem}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* ============ 2 · POURQUOI + 360 ============ */
+.why{background:var(--ivoire);padding-block:104px 0}
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.why-txt{display:flex;flex-direction:column;gap:24px;align-items:flex-start}
+.pains{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;font-weight:300}
+.pains li{padding-left:32px;position:relative;line-height:1.55}
+.pains li::before{content:"—";position:absolute;left:0;color:var(--rouge);font-weight:500}
+.why .photo{aspect-ratio:4/5;max-width:480px;justify-self:center}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:88px;
+  border-block:1px solid var(--ligne)}
+.stat{padding:38px 18px;text-align:center;border-left:1px solid var(--ligne)}
+.stat:first-child{border-left:0}
+.stat b{display:block;font-family:var(--display);font-weight:600;font-size:clamp(2.4rem,4vw,3.4rem);
+  color:var(--noir);font-variant-numeric:tabular-nums;line-height:1}
+.stat b i{font-style:normal;color:var(--or);font-size:.5em;vertical-align:.5em}
+.stat span{display:block;margin-top:8px;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gris)}
+
+/* 360 */
+.turn{position:relative;height:260vh}
+.turn-sticky{position:sticky;top:0;min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:34px;padding-block:40px;background:var(--ivoire)}
+.turn-stage{position:relative;width:min(460px,82vw)}
+.turn-stage .photo{aspect-ratio:1;border-style:solid;background:
+  radial-gradient(100% 100% at 50% 30%,#fff 0%,var(--ivoire-or) 70%);
+  box-shadow:0 50px 90px -40px rgba(24,29,37,.3)}
+.dial{position:absolute;inset:auto -18px -18px auto;width:108px;height:108px;background:var(--noir);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--or-c);
+  box-shadow:0 18px 40px rgba(24,29,37,.35)}
+.dial svg{position:absolute;inset:10px}
+.dial b{font-family:var(--display);font-size:1.5rem;font-weight:600;font-variant-numeric:tabular-nums}
+.dial small{position:absolute;bottom:20px;font-size:.55rem;letter-spacing:.2em;color:rgba(212,176,106,.7)}
+.turn-frame{font-variant-numeric:tabular-nums;font-size:.8rem;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--gris)}
+.turn-frame b{color:var(--noir);font-weight:500}
+.turn-hint{font-size:.78rem;color:var(--gris);font-weight:300;display:flex;gap:10px;align-items:center}
+.turn-hint i{font-style:normal;color:var(--or)}
+
+/* ============ 3 · PRODUIT ============ */
+.product{background:var(--blanc);padding-block:104px}
+.pr-in{display:grid;grid-template-columns:1.02fr .98fr;gap:64px;align-items:start}
+.pr-gal{display:flex;flex-direction:column;gap:14px;position:sticky;top:110px}
+.pr-gal .main{aspect-ratio:1}
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.thumbs .photo{aspect-ratio:1;font-size:.68rem;padding:8px;transition:transform .3s var(--ease)}
+.thumbs .photo:hover{transform:translateY(-4px)}
+.pr-info{display:flex;flex-direction:column;gap:22px}
+.pr-title{font-size:clamp(2rem,3.4vw,2.7rem)}
+.price{display:flex;align-items:baseline;gap:14px;font-size:1.5rem;font-family:var(--display)}
+.price s{color:var(--gris);font-size:1.05rem}
+.price b{color:var(--rouge);font-weight:700}
+.badge{background:var(--rouge);color:#fff;font-family:var(--sans);font-size:.66rem;font-weight:500;
+  letter-spacing:.14em;padding:5px 10px;border-radius:4px;text-transform:uppercase}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:13px;font-weight:300}
+.checks li{padding-left:34px;position:relative;line-height:1.5}
+.checks li::before{content:"✓";position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;
+  background:var(--ivoire-or);color:var(--or);font-size:.75rem;display:flex;align-items:center;
+  justify-content:center;font-weight:700}
+.checks b{font-weight:500}
+.lots{display:flex;flex-direction:column;gap:10px}
+.lots h3{text-align:center;font-size:1.15rem;margin-bottom:4px}
+.lot{display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;align-items:center;background:#fff;
+  border:1px solid var(--ligne);border-radius:12px;padding:16px 18px;font-weight:400;width:100%;
+  text-align:left;font-size:1rem;transition:border-color .25s,transform .25s var(--ease),box-shadow .25s}
+.lot:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(24,29,37,.08)}
+.lot[aria-pressed="true"]{border:2px solid var(--rouge);padding:15px 17px}
+.lot .rad{width:18px;height:18px;border-radius:50%;border:2px solid var(--ligne);position:relative;flex:none}
+.lot[aria-pressed="true"] .rad{border-color:var(--rouge)}
+.lot[aria-pressed="true"] .rad::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--rouge)}
+.lot em{font-style:normal;font-size:.62rem;background:var(--rouge);color:#fff;padding:4px 9px;
+  border-radius:4px;text-transform:uppercase;letter-spacing:.08em;font-weight:500}
+.lot small{color:var(--or);font-weight:500;font-size:.8rem;letter-spacing:.04em}
+.lot b{font-family:var(--display);font-size:1.15rem;font-weight:600}
+.pay{text-align:center;font-size:.72rem;color:var(--gris);letter-spacing:.14em;text-transform:uppercase}
+.reas{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:.84rem}
+.reas div{display:flex;flex-direction:column;gap:3px;padding:14px;background:var(--ivoire);
+  border-radius:10px}
+.reas b{font-weight:500}
+.reas span{color:var(--gris);font-weight:300}
+.tabs details,.faq-list details{border-top:1px solid var(--ligne)}
+.tabs details:last-child,.faq-list details:last-child{border-bottom:1px solid var(--ligne)}
+summary{cursor:pointer;padding:16px 0;font-weight:500;list-style:none;display:flex;
+  justify-content:space-between;align-items:center;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--or);font-size:1.4rem;font-weight:300;transition:transform .3s var(--ease)}
+details[open] summary::after{transform:rotate(45deg)}
+details>div{padding:0 0 18px;color:var(--gris);font-size:.96rem;font-weight:300}
+details>div p{margin:0 0 8px}
+
+/* ============ 4 · PROMESSES + TÉMOIGNAGES ============ */
+.promises{background:var(--noir);color:#fff;padding-block:104px;text-align:center;position:relative;overflow:hidden}
+.promises::before{content:"";position:absolute;inset:-40% -20% auto;height:120%;
+  background:radial-gradient(50% 60% at 50% 0%,rgba(191,151,86,.14),transparent 70%);pointer-events:none}
+.promises h2{margin:16px auto 54px;max-width:22ch}
+.promises h2 em{color:var(--or-c)}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;position:relative}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(191,151,86,.35);border-radius:14px;
+  padding:34px 24px;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;
+  transition:transform .35s var(--ease),background .35s,border-color .35s}
+.card:hover{transform:translateY(-8px);background:rgba(255,255,255,.07);border-color:var(--or)}
+.card i{font-style:normal;width:52px;height:52px;border-radius:50%;background:var(--or);color:var(--noir);
+  display:flex;align-items:center;justify-content:center;font-size:1.25rem}
+.card h3{color:#fff;font-size:1.35rem}
+.card p{font-size:.9rem;color:rgba(255,255,255,.72);font-weight:300}
+.testi{background:var(--ivoire);padding-block:104px;text-align:center}
+.testi h2{margin:14px 0 12px}
+.testi .intro{margin:0 auto 48px}
+.t-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;text-align:left}
+.t-card{background:#fff;border:1px solid var(--ligne);border-radius:14px;padding:30px 26px;
+  display:flex;flex-direction:column;gap:12px;transition:transform .35s var(--ease),box-shadow .35s}
+.t-card:hover{transform:translateY(-6px);box-shadow:0 22px 48px rgba(24,29,37,.1)}
+.t-card blockquote{margin:0;color:var(--gris);font-weight:300;font-style:italic;
+  font-family:var(--display);font-size:1.08rem;line-height:1.5}
+.t-card footer{display:flex;flex-direction:column;gap:1px;font-size:.86rem}
+.t-card footer b{font-weight:500}
+.t-card footer span{color:var(--gris);font-weight:300;font-size:.78rem}
+.todo{font-size:.68rem;font-weight:500;color:var(--rouge);background:#fbe9eb;padding:4px 9px;
+  border-radius:4px;letter-spacing:.02em;align-self:flex-start}
+
+/* ============ 5 · FAQ + CTA ============ */
+.faq{background:var(--blanc);padding-block:104px}
+.faq-in{display:grid;grid-template-columns:.8fr 1.2fr;gap:64px;align-items:start}
+.faq-head{display:flex;flex-direction:column;gap:16px;position:sticky;top:120px;align-items:flex-start}
+.faq-head h2 em{color:var(--or)}
+.faq-list summary{font-family:var(--display);font-weight:600;font-size:1.12rem;padding:19px 0}
+.cta-final{background:linear-gradient(120deg,var(--rouge-f),var(--rouge));color:#fff;
+  padding-block:96px;text-align:center;position:relative;overflow:hidden}
+.cta-final::before{content:"";position:absolute;inset:0;
+  background:radial-gradient(60% 90% at 80% 10%,rgba(212,176,106,.25),transparent 60%);pointer-events:none}
+.cta-final h2{color:#fff;max-width:20ch;margin-inline:auto}
+.cta-final h2 em{color:var(--or-c)}
+.cta-final p{margin:18px auto 34px;max-width:52ch;color:rgba(255,255,255,.85);font-weight:300}
+.cta-final .btn{background:#fff;color:var(--rouge-f)}
+
+/* footer */
+.foot{background:var(--noir);color:rgba(255,255,255,.78);padding-block:64px 26px;font-size:.92rem;font-weight:300}
+.foot-in{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:40px;padding-bottom:40px;
+  border-bottom:1px solid rgba(191,151,86,.3)}
+.foot h4{color:var(--or-c);margin:0 0 14px;font-size:.72rem;letter-spacing:.24em;
+  text-transform:uppercase;font-weight:500;font-family:var(--sans)}
+.foot .brand{justify-self:start;font-size:1.3rem;color:#fff;margin-bottom:12px}
+.foot p{line-height:2}
+.foot a:hover{color:var(--or-c)}
+.nl{display:flex;justify-content:space-between;align-items:center;border:1px solid rgba(255,255,255,.3);
+  border-radius:44px;padding:12px 20px;margin-top:10px;color:rgba(255,255,255,.5)}
+.nl b{color:var(--or-c);font-weight:500;letter-spacing:.08em;font-size:.8rem;text-transform:uppercase}
+.foot-bot{display:flex;justify-content:space-between;padding-top:22px;font-size:.74rem;
+  color:rgba(255,255,255,.45);flex-wrap:wrap;gap:8px}
+
+/* responsive */
+@media (max-width:920px){
+  .hdr-in{grid-template-columns:auto 1fr auto}
+  .menu{display:none}
+  .brand{justify-self:start;font-size:1.35rem}
+  .hero-in,.why-grid,.pr-in,.faq-in{grid-template-columns:1fr}
+  .hero{padding-block:48px 72px}
+  .hero-media{margin-top:12px}
+  .chip.c1{left:0}.chip.c2{right:0}
+  .seal{width:96px;height:96px;top:-30px;right:0}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat:nth-child(odd){border-left:0}
+  .stat:nth-child(n+3){border-top:1px solid var(--ligne)}
+  .cards{grid-template-columns:1fr 1fr}
+  .t-cards{grid-template-columns:1fr}
+  .foot-in{grid-template-columns:1fr 1fr}
+  .pr-gal,.faq-head{position:static}
+  .turn{height:200vh}
+  .reas{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  .cards{grid-template-columns:1fr}
+  .foot-in{grid-template-columns:1fr}
+  .lot{grid-template-columns:auto 1fr auto;grid-template-rows:auto auto}
+  .lot b{grid-column:3}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .pre{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
+
+<div class="annbar">Livraison offerte en France&ensp;·&ensp;Retour gratuit sous 30 jours</div>
+
+<header class="hdr" id="hdr">
+  <div class="wrap hdr-in">
+    <nav class="menu" aria-label="Navigation principale">
+      <a class="on" href="#top">Accueil</a>
+      <a href="#produit">Le gant</a>
+      <a href="#avis">Avis</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="brand" href="#top" aria-label="Belmains — accueil">Bel<span>mains</span></a>
+    <div class="acts"><span>FR&nbsp;·&nbsp;EUR&nbsp;€</span><a class="cart" href="#produit">Panier&nbsp;(0)</a></div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ SECTION 1 — HERO ============ -->
+<section class="hero" aria-label="Présentation">
+  <div class="wrap hero-in">
+    <div class="hero-txt">
+      <p class="eyebrow">Le bien-être entre vos mains</p>
+      <h1>
+        <span class="hline"><span>Offrez à vos mains</span></span>
+        <span class="hline"><span>le <em>rituel</em> qu'elles</span></span>
+        <span class="hline"><span>méritent.</span></span>
+      </h1>
+      <p class="intro">5 modes de massage, compresse chaude à 3 niveaux et acupression, réunis dans un gant compact. Quelques minutes suffisent pour retrouver des mains détendues, soulagées, prêtes pour demain.</p>
+      <div class="hero-cta">
+        <a class="btn btn-red" href="#produit">Découvrir Belmains <span class="fl">→</span></a>
+        <a class="btn btn-ghost" href="#pourquoi">Pourquoi un rituel&nbsp;?</a>
+      </div>
+      <p class="proof"><span class="stars" aria-hidden="true">★★★★★</span> <b>+8&nbsp;000 clients satisfaits</b></p>
+    </div>
+    <div class="hero-media">
+      <div class="seal" aria-hidden="true">
+        <svg viewBox="0 0 128 128">
+          <defs><path id="circ" d="M64,14 a50,50 0 1,1 -0.01,0"/></defs>
+          <text><textPath href="#circ">Belmains · le rituel bien-être des mains ·</textPath></text>
+          <text class="heart" x="64" y="72" text-anchor="middle">♥</text>
+        </svg>
+      </div>
+      <div class="photo" id="heroPhoto" role="img" aria-label="Photo à fournir : femme portant le gant de massage Belmains">
+        <span class="cam" aria-hidden="true">✦</span>
+        <b>Photo à fournir</b>
+        femme portant le gant de massage,<br>lumière chaude, plan poitrine
+      </div>
+      <div class="chip c1"><small>Rituel bien-être</small><b>5 modes de massage</b></div>
+      <div class="chip c2"><small>Compresse chaude</small><b>3 niveaux de chaleur</b></div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee" aria-hidden="true">
+  <div class="mq-track" id="mq"></div>
+</div>
+
+<!-- ============ SECTION 2 — POURQUOI + 360° ============ -->
+<section class="why" id="pourquoi" aria-label="Pourquoi Belmains">
+  <div class="wrap">
+    <div class="why-grid">
+      <div class="photo" data-r role="img" aria-label="Photo à fournir : mains fatiguées après une journée sollicitée">
+        <span class="cam" aria-hidden="true">✦</span>
+        <b>Photo à fournir</b>
+        mains fatiguées / sollicitées,<br>ambiance douce
+      </div>
+      <div class="why-txt">
+        <p class="eyebrow" data-r>Le saviez-vous&nbsp;?</p>
+        <h2 data-r>Vos mains ne s'arrêtent <em>jamais</em>.</h2>
+        <p class="intro" data-r>Au fil des années, vos mains sont de plus en plus sollicitées. Offrez-leur enfin un moment de détente et de confort.</p>
+        <ul class="pains" data-r>
+          <li>Travail manuel, téléphone, clavier, tâches quotidiennes&nbsp;: elles ne connaissent pas de pause.</li>
+          <li>Le froid et l'humidité vous procurent des douleurs.</li>
+          <li>Les premiers signes de l'âge vous engourdissent les mains.</li>
+        </ul>
+        <a class="btn btn-red" href="#produit" data-r>Découvrir le gant</a>
+      </div>
+    </div>
+
+    <div class="stats" data-r>
+      <div class="stat"><b><span data-count="5">5</span></b><span>modes de massage</span></div>
+      <div class="stat"><b><span data-count="3">3</span></b><span>niveaux de chaleur</span></div>
+      <div class="stat"><b><span data-count="15">15</span><i>min</i></b><span>de recharge</span></div>
+      <div class="stat"><b><span data-count="30">30</span><i>j</i></b><span>retour gratuit</span></div>
+    </div>
+  </div>
+
+  <div class="turn" id="turn">
+    <div class="turn-sticky">
+      <p class="eyebrow mid">Sous tous les angles</p>
+      <h2 class="center">Le gant, en <em>360°</em>.</h2>
+      <div class="turn-stage">
+        <div class="photo" role="img" aria-label="Emplacement de la séquence 360 degrés : douze photos du produit à fournir">
+          <span class="cam" aria-hidden="true">✦</span>
+          <b>Séquence 360° — photo <span id="turnNum">1</span>&nbsp;/&nbsp;12</b>
+          12 vues du gant à fournir<br>(une photo tous les 30°, fond neutre)
+        </div>
+        <div class="dial" aria-hidden="true">
+          <svg viewBox="0 0 88 88">
+            <circle cx="44" cy="44" r="41" fill="none" stroke="rgba(212,176,106,.35)" stroke-width="1"/>
+            <g id="needle" style="transform-origin:44px 44px">
+              <line x1="44" y1="17" x2="44" y2="7" stroke="#d4b06a" stroke-width="2"/>
+              <circle cx="44" cy="7" r="3" fill="#a8121f"/>
+            </g>
+          </svg>
+          <b id="turnDeg">0°</b>
+          <small>ROTATION</small>
+        </div>
+      </div>
+      <p class="turn-frame">Vue <b id="turnLbl">face — 0°</b></p>
+      <p class="turn-hint"><i>↓</i> Faites défiler&nbsp;: le gant tourne avec vous</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 3 — PRODUIT ============ -->
+<section class="product" id="produit" aria-label="Fiche produit">
+  <div class="wrap pr-in">
+    <div class="pr-gal">
+      <div class="photo main" data-r role="img" aria-label="Photo à fournir : packshot du gant de massage Belmains">
+        <span class="cam" aria-hidden="true">✦</span>
+        <b>Photo à fournir</b>
+        packshot gant de massage Belmains,<br>fond ivoire, ombre douce
+      </div>
+      <div class="thumbs" data-r>
+        <div class="photo"><b>Vue 2</b>profil</div>
+        <div class="photo"><b>Vue 3</b>intérieur</div>
+        <div class="photo"><b>Vue 4</b>en situation</div>
+      </div>
+    </div>
+    <div class="pr-info">
+      <p class="eyebrow" data-r>Le rituel bien-être pour vos mains</p>
+      <h2 class="pr-title" data-r>Gant de massage Belmains</h2>
+      <p class="proof" data-r><span class="stars" aria-hidden="true">★★★★★</span> Avis clients à venir</p>
+      <p class="price" data-r><b>—&nbsp;€</b> <s>—&nbsp;€</s> <span class="badge">Économisez&nbsp;—%</span></p>
+      <p class="intro" data-r>Avec Belmains, prenez soin de vos mains aujourd'hui pour continuer à profiter pleinement de chaque geste demain. Un gant de massage pensé dans les moindres détails pour le confort et le bien-être de vos mains au quotidien.</p>
+      <ul class="checks" data-r>
+        <li><b>5 modes de massage</b> pour une relaxation musculaire complète.</li>
+        <li><b>Compresse chaude, 3 niveaux</b> pour soulager les tensions et favoriser la circulation sanguine.</li>
+        <li><b>Massage par acupression</b> pour apaiser les douleurs des mains et des doigts.</li>
+        <li><b>Compact et rechargeable en 15&nbsp;minutes</b>&nbsp;: à la maison comme en déplacement.</li>
+        <li>Retrouvez le plaisir de <b>jardiner, bricoler, cuisiner</b> sans douleurs.</li>
+      </ul>
+      <div class="lots" data-r>
+        <h3>Lots &amp; économies</h3>
+        <button class="lot" aria-pressed="true" type="button">
+          <span class="rad" aria-hidden="true"></span><span>Lot de 1 <em>Le plus populaire</em></span><small></small><b>—&nbsp;€</b>
+        </button>
+        <button class="lot" aria-pressed="false" type="button">
+          <span class="rad" aria-hidden="true"></span><span>Lot de 2</span><small>Économisez&nbsp;—%</small><b>—&nbsp;€</b>
+        </button>
+        <button class="lot" aria-pressed="false" type="button">
+          <span class="rad" aria-hidden="true"></span><span>Lot de 3</span><small>Économisez&nbsp;—%</small><b>—&nbsp;€</b>
+        </button>
+      </div>
+      <a class="btn btn-red big" href="#" data-r>Ajouter au panier <span class="fl">→</span></a>
+      <p class="pay" data-r>Visa · Mastercard · PayPal · Apple&nbsp;Pay · Google&nbsp;Pay</p>
+      <div class="reas" data-r>
+        <div><b>Expédition suivie</b><span>Expédition sécurisée avec numéro de suivi.</span></div>
+        <div><b>Retour gratuit</b><span>Sous 30 jours, sans justification.</span></div>
+        <div><b>Service client FR</b><span>Basé en France, réponse sous 24&nbsp;h.</span></div>
+      </div>
+      <div class="tabs" data-r>
+        <details>
+          <summary>Description</summary>
+          <div>
+            <p>Le gant de massage Belmains&nbsp;: le rituel bien-être pour vos mains.</p>
+            <p>Au fil des années, vos mains sont de plus en plus sollicitées&nbsp;: travail manuel, téléphone, clavier, tâches quotidiennes. Le froid, l'humidité et les premiers signes de l'âge finissent par les faire souffrir.</p>
+            <p>Belmains combine 5 modes de massage, une fonction compresse chaude à 3 niveaux et un massage par acupression pour apaiser les tensions des mains et des doigts. Compact, rechargeable en 15&nbsp;minutes et facile à transporter, il s'utilise à la maison, au bureau ou en voyage.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Service client</summary>
+          <div><p>Service client basé en France, rapide et facilement accessible.</p></div>
+        </details>
+        <details>
+          <summary>Politique de retour</summary>
+          <div><p>Retour gratuit sous 30 jours. Simple, claire &amp; sans stress.</p></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee" aria-hidden="true">
+  <div class="mq-track" id="mq2"></div>
+</div>
+
+<!-- ============ SECTION 4 — PROMESSES + TÉMOIGNAGES ============ -->
+<section class="promises" aria-label="Nos promesses">
+  <div class="wrap">
+    <p class="eyebrow mid" data-r>Ce qui change tout</p>
+    <h2 data-r>Quatre promesses, <em>tenues à la lettre</em>.</h2>
+    <div class="cards">
+      <div class="card" data-r><i aria-hidden="true">☀</i><h3>5 modes de massage</h3><p>Une relaxation musculaire complète, du plus doux au plus profond.</p></div>
+      <div class="card d1" data-r><i aria-hidden="true">♥</i><h3>Compresse chaude</h3><p>3 niveaux de chauffage pour détendre les tensions et favoriser la circulation.</p></div>
+      <div class="card d2" data-r><i aria-hidden="true">✓</i><h3>Retour sous 30 jours</h3><p>Retour gratuit sous 30 jours, sans justification.</p></div>
+      <div class="card d3" data-r><i aria-hidden="true">⛟</i><h3>Livraison offerte</h3><p>Livraison à domicile en France avec suivi en temps réel.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="testi" id="avis" aria-label="Avis clients">
+  <div class="wrap">
+    <p class="eyebrow mid" data-r>Ils nous font confiance</p>
+    <h2 data-r>+<span data-count="8000">8&nbsp;000</span> clients <em>satisfaits</em></h2>
+    <p class="intro center" style="margin-inline:auto" data-r>Découvrez les retours de nos clients qui ont adopté le rituel bien-être Belmains.</p>
+    <div class="t-cards">
+      <article class="t-card" data-r>
+        <span class="stars" aria-hidden="true">★★★★★</span>
+        <span class="todo">Avis client réel à insérer — ne pas publier de témoignage inventé</span>
+        <blockquote>«&nbsp;…&nbsp;»</blockquote>
+        <footer><b>Prénom N.</b><span>Ville</span></footer>
+      </article>
+      <article class="t-card d1" data-r>
+        <span class="stars" aria-hidden="true">★★★★★</span>
+        <span class="todo">Avis client réel à insérer — ne pas publier de témoignage inventé</span>
+        <blockquote>«&nbsp;…&nbsp;»</blockquote>
+        <footer><b>Prénom N.</b><span>Ville</span></footer>
+      </article>
+      <article class="t-card d2" data-r>
+        <span class="stars" aria-hidden="true">★★★★★</span>
+        <span class="todo">Avis client réel à insérer — ne pas publier de témoignage inventé</span>
+        <blockquote>«&nbsp;…&nbsp;»</blockquote>
+        <footer><b>Prénom N.</b><span>Ville</span></footer>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 5 — FAQ + CTA FINAL ============ -->
+<section class="faq" id="faq" aria-label="Questions fréquentes">
+  <div class="wrap faq-in">
+    <div class="faq-head">
+      <p class="eyebrow" data-r>Questions fréquentes</p>
+      <h2 data-r>Tout savoir sur <em>Belmains</em>.</h2>
+      <p class="intro" data-r>Tout ce qu'il faut savoir avant de commencer votre rituel bien-être. Une autre question&nbsp;? Écrivez-nous, nous répondons sous 24&nbsp;h.</p>
+      <a class="btn btn-ghost" href="#" data-r>Nous écrire</a>
+    </div>
+    <div class="faq-list" data-r>
+      <details>
+        <summary>Qu'est-ce que le gant de massage Belmains&nbsp;?</summary>
+        <div><p>Belmains est un gant de massage conçu pour vous offrir un moment de détente et de confort pour vos mains, directement chez vous ou où que vous soyez. Il combine 5 modes de massage et 3 niveaux de chauffage afin de vous permettre de personnaliser votre expérience selon vos envies.</p></div>
+      </details>
+      <details>
+        <summary>Quels sont les différents modes de massage&nbsp;?</summary>
+        <div><p>Belmains propose 5 modes de massage pour varier votre expérience et choisir celui qui vous convient le mieux. Vous pouvez ainsi adapter votre séance selon votre niveau de confort et le moment de la journée. 5 modes, une seule mission&nbsp;: vous offrir un véritable moment de détente.</p></div>
+      </details>
+      <details>
+        <summary>Peut-on régler la chaleur&nbsp;?</summary>
+        <div><p>Oui, Belmains dispose de 3 niveaux de chauffage afin que vous puissiez choisir la sensation de chaleur qui vous convient le mieux. Une chaleur douce peut être particulièrement agréable lorsque vos mains ont été beaucoup sollicitées au cours de la journée.</p></div>
+      </details>
+      <details>
+        <summary>Le gant est-il facile à utiliser&nbsp;?</summary>
+        <div><p>Oui, Belmains a été conçu pour être simple et intuitif. Il vous suffit d'enfiler le gant, de sélectionner votre mode de massage et votre niveau de chaleur, puis de profiter de votre moment de détente.</p></div>
+      </details>
+      <details>
+        <summary>Le gant est-il facile à transporter&nbsp;?</summary>
+        <div><p>Absolument. Grâce à son format pratique, votre gant de massage peut facilement vous accompagner dans vos déplacements. À la maison, au bureau ou en voyage, vous pouvez emporter votre moment de bien-être avec vous.</p></div>
+      </details>
+      <details>
+        <summary>Combien de temps faut-il pour le recharger&nbsp;?</summary>
+        <div><p>Le gant de massage Belmains est conçu pour être rechargé en seulement 15&nbsp;minutes. Une recharge rapide et pratique pour être toujours prêt.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="cta-final" aria-label="Commander">
+  <div class="wrap">
+    <h2 data-r>Retrouvez le <em>plaisir du geste</em>.</h2>
+    <p data-r>Jardiner, bricoler, cuisiner sans douleurs — profitez pleinement de chaque geste, aujourd'hui comme demain.</p>
+    <a class="btn big" style="width:auto" href="#produit" data-r>Commencer mon rituel <span class="fl">→</span></a>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-in">
+      <div>
+        <p class="brand">Bel<span>mains</span></p>
+        <p>Le bien-être entre vos mains.<br>Des mains détendues, soulagées et prêtes pour demain.</p>
+      </div>
+      <div>
+        <h4>Boutique</h4>
+        <p><a href="#produit">Le gant de massage</a><br><a href="#produit">Lots &amp; économies</a><br><a href="#avis">Avis clients</a></p>
+      </div>
+      <div>
+        <h4>Aide</h4>
+        <p><a href="#faq">FAQ</a><br><a href="#">Suivre ma commande</a><br><a href="#">Contact</a><br><a href="#">Retours &amp; remboursements</a></p>
+      </div>
+      <div>
+        <h4>Newsletter</h4>
+        <p>Recevez nos conseils bien-être et nos offres.</p>
+        <div class="nl"><span>votre@email.fr</span><b>S'inscrire</b></div>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© Belmains — tous droits réservés</span>
+      <span>Mentions légales · CGV · Confidentialité</span>
+    </div>
+  </div>
+</footer>
+
+<!-- JSON-LD FAQ (contenu réel, actif dès maintenant pour le SEO) -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Qu'est-ce que le gant de massage Belmains ?","acceptedAnswer":{"@type":"Answer","text":"Belmains est un gant de massage conçu pour offrir un moment de détente et de confort pour vos mains. Il combine 5 modes de massage et 3 niveaux de chauffage pour personnaliser votre expérience."}},
+{"@type":"Question","name":"Peut-on régler la chaleur ?","acceptedAnswer":{"@type":"Answer","text":"Oui, Belmains dispose de 3 niveaux de chauffage afin de choisir la sensation de chaleur qui vous convient le mieux."}},
+{"@type":"Question","name":"Combien de temps faut-il pour recharger le gant ?","acceptedAnswer":{"@type":"Answer","text":"Le gant de massage Belmains se recharge en seulement 15 minutes."}},
+{"@type":"Question","name":"Le gant est-il facile à transporter ?","acceptedAnswer":{"@type":"Answer","text":"Oui, son format compact lui permet de vous accompagner à la maison, au bureau ou en voyage."}}
+]}
+</script>
+
+<script>
+(function(){
+  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* marquees */
+  function fill(id,items){
+    var el=document.getElementById(id); if(!el) return;
+    var half=items.map(function(t){return '<span class="mq-item">'+t+' <i>✦</i></span>';}).join('');
+    el.innerHTML=half+half; /* piste doublée pour la boucle -50% */
+  }
+  var msgs=[];
+  for(var i=0;i<6;i++) msgs.push('Belmains — le rituel bien-être pour vos mains');
+  fill('mq',msgs); fill('mq2',msgs);
+
+  /* ombre header */
+  var hdr=document.getElementById('hdr');
+  addEventListener('scroll',function(){hdr.classList.toggle('scrolled',scrollY>8);},{passive:true});
+
+  /* sélection des lots */
+  document.querySelectorAll('.lot').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.lot').forEach(function(x){x.setAttribute('aria-pressed','false');});
+      b.setAttribute('aria-pressed','true');
+    });
+  });
+
+  if(reduced) return; /* tout le reste est du mouvement */
+
+  /* révélations : on ne masque que ce qui est encore hors écran */
+  var toReveal=[].slice.call(document.querySelectorAll('[data-r]'));
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}
+    });
+  },{rootMargin:'0px 0px -8% 0px',threshold:.08});
+  toReveal.forEach(function(el,i){
+    var r=el.getBoundingClientRect();
+    if(r.top>innerHeight*0.92){ /* pas encore visible → on peut l'animer */
+      el.classList.add('pre');
+      if(el.classList.contains('d1'))el.classList.add('d1');
+      io.observe(el);
+    }
+  });
+
+  /* count-up */
+  var fmt=function(n){return n>=1000?n.toLocaleString('fr-FR').replace(/ | /g,' '):String(n);};
+  var cio=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      cio.unobserve(e.target);
+      var end=+e.target.getAttribute('data-count'),t0=null;
+      function step(t){
+        if(!t0)t0=t;
+        var p=Math.min((t-t0)/1200,1);p=1-Math.pow(1-p,3);
+        e.target.textContent=fmt(Math.round(end*p));
+        if(p<1)requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  },{threshold:.6});
+  document.querySelectorAll('[data-count]').forEach(function(el){cio.observe(el);});
+
+  /* 360° piloté au scroll */
+  var turn=document.getElementById('turn');
+  var needle=document.getElementById('needle');
+  var num=document.getElementById('turnNum'),deg=document.getElementById('turnDeg'),lbl=document.getElementById('turnLbl');
+  var names=['face','trois-quarts droit','profil droit','arrière droit','dos','arrière gauche','profil gauche','trois-quarts gauche'];
+  function onScroll(){
+    if(!turn) return;
+    var r=turn.getBoundingClientRect();
+    var total=r.height-innerHeight;
+    var p=Math.min(Math.max(-r.top/total,0),1);
+    var angle=Math.round(p*360);
+    var frame=Math.min(Math.floor(p*12)+1,12);
+    needle.style.transform='rotate('+angle+'deg)';
+    num.textContent=frame;
+    deg.textContent=angle+'°';
+    lbl.textContent=names[Math.floor((angle%360)/45)]+' — '+angle+'°';
+  }
+  addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
+
+  /* parallaxe douce du visuel hero */
+  var hp=document.getElementById('heroPhoto');
+  addEventListener('scroll',function(){
+    if(scrollY<900) hp.style.transform='translateY('+(scrollY*0.06)+'px)';
+  },{passive:true});
+})();
+</script>
