@@ -1,0 +1,64 @@
+# Environnement local Belmains : WordPress + MariaDB + WP-CLI.
+#   docker compose up -d        → http://localhost:8080  (admin / admin)
+#   docker compose run --rm cli → shell WP-CLI
+# Le plugin et le thème du dépôt sont montés en direct (modifs visibles sans rebuild).
+services:
+  db:
+    image: mariadb:11
+    environment:
+      MARIADB_DATABASE: belmains
+      MARIADB_USER: belmains
+      MARIADB_PASSWORD: belmains
+      MARIADB_ROOT_PASSWORD: root
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      retries: 20
+
+  wordpress:
+    image: wordpress:6.8-php8.3-apache
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: belmains
+      WORDPRESS_DB_USER: belmains
+      WORDPRESS_DB_PASSWORD: belmains
+      WORDPRESS_DEBUG: "1"
+      WORDPRESS_CONFIG_EXTRA: |
+        define( 'WP_DEBUG_LOG', true );
+        define( 'WP_DEBUG_DISPLAY', false );
+        define( 'WP_ENVIRONMENT_TYPE', 'local' );
+    volumes:
+      - wp:/var/www/html
+      - ./wp-content/plugins/belmains-crm:/var/www/html/wp-content/plugins/belmains-crm
+      - ./wp-content/themes/belmains:/var/www/html/wp-content/themes/belmains
+
+  cli:
+    image: wordpress:cli-php8.3
+    depends_on:
+      db:
+        condition: service_healthy
+    user: "33:33"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: belmains
+      WORDPRESS_DB_USER: belmains
+      WORDPRESS_DB_PASSWORD: belmains
+    volumes:
+      - wp:/var/www/html
+      - ./wp-content/plugins/belmains-crm:/var/www/html/wp-content/plugins/belmains-crm
+      - ./wp-content/themes/belmains:/var/www/html/wp-content/themes/belmains
+      - ./docker:/docker
+    entrypoint: ["bash"]
+    command: ["/docker/init.sh"]
+    profiles: ["init"]
+
+volumes:
+  db:
+  wp:
