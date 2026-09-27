@@ -62,6 +62,7 @@ class BM_Admin {
 
 	private static function stats( string $from ): array {
 		$orders  = wc_get_orders( array(
+			'type'         => 'shop_order',
 			'limit'        => 5000, // borne haute explicite (évite un LIMIT illimité sur la table HPOS)
 			'status'       => bm_paid_statuses(),
 			'date_created' => '>=' . $from,
@@ -84,7 +85,7 @@ class BM_Admin {
 		$to_ship   = BM_Shipments::query_orders( 'to_ship', 1, 1 )['total'];
 		$transit   = BM_Shipments::query_orders( 'in_transit', 1, 1 )['total'];
 		$incidents = BM_Shipments::query_orders( 'exception', 1, 1 )['total'];
-		$on_hold   = (int) wc_get_orders( array( 'limit' => 1, 'paginate' => true, 'status' => array( 'on-hold', 'pending' ), 'return' => 'ids' ) )->total;
+		$on_hold   = (int) wc_get_orders( array( 'type' => 'shop_order', 'limit' => 1, 'paginate' => true, 'status' => array( 'on-hold', 'pending' ), 'return' => 'ids' ) )->total;
 
 		$open_returns = (int) ( new WP_Query( array(
 			'post_type'      => BM_Returns::CPT,
@@ -95,7 +96,7 @@ class BM_Admin {
 		$new_returns = get_posts( array( 'post_type' => BM_Returns::CPT, 'posts_per_page' => 5, 'meta_key' => '_bm_status', 'meta_value' => 'demandee' ) );
 
 		$low     = BM_Stock::low_stock();
-		$recent  = wc_get_orders( array( 'limit' => 10, 'orderby' => 'date', 'order' => 'DESC' ) );
+		$recent  = wc_get_orders( array( 'type' => 'shop_order', 'limit' => 10, 'orderby' => 'date', 'order' => 'DESC' ) );
 		$easy_ok = BM_Easyship::is_configured();
 		?>
 		<div class="wrap bm-wrap bm-dash">

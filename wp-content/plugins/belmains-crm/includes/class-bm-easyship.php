@@ -288,6 +288,7 @@ class BM_Easyship {
 			return;
 		}
 		$orders = wc_get_orders( array(
+			'type'       => 'shop_order',
 			'limit'      => 50,
 			'status'     => array( 'processing', 'bm-expediee' ),
 			'meta_query' => array(

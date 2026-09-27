@@ -118,7 +118,7 @@ class BM_Shipments {
 			return null;
 		}
 		if ( ! empty( $ship['easyship_shipment_id'] ) ) {
-			$found = wc_get_orders( array( 'limit' => 1, 'meta_key' => '_bm_easyship_shipment_id', 'meta_value' => sanitize_text_field( $ship['easyship_shipment_id'] ) ) );
+			$found = wc_get_orders( array( 'type' => 'shop_order', 'limit' => 1, 'meta_key' => '_bm_easyship_shipment_id', 'meta_value' => sanitize_text_field( $ship['easyship_shipment_id'] ) ) );
 			if ( $found ) {
 				return $found[0];
 			}
@@ -137,6 +137,7 @@ class BM_Shipments {
 
 	public static function query_orders( string $filter, int $paged = 1, int $per_page = 25 ): array {
 		$args = array(
+			'type'     => 'shop_order',
 			'limit'    => $per_page,
 			'page'     => $paged,
 			'orderby'  => 'date',
