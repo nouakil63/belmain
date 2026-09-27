@@ -1,0 +1,43 @@
+/*
+Theme Name: Belmains
+Theme URI: https://www.belmains.fr/
+Author: Belmains
+Description: Thème boutique Belmains — page d'accueil produit animée, entièrement modifiable depuis le builder (Apparence → Personnaliser → Belmains Builder), compatible WooCommerce.
+Version: 0.1.0
+Requires at least: 6.4
+Tested up to: 6.7
+Requires PHP: 8.1
+License: GNU General Public License v2 or later
+Text Domain: belmains
+*/
+
+/* ---------- Pages WooCommerce (panier, commande, compte, produit) et pages classiques ---------- */
+.wc-page{max-width:1100px;margin:0 auto;padding:56px 24px 96px}
+.wc-page h1.page-title,.wc-page .entry-title{font-size:clamp(2rem,4vw,2.8rem);margin-bottom:28px}
+.wc-page .entry-content{font-weight:300;line-height:1.7}
+.wc-page .entry-content p{margin:0 0 1em}
+.bm .woocommerce a.button,.bm .woocommerce button.button,.bm .woocommerce input.button,.bm .woocommerce #respond input#submit,
+.bm .woocommerce a.button.alt,.bm .woocommerce button.button.alt,.bm .woocommerce input.button.alt,
+.bm .woocommerce #payment #place_order,.bm .wc-block-components-button{
+  background:var(--rouge);color:#fff;border-radius:var(--r-btn,44px);padding:14px 28px;font-weight:500;letter-spacing:.04em;font-family:var(--sans);
+  transition:background .25s,transform .25s}
+.bm .woocommerce a.button:hover,.bm .woocommerce button.button:hover,.bm .woocommerce input.button:hover,.bm .woocommerce a.button.alt:hover,
+.bm .woocommerce button.button.alt:hover,.bm .woocommerce #payment #place_order:hover{background:var(--rouge-f);color:#fff;transform:translateY(-2px)}
+.bm .woocommerce .woocommerce-message,.bm .woocommerce .woocommerce-info{border-top-color:var(--or)}
+.bm .woocommerce .woocommerce-message::before,.bm .woocommerce .woocommerce-info::before{color:var(--or)}
+.bm .woocommerce table.shop_table{border:1px solid var(--ligne);border-radius:var(--r-card,14px);font-weight:300}
+.bm .woocommerce table.shop_table th{font-weight:500}
+.bm .woocommerce form .form-row input.input-text,.bm .woocommerce form .form-row textarea,.bm .woocommerce form .form-row select,.bm .select2-container--default .select2-selection--single{
+  border:1px solid var(--ligne);border-radius:10px;padding:12px 14px;font-family:var(--sans)}
+.bm .woocommerce-MyAccount-navigation ul{list-style:none;padding:0;margin:0}
+.bm .woocommerce-MyAccount-navigation li a{display:block;padding:10px 0;border-bottom:1px solid var(--ligne)}
+.bm .woocommerce-MyAccount-navigation li.is-active a{color:var(--rouge);font-weight:500}
+.bm .woocommerce ul.products li.product .woocommerce-loop-product__title{font-family:var(--display);font-size:1.3rem}
+.bm .woocommerce ul.products li.product .price,.bm .woocommerce div.product p.price{color:var(--rouge);font-family:var(--display);font-size:1.4rem}
+.bm .woocommerce div.product .product_title{font-size:clamp(2rem,4vw,2.8rem)}
+.bm-account-tracking{margin:32px 0;padding:24px;background:var(--ivoire);border-radius:var(--r-card,14px)}
+.bm-account-tracking h2{font-size:1.4rem;margin-bottom:10px}
+.bm-account-timeline{list-style:none;padding:0;margin:12px 0 0;font-size:.92rem;color:var(--gris)}
+.bm-account-timeline li{padding:6px 0;border-top:1px solid var(--ligne)}
+.bm-return-form .form-row{display:flex;flex-direction:column;gap:6px;margin:14px 0}
+.bm-return-form select,.bm-return-form textarea,.bm-return-form input[type=number]{border:1px solid var(--ligne);border-radius:10px;padding:10px 12px;font-family:var(--sans)}

@@ -1,0 +1,32 @@
+/* Belmains CRM — habillage admin */
+.bm-wrap h1 small{font-size:13px;font-weight:400;margin-left:8px}
+.bm-card{background:#fff;border:1px solid #dcdcde;border-radius:8px;padding:18px 20px;margin:16px 0}
+.bm-card h2{font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.bm-grid-2{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;align-items:start}
+@media (max-width:1100px){.bm-grid-2{grid-template-columns:1fr}}
+.bm-muted{color:#646970}
+.bm-badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.02em;
+  color:var(--bm-badge,#374151);background:color-mix(in srgb,var(--bm-badge,#374151) 12%,#fff);border:1px solid color-mix(in srgb,var(--bm-badge,#374151) 35%,#fff);white-space:nowrap}
+.bm-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.bm-kpi{display:block;background:#fff;border:1px solid #dcdcde;border-radius:8px;padding:14px 16px;text-decoration:none;color:#1d2327}
+.bm-kpi span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#646970}
+.bm-kpi b{display:block;font-size:24px;line-height:1.2;margin:6px 0 2px}
+.bm-kpi b .woocommerce-Price-amount{font-size:22px}
+.bm-kpi small{color:#646970}
+.bm-kpi-act:hover{border-color:#a8121f}
+.bm-kpi.is-hot{border-left:4px solid #b45309}
+.bm-kpi.is-bad{border-left:4px solid #b91c1c}
+.bm-list{margin:0;padding:0;list-style:none}
+.bm-list li{padding:8px 0;border-top:1px solid #f0f0f1}
+.bm-list li:first-child{border-top:0}
+.bm-timeline{margin:0;padding:0;list-style:none;font-size:12px}
+.bm-timeline li{padding:6px 0;border-top:1px solid #f0f0f1;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bm-timeline time{color:#646970;min-width:100px}
+.bm-mb-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.bm-act-msg{font-size:12px;color:#646970}
+.bm-act-msg.is-error{color:#b91c1c}
+.bm-act-msg.is-ok{color:#15803d}
+#adminmenu .toplevel_page_belmains .wp-menu-image:before{color:#d4b06a}
+#wpadminbar #wp-admin-bar-bm-crm .bm-ab-count{display:inline-block;background:#a8121f;color:#fff;border-radius:10px;padding:0 6px;font-size:10px;line-height:16px;margin-left:4px;vertical-align:middle}
+.column-bm_tracking{width:14%}
+.column-bm_tracking small{color:#646970}
