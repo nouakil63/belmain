@@ -1,0 +1,17 @@
+/* White and gold Belmains logo on burgundy surfaces. */
+.copy-bordeaux .brand-logo,.copy-bordeaux .site-header .brand-logo,.copy-bordeaux .site-footer .brand-logo,.copy-solaire .brand-logo{background:transparent;padding:0;border-radius:0}
+.brand-logo img{mix-blend-mode:lighten!important}
+.copy-bordeaux .site-footer{background:#63182e}
+.copy-solaire .site-header{background:#63182e;color:#fffaf3;backdrop-filter:none}
+.copy-solaire .site-header.is-scrolled{background:#63182e;box-shadow:0 5px 25px #43132118}
+.copy-solaire .desktop-nav a:hover{color:#fff;background:#ffffff14}
+.copy-solaire .header-shop{background:#fffaf3;color:#63182e}
+.copy-solaire .header-shop:hover{background:#f0e2e7}
+.copy-solaire .menu-toggle{color:#fffaf3}
+.copy-solaire .mobile-nav{background:#63182e;color:#fffaf3}
+.copy-solaire .footer-wordmark.brand-logo{background:transparent;padding:0;border-radius:0;width:min(520px,100%)}
+.copy-solaire .copy-section-heading h2 em,.copy-solaire .hero-intro h1 em{color:#63182e}
+.copy-solaire .copy-proof>span,.copy-solaire .copy-stars{color:#a17a3c}
+.copy-solaire .film-caption{color:#564a43}
+.copy-solaire .product-section .copy-reassurance .icon{color:#d2b17a}
+@media(max-width:600px){.copy-solaire .footer-wordmark.brand-logo{padding:0}.copy-bordeaux .site-header .brand-logo,.copy-bordeaux .site-footer .brand-logo{padding:0}}

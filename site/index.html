@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#63182e">
+  <title>Belmains — Les trois maquettes</title>
+  <link rel="icon" href="maquettes/3/assets/belmains-favicon.png">
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;overflow:hidden;background:#fcf8f8;color:#431321;font-family:Arial,sans-serif}
+    body{display:grid;grid-template-rows:58px minmax(0,1fr);height:100vh;height:100dvh}
+    .preview-bar{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 24px;background:#fff;box-shadow:0 1px 12px #43132112;z-index:1}
+    .preview-brand{display:flex;align-items:baseline;gap:12px;white-space:nowrap}
+    .preview-brand strong{font:500 22px Georgia,serif;letter-spacing:.04em}
+    .preview-brand span{font-size:11px;color:#83777b}
+    nav{display:flex;gap:6px}
+    nav a{display:flex;align-items:center;gap:9px;padding:10px 17px;border-radius:6px;font-size:12px;text-decoration:none;color:#67545b;white-space:nowrap;transition:background .18s,color .18s}
+    nav a span{font-size:10px;opacity:.65}
+    nav a:hover{background:#f6eef0}
+    nav a[aria-current=page]{background:#63182e;color:#fff}
+    a:focus-visible{outline:3px solid #b68a45;outline-offset:2px}
+    main{position:relative;min-height:0}
+    iframe{display:block;width:100%;height:100%;border:0;background:#fff}
+    .status{position:absolute;left:50%;top:18px;transform:translateX(-50%);margin:0;background:#fff;padding:11px 18px;border-radius:30px;box-shadow:0 4px 20px #43132115;font-size:12px;pointer-events:none}
+    [hidden]{display:none!important}
+    noscript{position:absolute;inset:0;background:#fff;padding:30px;text-align:center}
+    @media(max-width:650px){body{grid-template-rows:54px minmax(0,1fr)}.preview-bar{padding:0 9px;justify-content:center}.preview-brand{display:none}nav{width:100%;justify-content:center;gap:4px}nav a{justify-content:center;flex:1;padding:11px 9px;font-size:11px;gap:6px}}
+    @media(prefers-reduced-motion:reduce){nav a{transition:none}}
+  </style>
+</head>
+<body>
+  <header class="preview-bar">
+    <div class="preview-brand"><strong>BELMAINS</strong><span>Les maquettes</span></div>
+    <nav aria-label="Choisir une maquette">
+      <a href="?version=1" data-version="1" aria-current="page"><span>01</span> Cinéma</a>
+      <a href="?version=2" data-version="2"><span>02</span> Éditoriale</a>
+      <a href="?version=3" data-version="3"><span>03</span> Shopify</a>
+    </nav>
+  </header>
+  <main>
+    <p class="status" role="status">Chargement de la maquette…</p>
+    <iframe id="preview" title="Maquette Belmains" allow="autoplay; fullscreen"></iframe>
+    <noscript><p>Choisissez votre maquette :</p><p><a href="maquettes/1/">Cinéma</a> · <a href="maquettes/2/">Éditoriale</a> · <a href="maquettes/3/">Shopify</a></p></noscript>
+  </main>
+  <script>
+    (()=>{
+      const frame=document.querySelector('#preview'),status=document.querySelector('.status'),links=[...document.querySelectorAll('[data-version]')];
+      const names={'1':'Cinéma','2':'Éditoriale','3':'Shopify'};
+      let active;
+      function select(version){
+        if(!names[version])version='1';
+        links.forEach(link=>{if(link.dataset.version===version)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current')});
+        if(active===version)return;
+        active=version;status.hidden=false;
+        document.title='Belmains — Maquette '+version+' · '+names[version];
+        frame.title='Maquette '+version+' — Belmains '+names[version];
+        const url=new URL('maquettes/'+version+'/',document.baseURI).href;
+        if(!frame.getAttribute('src'))frame.src=url;
+        else frame.contentWindow.location.replace(url);
+      }
+      links.forEach(link=>link.addEventListener('click',event=>{
+        if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+        event.preventDefault();
+        if(active===link.dataset.version)return;
+        history.pushState({},'',link.href);select(link.dataset.version);
+      }));
+      frame.addEventListener('load',()=>{if(frame.getAttribute('src'))status.hidden=true});
+      window.addEventListener('popstate',()=>select(new URLSearchParams(location.search).get('version')));
+      select(new URLSearchParams(location.search).get('version'));
+    })();
+  </script>
+</body>
+</html>

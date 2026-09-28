@@ -1,0 +1,75 @@
+/* Finitions de la direction solaire, sans modification du contenu. */
+.copy-solaire .site-header{background:rgba(99,24,46,.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.copy-solaire .site-header.is-scrolled{box-shadow:0 8px 35px #4313210d}
+.copy-solaire .header-inner{height:86px}
+.copy-solaire .desktop-nav{gap:8px}
+.copy-solaire .desktop-nav a{padding:9px 15px;border-radius:24px;transition:background .25s,color .25s}
+.copy-solaire .desktop-nav a:hover{background:#efe1e6}
+.copy-solaire .hero{padding-top:28px;padding-bottom:82px}
+.copy-solaire .hero-intro>.eyebrow{display:inline-block;background:#f1e6ea;border-radius:30px;padding:7px 17px;font-size:11px;letter-spacing:.035em;margin-bottom:22px}
+.copy-solaire .hero-intro h1{font-size:clamp(52px,5.05vw,77px);max-width:1070px;line-height:1.06;margin-bottom:22px}
+.copy-solaire .hero-lead{gap:15px}
+.copy-solaire .hero-lead .button{min-height:57px;padding-inline:30px;box-shadow:0 8px 20px #63182e18}
+.copy-solaire .hero .copy-proof{margin-top:0!important}
+.copy-solaire .hero-scenes{width:calc(100% - 64px);max-width:1440px;left:auto;transform:none;margin:52px auto 0;grid-template-columns:.85fr 1.3fr .85fr;gap:24px}
+.copy-solaire .scene{border-radius:24px;box-shadow:0 20px 40px -22px #43132138}
+.copy-solaire .scene-product{height:440px;border-radius:90px 90px 24px 24px}
+.copy-solaire .scene-life,.copy-solaire .scene-touch{height:350px}
+.copy-solaire .scene-life{transform:translateY(-15px)}
+.copy-solaire .scene-touch{transform:translateY(24px)}
+.copy-solaire .scene figcaption{left:24px;right:20px;bottom:25px;font-size:24px;max-width:none;text-wrap:balance}
+.copy-solaire .video-toggle{top:25px;right:27px;min-height:42px;background:#ffffffed}
+.copy-solaire .film-caption{left:27px;bottom:22px}
+.copy-solaire .care-summary{background:#f6eef0;padding:36px 42px;border-radius:28px;gap:48px;max-width:1030px}
+.copy-solaire .copy-care-items{gap:20px}
+.copy-solaire .ritual-panel{border-radius:32px}
+.copy-solaire .copy-editorial-row{gap:8%;margin-top:75px}
+.copy-solaire .copy-editorial-photo{border-radius:30px;aspect-ratio:1.12;box-shadow:0 22px 45px -28px #4313214d}
+.copy-solaire .copy-editorial-photo img{object-position:center;will-change:transform}
+.copy-solaire .copy-editorial-row li{gap:16px}
+.copy-solaire .copy-editorial-row li .icon{background:#f1e6ea;padding:5px;box-sizing:content-box;border-radius:50%;flex-shrink:0;margin-top:1px}
+.copy-solaire .copy-promises{background:#f3e9ed}
+.copy-solaire .copy-promise-grid{gap:18px}
+.copy-solaire .copy-promise-grid article{border-radius:25px;padding:32px 28px;box-shadow:0 8px 30px #43132105}
+.copy-solaire .copy-promise-grid .icon{background:#f6eef0;box-sizing:content-box;padding:13px;border-radius:20px;width:26px;height:26px;margin-bottom:25px}
+.copy-solaire .copy-promise-grid h3{font-size:24px;letter-spacing:-.02em}
+.copy-solaire .copy-review-track{padding:8px 0 22px;gap:22px}
+.copy-solaire .copy-review-track article{background:var(--paper);border-radius:24px;padding:32px;box-shadow:0 8px 15px #43132104}
+.copy-solaire .copy-review-controls button{background:#f1e6ea;width:46px;height:46px}
+.copy-solaire .faq-list details{border-radius:20px;transition:background .25s,box-shadow .25s}
+.copy-solaire .faq-list details[open]{background:#ffffff;box-shadow:0 12px 35px #43132107}
+.copy-solaire .faq-list summary{padding:24px 26px}
+.copy-solaire .faq-plus{width:28px;height:28px;background:#f1e6ea;border-radius:50%}
+.copy-solaire .faq-plus:before,.copy-solaire .faq-plus:after{width:12px;left:8px;top:13px}
+.copy-solaire .faq-answer{padding-inline:26px}
+.copy-solaire .button,.copy-solaire .circle-button,.copy-solaire .copy-review-controls button{transition:transform .25s,background .25s,box-shadow .25s}
+@media(hover:hover){.copy-solaire .button:hover{box-shadow:0 10px 24px #43132118}.copy-solaire .copy-review-controls button:hover{background:var(--brown);color:var(--cream);transform:translateY(-2px)}}
+@media(min-width:901px){.copy-solaire .faq-section>.section-heading{position:sticky;top:125px}.copy-solaire .copy-statement{max-width:1000px}}
+@media(max-width:1100px){.copy-solaire .hero-scenes{gap:18px}.copy-solaire .scene-product{height:395px}.copy-solaire .scene-life,.copy-solaire .scene-touch{height:310px}.copy-solaire .scene figcaption{font-size:20px}.copy-solaire .copy-promise-grid article{padding:28px 22px}}
+@media(max-width:900px){.copy-solaire .header-inner{height:80px}.copy-solaire .hero-intro h1{font-size:57px}.copy-solaire .hero-scenes{width:calc(100% - 40px);gap:14px}.copy-solaire .scene-product{height:350px;border-radius:60px 60px 22px 22px}.copy-solaire .scene-life,.copy-solaire .scene-touch{height:275px}.copy-solaire .care-summary{gap:28px;padding:30px}.copy-solaire .copy-editorial-row{gap:35px}}
+@media(max-width:600px){
+ .copy-solaire .header-inner{height:75px}
+ .copy-solaire .hero{padding-top:22px;padding-bottom:50px}
+ .copy-solaire .hero-intro>.eyebrow{font-size:10px;margin-bottom:18px;padding:6px 14px}
+ .copy-solaire .hero-intro h1{font-size:40px;line-height:1.09;margin-bottom:21px}
+ .copy-solaire .hero-lead{gap:14px}
+ .copy-solaire .hero-lead .button{min-height:52px;padding-inline:26px}
+ .copy-solaire .hero-scenes{width:calc(100% + 130px);left:50%;transform:translateX(-50%);margin:36px 0 0;grid-template-columns:.65fr 1.4fr .65fr;gap:12px}
+ .copy-solaire .scene-product{height:330px;border-radius:56px 56px 20px 20px}
+ .copy-solaire .scene-life,.copy-solaire .scene-touch{height:250px;border-radius:18px}
+ .copy-solaire .video-toggle{top:18px;right:17px;min-height:38px}
+ .copy-solaire .film-caption{left:18px;bottom:18px}
+ .copy-solaire .care-summary{padding:25px;gap:23px;border-radius:23px;max-width:none}
+ .copy-solaire .ritual-panel{border-radius:24px}
+ .copy-solaire .copy-editorial-row{margin-top:40px;gap:27px}
+ .copy-solaire .copy-editorial-photo{border-radius:24px;aspect-ratio:1.18}
+ .copy-solaire .copy-promise-grid{grid-template-columns:1fr;gap:14px}
+ .copy-solaire .copy-promise-grid article{display:grid;grid-template-columns:52px 1fr;gap:10px 18px;padding:25px}
+ .copy-solaire .copy-promise-grid .icon{grid-row:1/3;padding:11px;margin:0;width:24px;height:24px;border-radius:16px}
+ .copy-solaire .copy-promise-grid h3{font-size:23px;margin:0;align-self:center}
+ .copy-solaire .copy-promise-grid p{grid-column:2;font-size:12px}
+ .copy-solaire .copy-review-track article{padding:27px}
+ .copy-solaire .faq-list summary{padding:21px 20px;gap:13px}
+ .copy-solaire .faq-answer{padding-inline:20px}
+}
+@media(max-width:360px){.copy-solaire .hero-intro h1{font-size:35px}.copy-solaire .hero-scenes{width:calc(100% + 120px)}.copy-solaire .scene-product{height:305px}.copy-solaire .copy-promise-grid article{padding:22px;gap:10px 13px}}
