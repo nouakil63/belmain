@@ -4,11 +4,27 @@
   "buildCommand": null,
   "outputDirectory": ".",
   "cleanUrls": true,
-  "headers": [{
-    "source": "/(.*)",
-    "headers": [
-      {"key": "X-Robots-Tag", "value": "noindex, nofollow"},
-      {"key": "X-Content-Type-Options", "value": "nosniff"}
-    ]
-  }]
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/maquettes/:path*",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
 }

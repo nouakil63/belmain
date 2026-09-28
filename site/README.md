@@ -1,11 +1,13 @@
-# Site de présentation Belmains
+# Site Belmains retenu
 
-Ce dossier est la source du site https://belmain.vercel.app/. Les prototypes historiques à la racine du dépôt sont distincts.
+La version 3 est désormais le seul site de présentation, servi directement à la racine sans iframe ni sélecteur de maquettes.
 
-- Version retenue par défaut : maquettes/3/.
-- Les liens ?version=1 et ?version=2 restent disponibles pour consulter les propositions précédentes.
-- Site statique : aucune étape de compilation, aucun paiement réel.
-- Configuration Vercel : répertoire racine site, sortie ., aucun framework.
-- Prévisualisation locale : lancer un serveur HTTP dans ce dossier.
+- Adresse : https://belmain.vercel.app/
+- Les anciennes adresses `?version=1`, `?version=2` et `?version=3` affichent le même site retenu.
+- Les anciennes adresses `/maquettes/…` redirigent vers la racine.
+- Les fichiers des versions 1 et 2 sont retirés ; leur historique reste accessible dans Git.
+- Site statique, sans compilation. Le panier et les formulaires sont encore ceux de la démonstration.
+- Vercel : répertoire racine `site`, sortie `.`, aucun framework.
+- La préparation WordPress est séparée dans `wordpress/` à la racine du dépôt.
 
-La configuration locale .vercel est exclue du dépôt. Les changements de version 3 sont détaillés dans maquettes/3/LIRE-MOI.md.
+La configuration locale `.vercel` est exclue du dépôt. Les choix visuels sont détaillés dans `LIRE-MOI.md`.
