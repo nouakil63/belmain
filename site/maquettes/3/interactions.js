@@ -13,7 +13,7 @@ burger.addEventListener('click',()=>menu(!drawer.classList.contains('is-open')))
 document.addEventListener('keydown',e=>{if(!drawer.classList.contains('is-open'))return;if(e.key==='Escape')menu(false);if(e.key==='Tab'){const focus=$$('a[href],button',drawer).filter(x=>x.getClientRects().length);if(e.shiftKey&&document.activeElement===focus[0]){e.preventDefault();focus.at(-1).focus()}else if(!e.shiftKey&&document.activeElement===focus.at(-1)){e.preventDefault();focus[0].focus()}}});
 let queued=false;function scrollState(){header.classList.toggle('is-stuck',scrollY>45);queued=false}addEventListener('scroll',()=>{if(!queued){queued=true;requestAnimationFrame(scrollState)}},{passive:true});scrollState();
 addEventListener('resize',()=>{if(innerWidth>1100&&drawer.classList.contains('is-open'))menu(false)});
-const views=$$('.product-view'),names=['Le gant en rotation','Votre pause bien-être','La chaleur à votre mesure','Les atouts du gant','Les commandes en un regard','Votre rituel quotidien','Vue de face','Profil gauche','Vue de dos','Profil droit','Vue du dessus','Vue de l’ouverture'];let active=0;
+const views=$$('.product-view'),names=['Le gant en rotation','Votre pause bien-être','La chaleur à votre mesure','Les atouts du gant','Les commandes en un regard','Votre rituel quotidien'];let active=0;
 function gallery(n){
  active=(n+views.length)%views.length;
  views.forEach((view,i)=>{view.hidden=i!==active;view.classList.toggle('is-active',i===active)});
