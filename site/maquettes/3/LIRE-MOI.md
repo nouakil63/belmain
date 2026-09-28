@@ -16,6 +16,12 @@ Maquette statique de présentation, sans paiement réel ni transmission des form
 
 La première vue de la galerie reprend le film du gant en rotation de l’en-tête de la maquette 1. Lecture muette en boucle, commande lecture/pause et arrêt automatique hors écran, dans un onglet masqué ou lors du passage à une photo. La lecture automatique respecte la préférence de mouvement réduit et le mode économie de données. Les six autres vues et les prix sont conservés.
 
+## Visuels français de la fiche produit
+
+Cinq créations photographiques avec textes français sont ajoutées après la vidéo : pause bien-être, chaleur, fonctions, commandes et rituel quotidien. Les références fournies ont guidé les scènes et la photo du gant existant a guidé son apparence. Les textes techniques des visuels utilisent les fonctions déjà présentées dans les références.
+
+La galerie contient douze vues : vidéo, cinq visuels, puis les six photos du produit. Les miniatures défilent horizontalement pour préserver la longueur de la page. Chaque image peut être agrandie dans une fenêtre avec zoom, fermeture par Échap et retour au bouton d’origine. Les images sont livrées en WebP avec miniatures dédiées et chargement différé.
+
 ## Fichiers
 
 `index.html`, `base.css`, `sections.css`, `maquette.css`, `interactions.js` et `assets/` constituent la page autonome. Servir ce dossier avec un serveur de fichiers statiques pour la prévisualisation.

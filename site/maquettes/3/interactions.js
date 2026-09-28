@@ -13,8 +13,19 @@ burger.addEventListener('click',()=>menu(!drawer.classList.contains('is-open')))
 document.addEventListener('keydown',e=>{if(!drawer.classList.contains('is-open'))return;if(e.key==='Escape')menu(false);if(e.key==='Tab'){const focus=$$('a[href],button',drawer).filter(x=>x.getClientRects().length);if(e.shiftKey&&document.activeElement===focus[0]){e.preventDefault();focus.at(-1).focus()}else if(!e.shiftKey&&document.activeElement===focus.at(-1)){e.preventDefault();focus[0].focus()}}});
 let queued=false;function scrollState(){header.classList.toggle('is-stuck',scrollY>45);queued=false}addEventListener('scroll',()=>{if(!queued){queued=true;requestAnimationFrame(scrollState)}},{passive:true});scrollState();
 addEventListener('resize',()=>{if(innerWidth>1100&&drawer.classList.contains('is-open'))menu(false)});
-const views=$$('.product-view'),names=['Le gant en rotation','Vue de face','Profil gauche','Vue de dos','Profil droit','Vue du dessus','Vue de l’ouverture'];let active=0;
-function gallery(n){active=(n+views.length)%views.length;views.forEach((img,i)=>{img.hidden=i!==active;img.classList.toggle('is-active',i===active)});$$('[data-gallery]').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===active)));$('.gallery-label').textContent=names[active];syncProductFilm();if(!reduced&&window.gsap)gsap.fromTo(views[active],{opacity:.3,x:12},{opacity:1,x:0,duration:.4,overwrite:true})}
+const views=$$('.product-view'),names=['Le gant en rotation','Votre pause bien-être','La chaleur à votre mesure','Les atouts du gant','Les commandes en un regard','Votre rituel quotidien','Vue de face','Profil gauche','Vue de dos','Profil droit','Vue du dessus','Vue de l’ouverture'];let active=0;
+function gallery(n){
+ active=(n+views.length)%views.length;
+ views.forEach((view,i)=>{view.hidden=i!==active;view.classList.toggle('is-active',i===active)});
+ const thumbs=$$('[data-gallery]');
+ thumbs.forEach((button,i)=>button.setAttribute('aria-pressed',String(i===active)));
+ const strip=$('.product-thumbs'),selected=thumbs[active];
+ strip.scrollTo({left:selected.offsetLeft-(strip.clientWidth-selected.offsetWidth)/2,behavior:reduced?'instant':'smooth'});
+ $('.gallery-label').textContent=(active+1)+' / '+views.length+' · '+names[active];
+ $('#gallery-expand').hidden=active===0;
+ syncProductFilm();
+ if(!reduced&&window.gsap)gsap.fromTo(views[active],{opacity:.3,x:12},{opacity:1,x:0,duration:.4,overwrite:true});
+}
 // Reuse the film from the first proposal, only while its gallery view is visible.
 const productFilm=$('#product-film'),filmToggle=$('#product-film-toggle');
 const saveData=!!navigator.connection?.saveData;
@@ -60,6 +71,19 @@ $$('[data-qty]').forEach(b=>b.addEventListener('click',()=>setQty(quantity+(b.da
 const cart=$('#cart-dialog'),info=$('#info-dialog');
 function showDialog(dialog){dialog.showModal();document.body.style.overflow='hidden'}
 $$('dialog').forEach(d=>{d.addEventListener('close',()=>{document.body.style.overflow=''});d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}});$$('[data-close]',d).forEach(b=>b.addEventListener('click',()=>d.close()))});
+const imageDialog=$('#gallery-dialog'),zoomImage=$('#gallery-dialog-image'),zoomToggle=$('#gallery-zoom-toggle');
+$('#gallery-expand').addEventListener('click',()=>{
+ if(active===0)return;
+ const view=views[active];
+ zoomImage.src=view.currentSrc||view.src;zoomImage.alt=view.alt;
+ $('#gallery-dialog-caption').textContent=names[active];
+ zoomToggle.classList.remove('is-zoomed');zoomToggle.setAttribute('aria-label','Zoomer sur l’image');
+ showDialog(imageDialog);$('.gallery-zoom-scroll').scrollTo(0,0);
+});
+zoomToggle.addEventListener('click',()=>{
+ const zoomed=zoomToggle.classList.toggle('is-zoomed');
+ zoomToggle.setAttribute('aria-label',zoomed?'Réduire l’image':'Zoomer sur l’image');
+});
 function updateCart(){cartQuantity=Math.max(0,Math.min(99,cartQuantity));$('#cart-empty').hidden=cartQuantity>0;$('#cart-item').hidden=cartQuantity===0;$('#cart-quantity').textContent=cartQuantity;const price=pricing(cartQuantity);$('#cart-total-price').textContent=money(price.current);$('#cart-compare-price').textContent=money(price.previous);$('[data-cart-change="-1"]').disabled=cartQuantity===0;$('[data-cart-change="1"]').disabled=cartQuantity===99;$('[data-cart-count]').textContent=cartQuantity;$$('a[href="#panier"]').forEach(a=>{let badge=$('.cart-counter',a);if(!badge){badge=document.createElement('span');badge.className='cart-counter';a.append(badge)}badge.textContent=cartQuantity;badge.hidden=!cartQuantity;a.setAttribute('aria-label','Panier, '+cartQuantity+' article'+(cartQuantity>1?'s':''))})}
 $('#add-to-cart').addEventListener('click',()=>{setQty($('#product-quantity').value);cartQuantity+=quantity;updateCart();$('#checkout-feedback').hidden=true;showDialog(cart)});
 $$('a[href="#panier"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();updateCart();showDialog(cart)}));$('#cart-remove').addEventListener('click',()=>{cartQuantity=0;updateCart()});$$('[data-cart-change]').forEach(b=>b.addEventListener('click',()=>{cartQuantity+=+b.dataset.cartChange;updateCart()}));$('#checkout-demo').addEventListener('click',()=>{$('#checkout-feedback').hidden=false});updateCart();
