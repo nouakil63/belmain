@@ -1,14 +1,14 @@
 .color-scheme-green-variant{background:#e8f5e9;color:#1b5e20;--color-background:232, 245, 233;--color-foreground:27, 94, 32}
-.color-scheme-31dded87-aea9-4d5c-8298-862bf76e4b3f{background:#f8f5ee;color:#a8121f;--color-background:248, 245, 238;--color-foreground:168, 18, 31}
-.color-scheme-3ad88eed-dcc5-4cf0-8f25-f3fea6917d66{background:#a8121f;color:#ffffff;--color-background:168, 18, 31;--color-foreground:255, 255, 255}
+.color-scheme-31dded87-aea9-4d5c-8298-862bf76e4b3f{background:#f8f5ee;color:#63182e;--color-background:248, 245, 238;--color-foreground:99, 24, 46}
+.color-scheme-3ad88eed-dcc5-4cf0-8f25-f3fea6917d66{background:#63182e;color:#ffffff;--color-background:99, 24, 46;--color-foreground:255, 255, 255}
 .color-scheme-4d627928-379c-4ab9-9790-071fce04b3f5{background:#f8f5ee;color:#000000;--color-background:248, 245, 238;--color-foreground:0, 0, 0}
-.color-scheme-c4a3ba69-b5ad-4aa3-b2e6-ab56593bf169{background:#ffffff;color:#a8121f;--color-background:255, 255, 255;--color-foreground:168, 18, 31}
+.color-scheme-c4a3ba69-b5ad-4aa3-b2e6-ab56593bf169{background:#ffffff;color:#63182e;--color-background:255, 255, 255;--color-foreground:99, 24, 46}
 .color-scheme-a5804aff-65ef-4d98-9b3d-fee032a22621{background:#ffffff;color:#bf9756;--color-background:255, 255, 255;--color-foreground:191, 151, 86}
-.color-scheme-ad51283d-6044-441e-b8ec-b4441c2da21b{background:#ffffff;color:#a8121f;--color-background:255, 255, 255;--color-foreground:168, 18, 31}
+.color-scheme-ad51283d-6044-441e-b8ec-b4441c2da21b{background:#ffffff;color:#63182e;--color-background:255, 255, 255;--color-foreground:99, 24, 46}
 .color-scheme-64a2b88c-c634-4339-8359-e0e748086a7e{background:#ffffff;color:#bf9756;--color-background:255, 255, 255;--color-foreground:191, 151, 86}
 .color-scheme-15ab6c1a-5144-4b7d-a402-482fa31b8c04{background:#ffffff;color:#181d25;--color-background:255, 255, 255;--color-foreground:24, 29, 37}
 .color-accent-2{background:#ffffff;color:#181d25;--color-background:255, 255, 255;--color-foreground:24, 29, 37}
-.color-accent-1{background:#a8121f;color:#ffffff;--color-background:168, 18, 31;--color-foreground:255, 255, 255}
+.color-accent-1{background:#63182e;color:#ffffff;--color-background:99, 24, 46;--color-foreground:255, 255, 255}
 .color-inverse{background:#f5eedf;color:#181d25;--color-background:245, 238, 223;--color-foreground:24, 29, 37}
 .color-background-2{background:#181d25;color:#ffffff;--color-background:24, 29, 37;--color-foreground:255, 255, 255}
 .color-background-1{background:#ffffff;color:#181d25;--color-background:255, 255, 255;--color-foreground:24, 29, 37}
@@ -1237,7 +1237,7 @@
   /* Tout texte placé entre [crochets] prend la deuxième couleur */
   .section-rich_text_kEE36c-padding .shortcut-text__fancy1,
   .section-rich_text_kEE36c-padding .shortcut-text__fancy2 {
-    color: #a8121f;
+    color: #63182e;
   }
 
   @media screen and (min-width: 750px) {
@@ -1254,7 +1254,7 @@
     --img-bg: #f5efe3;
     --ink: #181d25;
     --muted: #4a4640;
-    --accent: #a8121f;
+    --accent: #63182e;
   }.iwt-image_texte_ndtUdi .iwt-image-wrap { padding-bottom: 75%; }
 
   .iwt {
@@ -1537,7 +1537,7 @@
   /* Tout texte placé entre [crochets] prend la deuxième couleur */
   .section-rich_text_PkAFHE-padding .shortcut-text__fancy1,
   .section-rich_text_PkAFHE-padding .shortcut-text__fancy2 {
-    color: #a8121f;
+    color: #63182e;
   }
 
   @media screen and (min-width: 750px) {
@@ -1554,7 +1554,7 @@
     --img-bg: #f5efe3;
     --ink: #181d25;
     --muted: #4a4640;
-    --accent: #a8121f;
+    --accent: #63182e;
   }
 
   .iwt {
@@ -1750,7 +1750,7 @@
     --img-bg: #f5efe3;
     --ink: #181d25;
     --muted: #4a4640;
-    --accent: #a8121f;
+    --accent: #63182e;
   }
 
   .iwt {
@@ -1961,7 +1961,7 @@
   /* Tout texte placé entre [crochets] prend la deuxième couleur */
   .section-rich_text_PqrYaB-padding .shortcut-text__fancy1,
   .section-rich_text_PqrYaB-padding .shortcut-text__fancy2 {
-    color: #a8121f;
+    color: #63182e;
   }
 
   @media screen and (min-width: 750px) {
@@ -2477,8 +2477,8 @@
   .diapo__titre { margin: 0; font-family: var(--font-heading-family); font-weight: 700; font-size: clamp(2.6rem, 4.2vw, 4.6rem); line-height: 1.12; text-wrap: balance; color: #fff; }
   .diapo__texte { font-size: clamp(1.5rem, 1.4vw, 1.8rem); line-height: 1.5; color: rgba(255,255,255,.88); max-width: 46ch; }
   .diapo__texte p { margin: 0; }
-  .diapo__bouton { display: inline-block; margin-top: .4rem; padding: 1.3rem 2.8rem; border-radius: 4rem; background: #a8121f; color: #fff; font-weight: 600; font-size: 1.5rem; text-decoration: none; transition: transform .15s ease, background .15s ease; }
-  .diapo__bouton:hover { background: #7d0c16; transform: translateY(-2px); }
+  .diapo__bouton { display: inline-block; margin-top: .4rem; padding: 1.3rem 2.8rem; border-radius: 4rem; background: #63182e; color: #fff; font-weight: 600; font-size: 1.5rem; text-decoration: none; transition: transform .15s ease, background .15s ease; }
+  .diapo__bouton:hover { background: #431321; transform: translateY(-2px); }
   .diapo__fleche { position: absolute; top: 50%; transform: translateY(-50%); z-index: 3; width: 4.4rem; height: 4.4rem; border-radius: 50%; border: 1px solid rgba(255,255,255,.35); background: rgba(24,29,37,.45); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: background .15s ease, border-color .15s ease; }
   .diapo__fleche:hover, .diapo__fleche:focus-visible { background: #bf9756; border-color: #bf9756; color: #181d25; outline: none; }
   .diapo__fleche svg { width: 2rem; height: 2rem; }
@@ -2487,7 +2487,7 @@
   .diapo__points { display: flex; gap: .8rem; }
   .diapo__points button { width: 1rem; height: 1rem; border-radius: 1rem; border: 0; padding: 0; background: rgba(191,151,86,.35); cursor: pointer; transition: width .25s ease, background .25s ease; }
   .diapo__points button.is-active { width: 2.8rem; background: #bf9756; }
-  .diapo__points button:focus-visible { outline: 2px solid #a8121f; outline-offset: 2px; }
+  .diapo__points button:focus-visible { outline: 2px solid #63182e; outline-offset: 2px; }
   .diapo__pause { width: 3rem; height: 3rem; border-radius: 50%; border: 1px solid rgba(191,151,86,.6); background: transparent; color: #bf9756; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .diapo__pause svg { width: 1.4rem; height: 1.4rem; }
   .diapo__pause .ic-play { display: none; }

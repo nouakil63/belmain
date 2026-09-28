@@ -50,7 +50,7 @@
       const names={'1':'Cinéma','2':'Éditoriale','3':'Shopify'};
       let active;
       function select(version){
-        if(!names[version])version='1';
+        if(!names[version])version='3';
         links.forEach(link=>{if(link.dataset.version===version)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current')});
         if(active===version)return;
         active=version;status.hidden=false;

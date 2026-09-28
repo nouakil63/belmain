@@ -1,54 +1,23 @@
-# Belmains — maquette HTML
+# Belmains — version 3 retenue
 
-Reconstitution de la page d’accueil du thème fourni `belmains-theme-v0.7.zip`.
+Maquette statique de présentation, sans paiement réel ni transmission des formulaires.
 
-## Ouvrir la maquette
+## Modifications du 28 septembre 2026
 
-Ouvrir `index.html` dans un navigateur. Toutes les images, les polices et les bibliothèques sont locales. Aucun serveur, compte Shopify ou compte WordPress n’est nécessaire.
+- Bordeaux des autres maquettes : #63182e, avec #431321 au survol.
+- Suppression du bandeau de bienvenue, de sa vague décorative, du bloc « Les caractéristiques » et du carrousel « Pourquoi ? ».
+- Suppression des promesses de retour gratuit sous 30 jours et de la mention « sans justification », y compris dans la fiche produit et la fenêtre livraison/retours.
+- Trois cartes de promesses, avec « Livraison Offerte » et livraison à domicile ou en point relais sous 48h/72h.
+- 1 produit : 89,99 € au lieu de 109,99 € ; 2 produits : 149,99 € au lieu de 179,99 €.
+- Sélection des offres synchronisée avec la quantité et les totaux du panier. Au-delà de deux produits, chaque paire complète bénéficie du tarif duo et le produit restant du tarif individuel. Calculs en centimes.
+- Flèches du diaporama : 60 px sur ordinateur, 50 px sur mobile, également visibles sur téléphone.
 
-Le fichier `Belmains-maquette.html`, livré à côté de cette archive, rassemble le même site dans un seul HTML. Il peut être envoyé seul et consulté hors connexion.
+## Fichiers
 
-## Contenu repris
+`index.html`, `base.css`, `sections.css`, `maquette.css`, `interactions.js` et `assets/` constituent la page autonome. Servir ce dossier avec un serveur de fichiers statiques pour la prévisualisation.
 
-Les 16 sections de la page d’accueil suivent l’ordre du thème Shopify, avec ses couleurs, ses typographies Playfair Display / Inter, son logo, ses cinq photos et ses textes. Les styles des sections éditoriales sont convertis directement depuis les fichiers Liquid et leurs réglages JSON. Les vagues, bandeaux, carrousels, promesses, témoignages et FAQ sont conservés.
+## Validation
 
-Les menus Shopify n’étaient pas exportés : les liens Accueil, Contact et Suivre ma commande ont été reconstitués. Le logo du pied de page et les pictogrammes de réassurance qui pointaient vers des fichiers Shopify absents ont été remplacés par le logo Belmains inclus et des pictogrammes SVG locaux.
+Contrôles dans le navigateur à 1280, 390 et 320 pixels : affichage, absence de débordement horizontal, offres, panier pour 1/2/3 produits et panier vide, changement de diapositive, images et console JavaScript.
 
-Aucun produit n’était sélectionné dans l’export. La fiche produit reprend ses blocs de texte et ses réglages ; sa galerie utilise les sept vues du gant déjà fournies pendant le projet. Le prix reste « Prix à renseigner ».
-
-## Interactions
-
-- Menu mobile avec fermeture par Échap et navigation au clavier.
-- Galerie : miniatures, flèches, clavier et glissement tactile.
-- Quantité, ajout au panier, modification de quantité et suppression.
-- Panier et commande simulés : aucun paiement.
-- Formulaires de contact et de suivi en démonstration : aucune donnée transmise ni conservée.
-- FAQ et accordéons de la fiche produit.
-- Carrousels de présentation, de témoignages et de photos.
-- Diaporama automatique avec pause, arrêt hors écran et respect de la préférence système de mouvement réduit.
-- Révélations discrètes au défilement ; bouton de pause des animations dans le pied de page.
-
-## Fichiers pour l’intégration
-
-- `index.html` : structure et contenu de la page.
-- `base.css` : typographie et éléments communs.
-- `sections.css` : styles convertis du thème d’origine.
-- `maquette.css` : adaptation statique de la fiche produit, des fenêtres, du panier et du responsive.
-- `interactions.js` : comportements locaux, indépendants de Shopify.
-- `assets/` : logo, photos, vues du produit, polices et GSAP.
-
-Les identifiants de sections et attributs `data-source-section` permettent de retrouver la correspondance avec le thème d’origine. Ils ne créent aucune dépendance à Shopify. Ce dossier est une maquette statique, pas un thème WordPress installable : l’intégration WordPress/WooCommerce viendra ensuite.
-
-## Contenus à compléter pour la boutique
-
-Le thème conserve des avis explicitement en attente, un chiffre de satisfaction et des textes techniques/commerciaux fournis dans l’archive. Ils ont été repris pour la présentation ; renseigner les vrais avis et le prix, puis valider les caractéristiques, les conditions commerciales et les coordonnées du vendeur avant la mise en production. Les pages de contact, suivi, mentions légales et guide des tailles sont des aperçus.
-
-La maquette porte `noindex,nofollow`. Elle ne contient ni suivi publicitaire ni envoi à des services Shopify.
-
-## Contrôles réalisés
-
-Chrome : 1440, 1024, 768, 390 et 320 pixels. Galerie, navigation clavier, panier, contact, suivi, FAQ, carrousels, menu mobile et pause des animations vérifiés. Aucun débordement horizontal, image manquante ou erreur JavaScript observé. Version autonome également vérifiée sans réseau.
-
-## Finition visuelle
-
-La version affinée conserve intégralement le HTML et les textes de la première maquette. Seule la présentation CSS évolue : titre d’accueil mieux proportionné, bouton rouge plus lisible, espacements et ombres harmonisés, galerie fixe pendant la lecture sur grand écran, réassurance regroupée et meilleure disposition des cartes sur mobile. La version initiale est conservée dans `Belmains-maquette-originale.html`, à côté des livrables.
+Les avis en attente, formulaires, guide des tailles et commande restent ceux de la maquette initiale.
