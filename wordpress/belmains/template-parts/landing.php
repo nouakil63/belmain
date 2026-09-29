@@ -444,7 +444,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 </div>
 
-<div id="shopify-section-testimonial_custom_JztQEh" class="theme-section" data-source-section="testimonial-custom"><section
+<div id="shopify-section-testimonial_custom_JztQEh" class="theme-section" data-source-section="testimonial-custom"><section id="avis" aria-label="Exemples d’avis fictifs"
   class="kd-testimonials-testimonial_custom_JztQEh"
   style="
     --bg: #f8f5ee;
@@ -455,91 +455,46 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
   "
 >
   <div class="kd-testimonials-inner-testimonial_custom_JztQEh"><div class="kd-testimonials-header-testimonial_custom_JztQEh"><div class="kd-testimonials-eyebrow-testimonial_custom_JztQEh">
-          <span class="kd-testimonials-eyebrow-dash-testimonial_custom_JztQEh"></span>Ils nous font confiance
+          <span class="kd-testimonials-eyebrow-dash-testimonial_custom_JztQEh"></span>Exemples d’avis
         </div><h2 class="kd-testimonials-title-testimonial_custom_JztQEh">
-          +8 000 clients <em>satisfaits</em>.</h2><p class="kd-testimonials-subtitle-testimonial_custom_JztQEh">Découvrez les retours de nos clients qui ont adopté le rituel bien-être Belmains.</p></div><div class="kd-testimonials-carousel-testimonial_custom_JztQEh" data-kd-carousel>
+          À chacun sa pause <em>bien-être</em>.</h2><p class="kd-testimonials-subtitle-testimonial_custom_JztQEh">Textes, prénoms et notes fictifs, présentés uniquement pour illustrer la maquette.</p></div><div class="kd-testimonials-carousel-testimonial_custom_JztQEh" data-kd-carousel>
 
-        <div class="kd-testimonials-track-testimonial_custom_JztQEh" data-kd-track><article class="kd-testimonial-card-testimonial_custom_JztQEh" ><div class="kd-testimonial-stars-testimonial_custom_JztQEh" aria-label="5 étoiles sur 5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div><blockquote class="kd-testimonial-quote-testimonial_custom_JztQEh">
-                  [Avis client réel à insérer — ne pas publier de témoignage inventé]
-                </blockquote><div class="kd-testimonial-author-testimonial_custom_JztQEh"><div class="kd-testimonial-photo-placeholder-testimonial_custom_JztQEh">
-                    P
-                  </div><div class="kd-testimonial-meta-testimonial_custom_JztQEh"><div class="kd-testimonial-name-testimonial_custom_JztQEh">Prénom N.</div><div class="kd-testimonial-location-testimonial_custom_JztQEh">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                        <circle cx="12" cy="10" r="3"/>
-                      </svg>
-                      Ville
-                    </div></div><div class="kd-testimonial-verified-testimonial_custom_JztQEh" title="Achat vérifié">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                      <polyline points="22 4 12 14.01 9 11.01"/>
-                    </svg>
-                  </div></div>
-            </article><article class="kd-testimonial-card-testimonial_custom_JztQEh" ><div class="kd-testimonial-stars-testimonial_custom_JztQEh" aria-label="5 étoiles sur 5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div><blockquote class="kd-testimonial-quote-testimonial_custom_JztQEh">
-                  [Avis client réel à insérer — ne pas publier de témoignage inventé]
-                </blockquote><div class="kd-testimonial-author-testimonial_custom_JztQEh"><div class="kd-testimonial-photo-placeholder-testimonial_custom_JztQEh">
-                    P
-                  </div><div class="kd-testimonial-meta-testimonial_custom_JztQEh"><div class="kd-testimonial-name-testimonial_custom_JztQEh">Prénom N.</div><div class="kd-testimonial-location-testimonial_custom_JztQEh">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                        <circle cx="12" cy="10" r="3"/>
-                      </svg>
-                      Ville
-                    </div></div><div class="kd-testimonial-verified-testimonial_custom_JztQEh" title="Achat vérifié">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                      <polyline points="22 4 12 14.01 9 11.01"/>
-                    </svg>
-                  </div></div>
-            </article><article class="kd-testimonial-card-testimonial_custom_JztQEh" ><div class="kd-testimonial-stars-testimonial_custom_JztQEh" aria-label="5 étoiles sur 5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div><blockquote class="kd-testimonial-quote-testimonial_custom_JztQEh">
-                  [Avis client réel à insérer — ne pas publier de témoignage inventé]
-                </blockquote><div class="kd-testimonial-author-testimonial_custom_JztQEh"><div class="kd-testimonial-photo-placeholder-testimonial_custom_JztQEh">
-                    P
-                  </div><div class="kd-testimonial-meta-testimonial_custom_JztQEh"><div class="kd-testimonial-name-testimonial_custom_JztQEh">Prénom N.</div><div class="kd-testimonial-location-testimonial_custom_JztQEh">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                        <circle cx="12" cy="10" r="3"/>
-                      </svg>
-                      Ville
-                    </div></div><div class="kd-testimonial-verified-testimonial_custom_JztQEh" title="Achat vérifié">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                      <polyline points="22 4 12 14.01 9 11.01"/>
-                    </svg>
-                  </div></div>
-            </article><article class="kd-testimonial-card-testimonial_custom_JztQEh" ><div class="kd-testimonial-stars-testimonial_custom_JztQEh" aria-label="5 étoiles sur 5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div><blockquote class="kd-testimonial-quote-testimonial_custom_JztQEh">
-                  [Avis client réel à insérer — ne pas publier de témoignage inventé]
-                </blockquote><div class="kd-testimonial-author-testimonial_custom_JztQEh"><div class="kd-testimonial-photo-placeholder-testimonial_custom_JztQEh">
-                    P
-                  </div><div class="kd-testimonial-meta-testimonial_custom_JztQEh"><div class="kd-testimonial-name-testimonial_custom_JztQEh">Prénom N.</div><div class="kd-testimonial-location-testimonial_custom_JztQEh">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                        <circle cx="12" cy="10" r="3"/>
-                      </svg>
-                      Ville
-                    </div></div><div class="kd-testimonial-verified-testimonial_custom_JztQEh" title="Achat vérifié">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                      <polyline points="22 4 12 14.01 9 11.01"/>
-                    </svg>
-                  </div></div>
-            </article><article class="kd-testimonial-card-testimonial_custom_JztQEh" ><div class="kd-testimonial-stars-testimonial_custom_JztQEh" aria-label="4 étoiles sur 5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div><blockquote class="kd-testimonial-quote-testimonial_custom_JztQEh">
-                  [Avis client réel à insérer — ne pas publier de témoignage inventé]
-                </blockquote><div class="kd-testimonial-author-testimonial_custom_JztQEh"><div class="kd-testimonial-photo-placeholder-testimonial_custom_JztQEh">
-                    P
-                  </div><div class="kd-testimonial-meta-testimonial_custom_JztQEh"><div class="kd-testimonial-name-testimonial_custom_JztQEh">Prénom N.</div><div class="kd-testimonial-location-testimonial_custom_JztQEh">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                        <circle cx="12" cy="10" r="3"/>
-                      </svg>
-                      Ville
-                    </div></div><div class="kd-testimonial-verified-testimonial_custom_JztQEh" title="Achat vérifié">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                      <polyline points="22 4 12 14.01 9 11.01"/>
-                    </svg>
-                  </div></div>
-            </article></div><button class="kd-testimonials-nav-testimonial_custom_JztQEh kd-testimonials-prev-testimonial_custom_JztQEh" data-kd-prev aria-label="Précédent">
+        <div class="kd-testimonials-track-testimonial_custom_JztQEh" data-kd-track><article class="kd-testimonial-card-testimonial_custom_JztQEh" data-review-example>
+ <div class="kd-testimonial-stars-testimonial_custom_JztQEh" role="img" aria-label="Note fictive : 5 étoiles sur 5"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
+ <blockquote class="kd-testimonial-quote-testimonial_custom_JztQEh">Le soir, j’aime prendre quelques minutes pour moi. Je choisis un mode de massage, je m’installe dans le canapé et je profite de cette petite pause.</blockquote>
+ <div class="kd-testimonial-author-testimonial_custom_JztQEh">
+  <div class="kd-testimonial-photo-placeholder-testimonial_custom_JztQEh" aria-hidden="true">S</div>
+  <div class="kd-testimonial-meta-testimonial_custom_JztQEh"><div class="kd-testimonial-name-testimonial_custom_JztQEh">Sophie</div><div class="kd-testimonial-location-testimonial_custom_JztQEh">Exemple fictif</div></div>
+ </div>
+</article><article class="kd-testimonial-card-testimonial_custom_JztQEh" data-review-example>
+ <div class="kd-testimonial-stars-testimonial_custom_JztQEh" role="img" aria-label="Note fictive : 5 étoiles sur 5"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
+ <blockquote class="kd-testimonial-quote-testimonial_custom_JztQEh">J’apprécie de pouvoir choisir entre trois niveaux de chaleur. Je commence par le plus doux et j’ajuste selon mon envie, sans changer mes habitudes.</blockquote>
+ <div class="kd-testimonial-author-testimonial_custom_JztQEh">
+  <div class="kd-testimonial-photo-placeholder-testimonial_custom_JztQEh" aria-hidden="true">M</div>
+  <div class="kd-testimonial-meta-testimonial_custom_JztQEh"><div class="kd-testimonial-name-testimonial_custom_JztQEh">Marc</div><div class="kd-testimonial-location-testimonial_custom_JztQEh">Exemple fictif</div></div>
+ </div>
+</article><article class="kd-testimonial-card-testimonial_custom_JztQEh" data-review-example>
+ <div class="kd-testimonial-stars-testimonial_custom_JztQEh" role="img" aria-label="Note fictive : 4 étoiles sur 5"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
+ <blockquote class="kd-testimonial-quote-testimonial_custom_JztQEh">Les quatre boutons sont faciles à repérer. Après un premier essai, je retrouve rapidement le réglage de chaleur et le mode que je souhaite utiliser.</blockquote>
+ <div class="kd-testimonial-author-testimonial_custom_JztQEh">
+  <div class="kd-testimonial-photo-placeholder-testimonial_custom_JztQEh" aria-hidden="true">C</div>
+  <div class="kd-testimonial-meta-testimonial_custom_JztQEh"><div class="kd-testimonial-name-testimonial_custom_JztQEh">Claire</div><div class="kd-testimonial-location-testimonial_custom_JztQEh">Exemple fictif</div></div>
+ </div>
+</article><article class="kd-testimonial-card-testimonial_custom_JztQEh" data-review-example>
+ <div class="kd-testimonial-stars-testimonial_custom_JztQEh" role="img" aria-label="Note fictive : 5 étoiles sur 5"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
+ <blockquote class="kd-testimonial-quote-testimonial_custom_JztQEh">Je m’installe avec mon livre et le gant pendant ma pause lecture. C’est un moment agréable dans la journée, surtout quand j’ai envie de ralentir un peu.</blockquote>
+ <div class="kd-testimonial-author-testimonial_custom_JztQEh">
+  <div class="kd-testimonial-photo-placeholder-testimonial_custom_JztQEh" aria-hidden="true">A</div>
+  <div class="kd-testimonial-meta-testimonial_custom_JztQEh"><div class="kd-testimonial-name-testimonial_custom_JztQEh">Anne</div><div class="kd-testimonial-location-testimonial_custom_JztQEh">Exemple fictif</div></div>
+ </div>
+</article><article class="kd-testimonial-card-testimonial_custom_JztQEh" data-review-example>
+ <div class="kd-testimonial-stars-testimonial_custom_JztQEh" role="img" aria-label="Note fictive : 4 étoiles sur 5"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
+ <blockquote class="kd-testimonial-quote-testimonial_custom_JztQEh">Le fonctionnement sans fil me permet de m’installer où j’en ai envie. Je passe facilement du fauteuil au canapé, et le gant trouve sa place près de moi.</blockquote>
+ <div class="kd-testimonial-author-testimonial_custom_JztQEh">
+  <div class="kd-testimonial-photo-placeholder-testimonial_custom_JztQEh" aria-hidden="true">P</div>
+  <div class="kd-testimonial-meta-testimonial_custom_JztQEh"><div class="kd-testimonial-name-testimonial_custom_JztQEh">Philippe</div><div class="kd-testimonial-location-testimonial_custom_JztQEh">Exemple fictif</div></div>
+ </div>
+</article></div><button class="kd-testimonials-nav-testimonial_custom_JztQEh kd-testimonials-prev-testimonial_custom_JztQEh" data-kd-prev aria-label="Précédent">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="15 18 9 12 15 6"/>
             </svg>
