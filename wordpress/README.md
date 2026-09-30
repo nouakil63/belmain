@@ -22,9 +22,17 @@ Le panier, le suivi et les formulaires de l’accueil restent des démonstration
 4. Ouvrir l’accueil et contrôler la vidéo, les cinq visuels, le zoom et l’affichage mobile. Le thème fournit directement l’accueil, sans import de page requis.
 5. Poursuivre le raccordement de la boutique avant toute mise en vente.
 
-## Étape suivante : boutique
+## CRM et pilotage de la boutique
 
-WooCommerce sera raccordé après l’installation : produit, stock, offres, panier et commande, livraison, paiements, e-mails et suivi. Les offres validées sont de 89,99 € au lieu de 109,99 € pour un gant, et de 149,99 € au lieu de 179,99 € pour deux. La remise duo devra être calculée côté serveur et rester cohérente avec le stock et les taxes ; les calculs JavaScript de démonstration ne constituent pas une tarification de commande.
+Le plugin séparé `belmains-crm/` ajoute huit rubriques privées dans WordPress : vue d’ensemble et audience consentie, commandes, clients, expéditions, stocks, marketing, service client et connexions. Il fonctionne avec WooCommerce sans abonnement CRM et sans extension de suivi payante. Consulter sa [notice d’installation et d’utilisation](belmains-crm/README.md) pour les indicateurs, leurs limites, les droits d’accès et le raccordement Iziship.
+
+Les chiffres viennent des données enregistrées, sans données de démonstration générées. La marge exige les coûts historiques de commande ; les dépenses publicitaires sont saisies manuellement. Les visiteurs ne sont comptés qu’après consentement. Le compte Iziship est actif, mais sa connexion reste à effectuer après publication d’une adresse HTTPS accessible : `http://belmains.local/` ne peut pas recevoir les échanges de leurs serveurs. Le numéro de suivi prévu dans `tracking_number` permet d’indiquer une expédition, pas de déduire une livraison.
+
+Installer le CRM ne raccorde pas le panier de présentation du thème au paiement réel. Le thème et le plugin ont des rôles séparés ; les pages de démonstration restent à finaliser avant la mise en vente.
+
+## Étape suivante : raccordement commercial
+
+Le raccordement du thème à WooCommerce reste à finaliser : produit, stock, offres, panier et commande, livraison, paiements, e-mails et suivi. Les offres validées sont de 89,99 € au lieu de 109,99 € pour un gant, et de 149,99 € au lieu de 179,99 € pour deux. La remise duo devra être calculée côté serveur et rester cohérente avec le stock et les taxes ; les calculs JavaScript de démonstration ne constituent pas une tarification de commande.
 
 La mention de livraison validée est « Livraison Offerte — Livraison à domicile ou en point relais sous 48h/72h ». Le transporteur et la sélection du point relais restent à connecter. Les coordonnées du vendeur, les textes de vente et de retour, les dimensions du produit et les avis réels restent à renseigner. Les indicateurs de satisfaction déjà présents dans la maquette restent à justifier avant l’ouverture publique.
 
