@@ -1,7 +1,7 @@
-/* Local demonstration: no Shopify endpoints, remote forms or real payment. */
+/* Belmains storefront interactions; cart prices and stock are validated by WooCommerce. */
 (()=>{'use strict';
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
-const media=matchMedia('(prefers-reduced-motion: reduce)');let reduced=media.matches,motionContext,quantity=1,cartQuantity=0;
+const media=matchMedia('(prefers-reduced-motion: reduce)');let reduced=media.matches,motionContext,quantity=1;
 const header=$('[data-kd-menu]'),drawer=$('[data-kd-drawer]'),overlay=$('[data-kd-overlay]'),burger=$('[data-kd-burger]');
 drawer.inert=true;drawer.setAttribute('role','dialog');drawer.setAttribute('aria-label','Navigation');drawer.id='mobile-menu';burger.setAttribute('aria-controls','mobile-menu');let menuFocus;
 function menu(open){
@@ -68,7 +68,7 @@ function setQty(n){
 }
 $$('[name="product-offer"]').forEach(option=>option.addEventListener('change',()=>setQty(option.value)));
 $$('[data-qty]').forEach(b=>b.addEventListener('click',()=>setQty(quantity+(b.dataset.qty==='plus'?1:-1))));$('#product-quantity').addEventListener('change',e=>setQty(e.target.value));setQty(1);
-const cart=$('#cart-dialog'),info=$('#info-dialog');
+const info=$('#info-dialog');
 function showDialog(dialog){dialog.showModal();document.body.style.overflow='hidden'}
 $$('dialog').forEach(d=>{d.addEventListener('close',()=>{document.body.style.overflow=''});d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}});$$('[data-close]',d).forEach(b=>b.addEventListener('click',()=>d.close()))});
 const imageDialog=$('#gallery-dialog'),zoomImage=$('#gallery-dialog-image'),zoomToggle=$('#gallery-zoom-toggle');
@@ -84,9 +84,23 @@ zoomToggle.addEventListener('click',()=>{
  const zoomed=zoomToggle.classList.toggle('is-zoomed');
  zoomToggle.setAttribute('aria-label',zoomed?'Réduire l’image':'Zoomer sur l’image');
 });
-function updateCart(){cartQuantity=Math.max(0,Math.min(99,cartQuantity));$('#cart-empty').hidden=cartQuantity>0;$('#cart-item').hidden=cartQuantity===0;$('#cart-quantity').textContent=cartQuantity;const price=pricing(cartQuantity);$('#cart-total-price').textContent=money(price.current);$('#cart-compare-price').textContent=money(price.previous);$('[data-cart-change="-1"]').disabled=cartQuantity===0;$('[data-cart-change="1"]').disabled=cartQuantity===99;$('[data-cart-count]').textContent=cartQuantity;$$('a[href="#panier"]').forEach(a=>{let badge=$('.cart-counter',a);if(!badge){badge=document.createElement('span');badge.className='cart-counter';a.append(badge)}badge.textContent=cartQuantity;badge.hidden=!cartQuantity;a.setAttribute('aria-label','Panier, '+cartQuantity+' article'+(cartQuantity>1?'s':''))})}
-$('#add-to-cart').addEventListener('click',()=>{setQty($('#product-quantity').value);cartQuantity+=quantity;updateCart();$('#checkout-feedback').hidden=true;showDialog(cart)});
-$$('a[href="#panier"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();updateCart();showDialog(cart)}));$('#cart-remove').addEventListener('click',()=>{cartQuantity=0;updateCart()});$$('[data-cart-change]').forEach(b=>b.addEventListener('click',()=>{cartQuantity+=+b.dataset.cartChange;updateCart()}));$('#checkout-demo').addEventListener('click',()=>{$('#checkout-feedback').hidden=false});updateCart();
+const purchaseForm=$('#belmains-product-form'),purchaseButton=$('#add-to-cart'),purchaseFeedback=$('#purchase-feedback');
+let adding=false;
+if(purchaseForm&&window.BelmainsShop)purchaseForm.addEventListener('submit',async e=>{
+ e.preventDefault();if(adding)return;setQty($('#product-quantity').value);adding=true;purchaseButton.disabled=true;purchaseButton.setAttribute('aria-busy','true');purchaseFeedback.hidden=false;purchaseFeedback.textContent='Ajout au panier…';
+ try{
+  const payload=new URLSearchParams({nonce:BelmainsShop.nonce,product_id:String(BelmainsShop.productId),quantity:String(quantity)});
+  const response=await fetch(BelmainsShop.endpoint,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:payload});
+  const result=await response.json();
+  if(!response.ok||!result.success){
+   const plain=document.createElement('div');plain.innerHTML=result.data?.notices_html||'';
+   throw new Error(plain.textContent.trim()||result.data?.message||'Impossible d’ajouter le produit. Actualisez la page et réessayez.');
+  }
+  document.body.dispatchEvent(new CustomEvent('wc-blocks_added_to_cart',{bubbles:true,detail:{preserveCartData:false}}));
+  purchaseFeedback.textContent='Produit ajouté. Ouverture de votre panier…';
+  location.assign(BelmainsShop.cartUrl);
+ }catch(error){purchaseFeedback.textContent=error.message||'La connexion a été interrompue. Vérifiez votre panier avant de réessayer.';purchaseFeedback.focus();adding=false;purchaseButton.disabled=false;purchaseButton.removeAttribute('aria-busy');}
+});
 const content={
  sizes:['Guide des tailles','<p>Les dimensions et les indications de taille ne sont pas renseignées dans le thème fourni.</p><p>Le guide définitif sera intégré à la fiche produit de la boutique WordPress.</p>'],
  delivery:['Livraison et retours','<p>Livraison Offerte. Livraison à domicile ou en point relais sous 48h/72h.</p><p>Pour toute demande de retour, contactez notre service client afin de connaître les modalités.</p><p>Les informations détaillées du vendeur seront intégrées à la boutique définitive.</p>'],

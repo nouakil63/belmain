@@ -2,7 +2,7 @@
 
 Belmains CRM ajoute un espace de pilotage privé dans WordPress pour suivre la boutique WooCommerce, son audience consentie, ses clients et ses expéditions. Le module fonctionne sans abonnement CRM, sans bibliothèque distante et sans extension de suivi payante. L’hébergement, les paiements, la publicité et les prestations Iziship conservent leurs propres coûts.
 
-Version 0.1.0 — WordPress 6.3 minimum, PHP 8.0 minimum. WooCommerce est nécessaire pour les commandes, clients, stocks et expéditions. Le module utilise les interfaces WooCommerce et déclare sa compatibilité avec le stockage des commandes HPOS.
+Version 0.1.1 — WordPress 6.3 minimum, PHP 8.0 minimum. WooCommerce est nécessaire pour les commandes, clients, stocks et expéditions. Le module utilise les interfaces WooCommerce et déclare sa compatibilité avec le stockage des commandes HPOS.
 
 ## Installation et premier accès
 
@@ -14,7 +14,7 @@ Version 0.1.0 — WordPress 6.3 minimum, PHP 8.0 minimum. WooCommerce est néces
 
 L’activation crée les tables propres au CRM et programme la purge de l’audience. Elle ne crée aucun produit, client, commande, témoignage ou chiffre de démonstration. Sans données réelles, les états vides, les zéros et les valeurs indisponibles sont normaux.
 
-Le site de préparation actuel est `http://belmains.local/`. Le panier de présentation du thème Belmains reste une démonstration : installer ce CRM ne le transforme pas en panier WooCommerce et ne configure pas le paiement. Son raccordement commercial reste à effectuer avant l’ouverture des ventes.
+Le site de préparation actuel est `http://belmains.local/`. Le thème Belmains 0.2.0 et le plugin séparé Belmains Commerce raccordent la fiche produit au panier et à la commande WooCommerce. Le CRM exploite ces commandes ; il ne configure pas le paiement. Les moyens de paiement réels, Iziship et la fiscalité restent à finaliser avant l’ouverture des ventes.
 
 ## Les huit rubriques
 

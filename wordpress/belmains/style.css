@@ -1,7 +1,7 @@
 /*
 Theme Name: Belmains
-Description: Première étape de migration du design Belmains validé. Accueil de présentation ; commerce à raccorder avant ouverture.
-Version: 0.1.0
+Description: Design Belmains validé avec fiche produit, panier et commande WooCommerce.
+Version: 0.2.0
 Requires at least: 6.3
 Requires PHP: 8.0
 Author: NOK’S Consulting
@@ -20,3 +20,5 @@ body.belmains-page{background:#fdfbf8;color:#181d25}
 .admin-bar #shopify-section-menu_kooldogy_jpEgq8{top:32px!important}
 @media(max-width:782px){.admin-bar #shopify-section-menu_kooldogy_jpEgq8{top:46px!important}}
 @media(max-width:600px){.admin-bar #shopify-section-menu_kooldogy_jpEgq8{top:0!important}.belmains-page-header{flex-wrap:wrap}.belmains-page-content{padding:40px 20px}}
+
+#belmains-product-form{margin:0}#belmains-product-form .add-to-cart{width:100%}.purchase-feedback{padding:12px 14px;border-radius:10px;background:#f2e7eb;color:#63182e;font-size:14px;margin-top:12px}.purchase-feedback[hidden]{display:none}.purchase-note{font-size:12px;color:#69625d;margin-top:12px}.add-to-cart:disabled{opacity:.6;cursor:not-allowed}

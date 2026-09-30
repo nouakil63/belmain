@@ -1,5 +1,5 @@
 <?php
-/** Belmains presentation theme: no commerce mutations or automatic page creation. */
+/** Belmains storefront theme. Products and pages are provisioned separately. */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 function belmains_setup() {
@@ -7,6 +7,7 @@ function belmains_setup() {
     add_theme_support( 'post-thumbnails' );
     add_theme_support( 'html5', array( 'search-form', 'gallery', 'caption', 'style', 'script' ) );
     add_theme_support( 'responsive-embeds' );
+    add_theme_support( 'woocommerce' );
     load_theme_textdomain( 'belmains', get_template_directory() . '/languages' );
 }
 add_action( 'after_setup_theme', 'belmains_setup' );
@@ -18,11 +19,23 @@ function belmains_enqueue_assets() {
     wp_enqueue_style( 'belmains-sections', get_theme_file_uri( 'sections.css' ), array( 'belmains-base' ), $version );
     wp_enqueue_style( 'belmains-layout', get_theme_file_uri( 'maquette.css' ), array( 'belmains-sections' ), $version );
     wp_enqueue_style( 'belmains-wordpress', get_stylesheet_uri(), array( 'belmains-layout' ), $version );
+    if ( class_exists( 'WooCommerce' ) ) {
+        wp_enqueue_style( 'belmains-commerce', get_theme_file_uri( 'woocommerce.css' ), array( 'belmains-wordpress' ), $version );
+    }
     if ( is_front_page() ) {
         $args = array( 'strategy' => 'defer', 'in_footer' => true );
         wp_enqueue_script( 'belmains-gsap', get_theme_file_uri( 'assets/gsap.min.js' ), array(), $version, $args );
         wp_enqueue_script( 'belmains-scrolltrigger', get_theme_file_uri( 'assets/ScrollTrigger.min.js' ), array( 'belmains-gsap' ), $version, $args );
         wp_enqueue_script( 'belmains-interactions', get_theme_file_uri( 'interactions.js' ), array( 'belmains-scrolltrigger' ), $version, $args );
+        $product = function_exists( 'belmains_commerce_product' ) ? belmains_commerce_product() : false;
+        if ( $product ) {
+            wp_localize_script( 'belmains-interactions', 'BelmainsShop', array(
+                'endpoint' => WC_AJAX::get_endpoint( 'belmains_add_to_cart' ),
+                'nonce' => wp_create_nonce( 'belmains_add_to_cart' ),
+                'productId' => $product->get_id(), 'cartUrl' => wc_get_cart_url(),
+                'trackingUrl' => belmains_tracking_url(),
+            ) );
+        }
     }
 }
 add_action( 'wp_enqueue_scripts', 'belmains_enqueue_assets' );
@@ -32,9 +45,23 @@ function belmains_body_classes( $classes ) {
     return $classes;
 }
 add_filter( 'body_class', 'belmains_body_classes' );
+add_filter( 'woocommerce_return_to_shop_redirect', function () { return home_url( '/#fiche-produit' ); } );
 
 function belmains_migration_notice() {
     if ( ! current_user_can( 'manage_options' ) ) { return; }
-    echo '<div class="notice notice-info"><p>' . esc_html__( 'Belmains — migration visuelle : le panier, le suivi et les formulaires de l’accueil sont encore des démonstrations. Le raccordement WooCommerce est la prochaine étape, avant toute ouverture des ventes.', 'belmains' ) . '</p></div>';
+    echo '<div class="notice notice-info"><p>' . esc_html__( 'Belmains — préparation de la boutique : le panier est raccordé à WooCommerce lorsque le module Belmains Commerce est actif. Avant l’ouverture, confirmer le stock, la fiscalité, les paiements, Iziship et les coordonnées du vendeur. Le formulaire de contact et les avis restent des démonstrations.', 'belmains' ) . '</p></div>';
 }
 add_action( 'admin_notices', 'belmains_migration_notice' );
+
+function belmains_tracking_url() {
+    $page_id = absint( get_option( 'belmains_tracking_page_id' ) );
+    return $page_id && 'publish' === get_post_status( $page_id ) ? get_permalink( $page_id ) : home_url( '/#contact' );
+}
+
+add_action( 'wp', function () {
+    if ( ! class_exists( 'WooCommerce' ) ) { return; }
+    remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );
+    remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10 );
+    add_action( 'woocommerce_before_main_content', function () { echo '<main id="main" class="belmains-page-content">'; }, 10 );
+    add_action( 'woocommerce_after_main_content', function () { echo '</main>'; }, 10 );
+} );

@@ -4,6 +4,9 @@ defined( 'ABSPATH' ) || exit;
 
 final class BCRM_Tracking {
 
+	/** Orders verified by WooCommerce's tracking form, for this request only. */
+	private static $tracked_order_ids = array();
+
 	private const STATUSES = array(
 		'pending'    => 'En attente de suivi',
 		'shipped'    => 'Expédié',
@@ -16,6 +19,7 @@ final class BCRM_Tracking {
 
 	public static function register() {
 		add_action( 'woocommerce_rest_insert_shop_order_object', array( __CLASS__, 'observe_rest_update' ), 20, 3 );
+		add_action( 'woocommerce_track_order', array( __CLASS__, 'authorize_tracked_order' ) );
 		add_action( 'woocommerce_order_details_after_order_table', array( __CLASS__, 'customer_tracking' ) );
 		add_action( 'woocommerce_email_after_order_table', array( __CLASS__, 'email_tracking' ), 20, 4 );
 	}
@@ -255,6 +259,27 @@ final class BCRM_Tracking {
 		);
 	}
 
+	/**
+	 * Woo fires this after checking the tracking nonce, order number and billing
+	 * email. Keep the grant in memory, scoped to the exact verified order. Repeat
+	 * the nonce/email checks defensively; posted values alone never grant access.
+	 */
+	public static function authorize_tracked_order( $order_id ) {
+		$nonce = $_REQUEST['woocommerce-order-tracking-nonce'] ?? ( $_REQUEST['_wpnonce'] ?? '' );
+		$email = $_REQUEST['order_email'] ?? '';
+		if ( ! is_string( $nonce ) || ! is_string( $email ) || ! isset( $_REQUEST['orderid'] ) || ! is_scalar( $_REQUEST['orderid'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( $nonce, 'woocommerce-order_tracking' ) ) {
+			return;
+		}
+		$email = sanitize_email( wp_unslash( $email ) );
+		$order = wc_get_order( absint( $order_id ) );
+		if ( $order instanceof WC_Order && '' !== $email && strtolower( $order->get_billing_email() ) === strtolower( $email ) ) {
+			self::$tracked_order_ids[ $order->get_id() ] = true;
+		}
+	}
+
 	public static function customer_tracking( $order ) {
 		if ( ! $order instanceof WC_Order || ! self::can_view_order( $order ) ) {
 			return;
@@ -308,6 +333,9 @@ final class BCRM_Tracking {
 	}
 
 	private static function can_view_order( $order ) {
+		if ( isset( self::$tracked_order_ids[ $order->get_id() ] ) ) {
+			return true;
+		}
 		if ( current_user_can( 'manage_woocommerce' ) || current_user_can( 'manage_options' ) ) {
 			return true;
 		}
