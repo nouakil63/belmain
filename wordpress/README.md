@@ -8,7 +8,7 @@ Le thème `belmains/` reprend le design retenu, sa palette bordeaux, ses textes,
 - Accueil rendu par WordPress, sans iframe ni constructeur de pages.
 - Images, vidéo, polices, styles et scripts livrés avec le thème ; leurs adresses s’adaptent au domaine d’installation.
 - Galerie, zoom, navigation mobile et animations repris du site validé.
-- Cinq exemples d’avis pour la maquette, avec textes, prénoms et notes explicitement signalés comme fictifs.
+- Cinq exemples d’avis pour la maquette ; une mention unique « Avis de démonstration » en bas de page identifie ces textes, prénoms et notes fictifs.
 - Pages WordPress ordinaires éditables dans l’administration, avec le même univers graphique.
 - Aucun produit ni aucune commande créés automatiquement. Aucun changement des réglages du site à l’activation.
 
