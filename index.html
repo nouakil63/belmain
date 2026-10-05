@@ -1,4 +1,16 @@
+<meta charset="utf-8">
 <title>Le Rituel Belmains</title>
+<!-- Fiche produit : produit.js choisit le produit actif, le fichier produits/<slug>.js
+     contient tous les textes et photos. Ajouter ?produit=<slug> à l'URL pour en prévisualiser un autre. -->
+<script src="produit.js"></script>
+<script>
+(function(){
+  var q=new URLSearchParams(location.search).get('produit');
+  var slug=String(q||window.PRODUIT_ACTIF||'').replace(/[^a-z0-9_-]/gi,'');
+  window.PRODUIT_SLUG=slug;
+  if(slug) document.write('<script src="produits/'+slug+'.js"><\/script>');
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap">
 
@@ -6,6 +18,9 @@
   SEO — BLOC À PLACER DANS <head> LORS DE LA MISE EN PRODUCTION
   (l'aperçu Artifact génère son propre <head>, ce bloc est la
   version prête à copier dans le thème Shopify / le site final)
+  → Les valeurs réelles (title, description, JSON-LD Produit/FAQ) sont
+    désormais générées par moteur.js à partir de la fiche produit
+    (produits/<slug>.js, bloc "seo"). Ci-dessous : l'exemple du gant.
 
   <title>Gant de massage Belmains — Le rituel bien-être pour vos mains</title>
   <meta name="description" content="Gant de massage des mains Belmains : 5 modes de massage, compresse chaude 3 niveaux, acupression. Compact, rechargeable en 15 min. Livraison offerte, retour gratuit 30 jours.">
@@ -104,6 +119,8 @@ button{font-family:inherit;cursor:pointer}
   font-size:.82rem;line-height:1.45;padding:18px;width:100%;font-weight:300}
 .photo b{color:var(--noir);font-weight:500;font-family:var(--display);font-size:1rem;letter-spacing:.02em}
 .photo .cam{font-size:1.2rem;color:var(--or)}
+.photo.has{padding:0;border:0;overflow:hidden;background:var(--ivoire-or)}
+.photo.has img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
 
 /* barre annonce + header */
 .annbar{background:var(--rouge);color:#fff;text-align:center;font-weight:500;font-size:.85rem;
@@ -338,17 +355,18 @@ details>div p{margin:0 0 8px}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
   .pre{opacity:1;transform:none}
+  .hline span{transform:none} /* sans animation, le titre doit rester visible */
   html{scroll-behavior:auto}
 }
 </style>
 
-<div class="annbar">Livraison offerte en France&ensp;·&ensp;Retour gratuit sous 30 jours</div>
+<div class="annbar" data-t="bandeau">Livraison offerte en France&ensp;·&ensp;Retour gratuit sous 30 jours</div>
 
 <header class="hdr" id="hdr">
   <div class="wrap hdr-in">
     <nav class="menu" aria-label="Navigation principale">
       <a class="on" href="#top">Accueil</a>
-      <a href="#produit">Le gant</a>
+      <a href="#produit" data-t="menu">Le gant</a>
       <a href="#avis">Avis</a>
       <a href="#faq">FAQ</a>
     </nav>
@@ -363,24 +381,24 @@ details>div p{margin:0 0 8px}
 <section class="hero" aria-label="Présentation">
   <div class="wrap hero-in">
     <div class="hero-txt">
-      <p class="eyebrow">Le bien-être entre vos mains</p>
-      <h1>
+      <p class="eyebrow" data-t="hero.surtitre">Le bien-être entre vos mains</p>
+      <h1 id="heroTitre">
         <span class="hline"><span>Offrez à vos mains</span></span>
         <span class="hline"><span>le <em>rituel</em> qu'elles</span></span>
         <span class="hline"><span>méritent.</span></span>
       </h1>
-      <p class="intro">5 modes de massage, compresse chaude à 3 niveaux et acupression, réunis dans un gant compact. Quelques minutes suffisent pour retrouver des mains détendues, soulagées, prêtes pour demain.</p>
+      <p class="intro" data-t="hero.texte">5 modes de massage, compresse chaude à 3 niveaux et acupression, réunis dans un gant compact. Quelques minutes suffisent pour retrouver des mains détendues, soulagées, prêtes pour demain.</p>
       <div class="hero-cta">
-        <a class="btn btn-red" href="#produit">Découvrir Belmains <span class="fl">→</span></a>
-        <a class="btn btn-ghost" href="#pourquoi">Pourquoi un rituel&nbsp;?</a>
+        <a class="btn btn-red" href="#produit"><span data-t="hero.bouton">Découvrir Belmains</span> <span class="fl">→</span></a>
+        <a class="btn btn-ghost" href="#pourquoi" data-t="hero.boutonSecondaire">Pourquoi un rituel&nbsp;?</a>
       </div>
-      <p class="proof"><span class="stars" aria-hidden="true">★★★★★</span> <b>+8&nbsp;000 clients satisfaits</b></p>
+      <p class="proof"><span class="stars" aria-hidden="true">★★★★★</span> <b data-t="hero.preuve">+8&nbsp;000 clients satisfaits</b></p>
     </div>
     <div class="hero-media">
       <div class="seal" aria-hidden="true">
         <svg viewBox="0 0 128 128">
           <defs><path id="circ" d="M64,14 a50,50 0 1,1 -0.01,0"/></defs>
-          <text><textPath href="#circ">Belmains · le rituel bien-être des mains ·</textPath></text>
+          <text><textPath href="#circ" id="sceauTxt">Belmains · le rituel bien-être des mains ·</textPath></text>
           <text class="heart" x="64" y="72" text-anchor="middle">♥</text>
         </svg>
       </div>
@@ -403,21 +421,21 @@ details>div p{margin:0 0 8px}
 <section class="why" id="pourquoi" aria-label="Pourquoi Belmains">
   <div class="wrap">
     <div class="why-grid">
-      <div class="photo" data-r role="img" aria-label="Photo à fournir : mains fatiguées après une journée sollicitée">
+      <div class="photo" id="pourquoiPhoto" data-r role="img" aria-label="Photo à fournir : mains fatiguées après une journée sollicitée">
         <span class="cam" aria-hidden="true">✦</span>
         <b>Photo à fournir</b>
         mains fatiguées / sollicitées,<br>ambiance douce
       </div>
       <div class="why-txt">
-        <p class="eyebrow" data-r>Le saviez-vous&nbsp;?</p>
-        <h2 data-r>Vos mains ne s'arrêtent <em>jamais</em>.</h2>
-        <p class="intro" data-r>Au fil des années, vos mains sont de plus en plus sollicitées. Offrez-leur enfin un moment de détente et de confort.</p>
-        <ul class="pains" data-r>
+        <p class="eyebrow" data-r data-t="pourquoi.surtitre">Le saviez-vous&nbsp;?</p>
+        <h2 data-r data-t="pourquoi.titre">Vos mains ne s'arrêtent <em>jamais</em>.</h2>
+        <p class="intro" data-r data-t="pourquoi.texte">Au fil des années, vos mains sont de plus en plus sollicitées. Offrez-leur enfin un moment de détente et de confort.</p>
+        <ul class="pains" id="pourquoiPoints" data-r>
           <li>Travail manuel, téléphone, clavier, tâches quotidiennes&nbsp;: elles ne connaissent pas de pause.</li>
           <li>Le froid et l'humidité vous procurent des douleurs.</li>
           <li>Les premiers signes de l'âge vous engourdissent les mains.</li>
         </ul>
-        <a class="btn btn-red" href="#produit" data-r>Découvrir le gant</a>
+        <a class="btn btn-red" href="#produit" data-r data-t="pourquoi.bouton">Découvrir le gant</a>
       </div>
     </div>
 
@@ -431,10 +449,10 @@ details>div p{margin:0 0 8px}
 
   <div class="turn" id="turn">
     <div class="turn-sticky">
-      <p class="eyebrow mid">Sous tous les angles</p>
-      <h2 class="center">Le gant, en <em>360°</em>.</h2>
+      <p class="eyebrow mid" data-t="vue360.surtitre">Sous tous les angles</p>
+      <h2 class="center" data-t="vue360.titre">Le gant, en <em>360°</em>.</h2>
       <div class="turn-stage">
-        <div class="photo" role="img" aria-label="Emplacement de la séquence 360 degrés : douze photos du produit à fournir">
+        <div class="photo" id="turnPhoto" role="img" aria-label="Emplacement de la séquence 360 degrés : douze photos du produit à fournir">
           <span class="cam" aria-hidden="true">✦</span>
           <b>Séquence 360° — photo <span id="turnNum">1</span>&nbsp;/&nbsp;12</b>
           12 vues du gant à fournir<br>(une photo tous les 30°, fond neutre)
@@ -452,7 +470,7 @@ details>div p{margin:0 0 8px}
         </div>
       </div>
       <p class="turn-frame">Vue <b id="turnLbl">face — 0°</b></p>
-      <p class="turn-hint"><i>↓</i> Faites défiler&nbsp;: le gant tourne avec vous</p>
+      <p class="turn-hint"><i>↓</i> <span data-t="vue360.indication">Faites défiler&nbsp;: le gant tourne avec vous</span></p>
     </div>
   </div>
 </section>
@@ -461,24 +479,24 @@ details>div p{margin:0 0 8px}
 <section class="product" id="produit" aria-label="Fiche produit">
   <div class="wrap pr-in">
     <div class="pr-gal">
-      <div class="photo main" data-r role="img" aria-label="Photo à fournir : packshot du gant de massage Belmains">
+      <div class="photo main" id="fichePhoto" data-r role="img" aria-label="Photo à fournir : packshot du gant de massage Belmains">
         <span class="cam" aria-hidden="true">✦</span>
         <b>Photo à fournir</b>
         packshot gant de massage Belmains,<br>fond ivoire, ombre douce
       </div>
-      <div class="thumbs" data-r>
+      <div class="thumbs" id="ficheVignettes" data-r>
         <div class="photo"><b>Vue 2</b>profil</div>
         <div class="photo"><b>Vue 3</b>intérieur</div>
         <div class="photo"><b>Vue 4</b>en situation</div>
       </div>
     </div>
     <div class="pr-info">
-      <p class="eyebrow" data-r>Le rituel bien-être pour vos mains</p>
-      <h2 class="pr-title" data-r>Gant de massage Belmains</h2>
-      <p class="proof" data-r><span class="stars" aria-hidden="true">★★★★★</span> Avis clients à venir</p>
-      <p class="price" data-r><b>—&nbsp;€</b> <s>—&nbsp;€</s> <span class="badge">Économisez&nbsp;—%</span></p>
-      <p class="intro" data-r>Avec Belmains, prenez soin de vos mains aujourd'hui pour continuer à profiter pleinement de chaque geste demain. Un gant de massage pensé dans les moindres détails pour le confort et le bien-être de vos mains au quotidien.</p>
-      <ul class="checks" data-r>
+      <p class="eyebrow" data-r data-t="fiche.surtitre">Le rituel bien-être pour vos mains</p>
+      <h2 class="pr-title" data-r data-t="fiche.titre">Gant de massage Belmains</h2>
+      <p class="proof" data-r><span class="stars" aria-hidden="true">★★★★★</span> <span data-t="fiche.avis">Avis clients à venir</span></p>
+      <p class="price" data-r><b data-t="fiche.prix">—&nbsp;€</b> <s data-t="fiche.prixBarre">—&nbsp;€</s> <span class="badge" data-t="fiche.badge">Économisez&nbsp;—%</span></p>
+      <p class="intro" data-r data-t="fiche.texte">Avec Belmains, prenez soin de vos mains aujourd'hui pour continuer à profiter pleinement de chaque geste demain. Un gant de massage pensé dans les moindres détails pour le confort et le bien-être de vos mains au quotidien.</p>
+      <ul class="checks" id="ficheAtouts" data-r>
         <li><b>5 modes de massage</b> pour une relaxation musculaire complète.</li>
         <li><b>Compresse chaude, 3 niveaux</b> pour soulager les tensions et favoriser la circulation sanguine.</li>
         <li><b>Massage par acupression</b> pour apaiser les douleurs des mains et des doigts.</li>
@@ -486,7 +504,7 @@ details>div p{margin:0 0 8px}
         <li>Retrouvez le plaisir de <b>jardiner, bricoler, cuisiner</b> sans douleurs.</li>
       </ul>
       <div class="lots" data-r>
-        <h3>Lots &amp; économies</h3>
+        <h3 data-t="fiche.lotsTitre">Lots &amp; économies</h3>
         <button class="lot" aria-pressed="true" type="button">
           <span class="rad" aria-hidden="true"></span><span>Lot de 1 <em>Le plus populaire</em></span><small></small><b>—&nbsp;€</b>
         </button>
@@ -497,8 +515,8 @@ details>div p{margin:0 0 8px}
           <span class="rad" aria-hidden="true"></span><span>Lot de 3</span><small>Économisez&nbsp;—%</small><b>—&nbsp;€</b>
         </button>
       </div>
-      <a class="btn btn-red big" href="#" data-r>Ajouter au panier <span class="fl">→</span></a>
-      <p class="pay" data-r>Visa · Mastercard · PayPal · Apple&nbsp;Pay · Google&nbsp;Pay</p>
+      <a class="btn btn-red big" href="#" data-href="fiche.lienPanier" data-r><span data-t="fiche.bouton">Ajouter au panier</span> <span class="fl">→</span></a>
+      <p class="pay" data-r data-t="fiche.paiement">Visa · Mastercard · PayPal · Apple&nbsp;Pay · Google&nbsp;Pay</p>
       <div class="reas" data-r>
         <div><b>Expédition suivie</b><span>Expédition sécurisée avec numéro de suivi.</span></div>
         <div><b>Retour gratuit</b><span>Sous 30 jours, sans justification.</span></div>
@@ -533,8 +551,8 @@ details>div p{margin:0 0 8px}
 <!-- ============ SECTION 4 — PROMESSES + TÉMOIGNAGES ============ -->
 <section class="promises" aria-label="Nos promesses">
   <div class="wrap">
-    <p class="eyebrow mid" data-r>Ce qui change tout</p>
-    <h2 data-r>Quatre promesses, <em>tenues à la lettre</em>.</h2>
+    <p class="eyebrow mid" data-r data-t="promesses.surtitre">Ce qui change tout</p>
+    <h2 data-r data-t="promesses.titre">Quatre promesses, <em>tenues à la lettre</em>.</h2>
     <div class="cards">
       <div class="card" data-r><i aria-hidden="true">☀</i><h3>5 modes de massage</h3><p>Une relaxation musculaire complète, du plus doux au plus profond.</p></div>
       <div class="card d1" data-r><i aria-hidden="true">♥</i><h3>Compresse chaude</h3><p>3 niveaux de chauffage pour détendre les tensions et favoriser la circulation.</p></div>
@@ -546,9 +564,9 @@ details>div p{margin:0 0 8px}
 
 <section class="testi" id="avis" aria-label="Avis clients">
   <div class="wrap">
-    <p class="eyebrow mid" data-r>Ils nous font confiance</p>
-    <h2 data-r>+<span data-count="8000">8&nbsp;000</span> clients <em>satisfaits</em></h2>
-    <p class="intro center" style="margin-inline:auto" data-r>Découvrez les retours de nos clients qui ont adopté le rituel bien-être Belmains.</p>
+    <p class="eyebrow mid" data-r data-t="avis.surtitre">Ils nous font confiance</p>
+    <h2 data-r id="avisTitre">+<span data-count="8000">8&nbsp;000</span> clients <em>satisfaits</em></h2>
+    <p class="intro center" style="margin-inline:auto" data-r data-t="avis.texte">Découvrez les retours de nos clients qui ont adopté le rituel bien-être Belmains.</p>
     <div class="t-cards">
       <article class="t-card" data-r>
         <span class="stars" aria-hidden="true">★★★★★</span>
@@ -576,12 +594,12 @@ details>div p{margin:0 0 8px}
 <section class="faq" id="faq" aria-label="Questions fréquentes">
   <div class="wrap faq-in">
     <div class="faq-head">
-      <p class="eyebrow" data-r>Questions fréquentes</p>
-      <h2 data-r>Tout savoir sur <em>Belmains</em>.</h2>
-      <p class="intro" data-r>Tout ce qu'il faut savoir avant de commencer votre rituel bien-être. Une autre question&nbsp;? Écrivez-nous, nous répondons sous 24&nbsp;h.</p>
-      <a class="btn btn-ghost" href="#" data-r>Nous écrire</a>
+      <p class="eyebrow" data-r data-t="faq.surtitre">Questions fréquentes</p>
+      <h2 data-r data-t="faq.titre">Tout savoir sur <em>Belmains</em>.</h2>
+      <p class="intro" data-r data-t="faq.texte">Tout ce qu'il faut savoir avant de commencer votre rituel bien-être. Une autre question&nbsp;? Écrivez-nous, nous répondons sous 24&nbsp;h.</p>
+      <a class="btn btn-ghost" href="#" data-href="faq.lienContact" data-r data-t="faq.bouton">Nous écrire</a>
     </div>
-    <div class="faq-list" data-r>
+    <div class="faq-list" id="faqListe" data-r>
       <details>
         <summary>Qu'est-ce que le gant de massage Belmains&nbsp;?</summary>
         <div><p>Belmains est un gant de massage conçu pour vous offrir un moment de détente et de confort pour vos mains, directement chez vous ou où que vous soyez. Il combine 5 modes de massage et 3 niveaux de chauffage afin de vous permettre de personnaliser votre expérience selon vos envies.</p></div>
@@ -612,9 +630,9 @@ details>div p{margin:0 0 8px}
 
 <section class="cta-final" aria-label="Commander">
   <div class="wrap">
-    <h2 data-r>Retrouvez le <em>plaisir du geste</em>.</h2>
-    <p data-r>Jardiner, bricoler, cuisiner sans douleurs — profitez pleinement de chaque geste, aujourd'hui comme demain.</p>
-    <a class="btn big" style="width:auto" href="#produit" data-r>Commencer mon rituel <span class="fl">→</span></a>
+    <h2 data-r data-t="final.titre">Retrouvez le <em>plaisir du geste</em>.</h2>
+    <p data-r data-t="final.texte">Jardiner, bricoler, cuisiner sans douleurs — profitez pleinement de chaque geste, aujourd'hui comme demain.</p>
+    <a class="btn big" style="width:auto" href="#produit" data-r><span data-t="final.bouton">Commencer mon rituel</span> <span class="fl">→</span></a>
   </div>
 </section>
 
@@ -625,11 +643,11 @@ details>div p{margin:0 0 8px}
     <div class="foot-in">
       <div>
         <p class="brand">Bel<span>mains</span></p>
-        <p>Le bien-être entre vos mains.<br>Des mains détendues, soulagées et prêtes pour demain.</p>
+        <p data-t="pied.slogan">Le bien-être entre vos mains.<br>Des mains détendues, soulagées et prêtes pour demain.</p>
       </div>
       <div>
         <h4>Boutique</h4>
-        <p><a href="#produit">Le gant de massage</a><br><a href="#produit">Lots &amp; économies</a><br><a href="#avis">Avis clients</a></p>
+        <p><a href="#produit" data-t="pied.lienProduit">Le gant de massage</a><br><a href="#produit">Lots &amp; économies</a><br><a href="#avis">Avis clients</a></p>
       </div>
       <div>
         <h4>Aide</h4>
@@ -637,19 +655,20 @@ details>div p{margin:0 0 8px}
       </div>
       <div>
         <h4>Newsletter</h4>
-        <p>Recevez nos conseils bien-être et nos offres.</p>
+        <p data-t="pied.newsletter">Recevez nos conseils bien-être et nos offres.</p>
         <div class="nl"><span>votre@email.fr</span><b>S'inscrire</b></div>
       </div>
     </div>
     <div class="foot-bot">
-      <span>© Belmains — tous droits réservés</span>
+      <span data-t="pied.copyright">© Belmains — tous droits réservés</span>
       <span>Mentions légales · CGV · Confidentialité</span>
     </div>
   </div>
 </footer>
 
-<!-- JSON-LD FAQ (contenu réel, actif dès maintenant pour le SEO) -->
-<script type="application/ld+json">
+<!-- JSON-LD Produit + FAQ : remplis par moteur.js depuis la fiche produit -->
+<script type="application/ld+json" id="ldProduit"></script>
+<script type="application/ld+json" id="ldFaq">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
 {"@type":"Question","name":"Qu'est-ce que le gant de massage Belmains ?","acceptedAnswer":{"@type":"Answer","text":"Belmains est un gant de massage conçu pour offrir un moment de détente et de confort pour vos mains. Il combine 5 modes de massage et 3 niveaux de chauffage pour personnaliser votre expérience."}},
 {"@type":"Question","name":"Peut-on régler la chaleur ?","acceptedAnswer":{"@type":"Answer","text":"Oui, Belmains dispose de 3 niveaux de chauffage afin de choisir la sensation de chaleur qui vous convient le mieux."}},
@@ -658,30 +677,31 @@ details>div p{margin:0 0 8px}
 ]}
 </script>
 
+<script src="moteur.js"></script>
 <script>
 (function(){
   var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* marquees */
-  function fill(id,items){
-    var el=document.getElementById(id); if(!el) return;
-    var half=items.map(function(t){return '<span class="mq-item">'+t+' <i>✦</i></span>';}).join('');
-    el.innerHTML=half+half; /* piste doublée pour la boucle -50% */
-  }
-  var msgs=[];
-  for(var i=0;i<6;i++) msgs.push('Belmains — le rituel bien-être pour vos mains');
-  fill('mq',msgs); fill('mq2',msgs);
+  /* bandeaux défilants : remplis par moteur.js depuis la fiche produit */
 
   /* ombre header */
   var hdr=document.getElementById('hdr');
   addEventListener('scroll',function(){hdr.classList.toggle('scrolled',scrollY>8);},{passive:true});
 
   /* sélection des lots */
-  document.querySelectorAll('.lot').forEach(function(b){
-    b.addEventListener('click',function(){
-      document.querySelectorAll('.lot').forEach(function(x){x.setAttribute('aria-pressed','false');});
-      b.setAttribute('aria-pressed','true');
-    });
+  document.addEventListener('click',function(ev){
+    var b=ev.target.closest&&ev.target.closest('.lot'); if(!b) return;
+    document.querySelectorAll('.lot').forEach(function(x){x.setAttribute('aria-pressed','false');});
+    b.setAttribute('aria-pressed','true');
+  });
+
+  /* vignettes : un clic affiche la photo en grand */
+  document.addEventListener('click',function(ev){
+    var v=ev.target.closest&&ev.target.closest('#ficheVignettes .photo'); if(!v) return;
+    var src=v.getAttribute('data-src'); var main=document.getElementById('fichePhoto');
+    if(!src||!main) return;
+    var img=main.querySelector('img');
+    if(img) img.src=src;
   });
 
   if(reduced) return; /* tout le reste est du mouvement */
@@ -723,7 +743,7 @@ details>div p{margin:0 0 8px}
   /* 360° piloté au scroll */
   var turn=document.getElementById('turn');
   var needle=document.getElementById('needle');
-  var num=document.getElementById('turnNum'),deg=document.getElementById('turnDeg'),lbl=document.getElementById('turnLbl');
+  var deg=document.getElementById('turnDeg'),lbl=document.getElementById('turnLbl');
   var names=['face','trois-quarts droit','profil droit','arrière droit','dos','arrière gauche','profil gauche','trois-quarts gauche'];
   function onScroll(){
     if(!turn) return;
@@ -731,9 +751,13 @@ details>div p{margin:0 0 8px}
     var total=r.height-innerHeight;
     var p=Math.min(Math.max(-r.top/total,0),1);
     var angle=Math.round(p*360);
-    var frame=Math.min(Math.floor(p*12)+1,12);
+    var frames=(window.Moteur&&Moteur.frames360)||[];
+    var nb=frames.length||12;
+    var frame=Math.min(Math.floor(p*nb)+1,nb);
     needle.style.transform='rotate('+angle+'deg)';
-    num.textContent=frame;
+    var num=document.getElementById('turnNum'); if(num) num.textContent=frame;
+    var img=document.getElementById('turnImg');
+    if(img&&frames[frame-1]&&img.getAttribute('src')!==frames[frame-1]) img.src=frames[frame-1];
     deg.textContent=angle+'°';
     lbl.textContent=names[Math.floor((angle%360)/45)]+' — '+angle+'°';
   }
