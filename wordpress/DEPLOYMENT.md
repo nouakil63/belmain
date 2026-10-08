@@ -1,0 +1,70 @@
+# Préparer les mises à jour WordPress
+
+GitHub vérifie le code et prépare les trois archives installables de Belmains. **Cette procédure ne met pas le site en ligne et ne déploie pas les mises à jour sur WordPress.** Le raccordement au futur hébergement reste à configurer lorsque le domaine, le serveur et ses accès seront connus.
+
+## Ce qui est automatisé
+
+Le workflow [wordpress-checks.yml](../.github/workflows/wordpress-checks.yml) s'exécute à chaque push ou pull request touchant `wordpress/` ou le workflow, et peut être lancé manuellement depuis GitHub Actions. Il utilise un runner GitHub standard Ubuntu 24.04 et les outils PHP, Node.js et Python déjà présents, sans abonnement à une extension WordPress ni installation de dépendances de projet.
+
+Il contrôle la syntaxe de tous les fichiers PHP et JavaScript sous `wordpress/`, puis construit les archives. Ce contrôle de syntaxe ne remplace pas un essai du panier, de la commande, des paiements et des e-mails sur une copie de préparation. Les tests d'intégration du dossier `tests/` ne sont pas exécutés par ce workflow : ils exigent leur base WordPress locale isolée.
+
+Le jeton du workflow possède seulement le droit de lire le dépôt. Aucun secret de boutique ni accès d'hébergement n'est utilisé. Les deux actions officielles sont fixées à leur SHA complet. Le workflow n'utilise pas `pull_request_target`, ne publie aucune release et n'installe rien sur une boutique.
+
+Les archives et leurs empreintes SHA-256 sont disponibles dans l'artefact de l'exécution pendant **7 jours**. Le nombre de minutes et le stockage dépendent du forfait et des quotas du compte GitHub ; vérifier les limites du compte avant une utilisation intensive. Aucun budget payant n'est activé par ces fichiers.
+
+## Produire les mêmes archives sur l'ordinateur
+
+Prérequis : Python 3.12 ou ultérieur. Depuis la racine du dépôt :
+
+```text
+python wordpress/tools/package-release.py --output-dir ../belmains-release
+```
+
+La commande lit les versions directement dans les en-têtes WordPress et produit :
+
+- `belmains-wordpress-theme-VERSION.zip`, avec le dossier racine `belmains/` ;
+- `belmains-commerce-VERSION.zip`, avec le dossier racine `belmains-commerce/` ;
+- `belmains-crm-VERSION.zip`, avec le dossier racine `belmains-crm/` ;
+- `SHA256SUMS`, pour vérifier l'intégrité des trois ZIP.
+
+Les dates et permissions de chaque entrée sont fixées, les fichiers sont triés et les fins de ligne des textes sont normalisées. Deux constructions des mêmes sources avec la même version de Python/zlib produisent les mêmes empreintes. Le script vérifie la structure et l'intégrité de chaque archive avant de la déposer dans le dossier demandé. Ce dossier doit se trouver hors de `wordpress/` ; une archive portant déjà le même nom y est remplacée, les autres fichiers sont conservés.
+
+Seuls les trois composants, leurs modèles PHP, notices et ressources publiques sont admis. Une structure inattendue, un lien symbolique, un fichier caché, un nom réservé aux sauvegardes ou à la configuration, ou un format non prévu fait échouer la création. Les outils, tests, exports de base, médias téléchargés par les clients, journaux, clés et fichiers `.env` ne font pas partie des paquets. Les images et la vidéo livrées avec le thème sont incluses ; le dossier WordPress `uploads/` ne l'est jamais. Ces règles de fichiers ne détectent pas un secret collé à l'intérieur d'un fichier PHP autorisé : la revue des modifications doit toujours vérifier l'absence de secrets.
+
+Avant une mise à jour, modifier l'en-tête `Version` du composant concerné et sa constante de version lorsqu'il en utilise une. Les noms des ZIP suivront ces valeurs, sans changement du script.
+
+## Première mise en ligne
+
+La première migration est une opération distincte des mises à jour de code. Elle doit transférer l'état existant de la boutique, y compris sa base et ses médias, depuis une sauvegarde de préparation contrôlée. Ne pas recréer le produit ni réinitialiser son stock avec le script de provisionnement lors de cette migration.
+
+1. Choisir l'hébergement et le domaine, obtenir les accès à son panneau de gestion et à WordPress, activer HTTPS.
+2. Créer une copie de préparation non indexée. Installer les versions compatibles de WordPress, PHP et WooCommerce ; migrer la base et les médias avec l'outil fourni par l'hébergeur ou une méthode adaptée à ses accès. WP-CLI n'est pas supposé disponible.
+3. Adapter les URL avec un outil WordPress qui préserve les données sérialisées, puis contrôler les liens, les images et le panier. Ne pas effectuer un remplacement brut dans un export SQL.
+4. Configurer les paiements en mode test, la fiscalité confirmée, les e-mails et Iziship. Garder les vraies clés privées hors de GitHub et des ZIP.
+5. Tester sur la copie une commande, une annulation et un remboursement avec remise en stock, le suivi invité, les notifications et l'affichage mobile. Vérifier ensuite les réglages de vente réels avant d'ouvrir le site.
+
+## Raccorder les futures mises à jour automatiques
+
+La cible sera uniquement le code du thème et des deux plugins Belmains. Pour automatiser le transfert, il faudra connaître le domaine HTTPS, le mécanisme offert par l'hébergeur (déploiement Git, SFTP/SSH ou autre), le chemin exact de WordPress et la manière de sauvegarder/restaurer le site.
+
+Le futur déploiement partira d'une branche de publication identifiée et d'une vérification réussie. Il utilisera un accès limité aux trois répertoires concernés, stocké dans les secrets de l'environnement GitHub approprié, et une connexion dont l'identité du serveur est vérifiée. Ne pas désactiver la vérification de l'hôte SSH pour simplifier la connexion.
+
+Le transfert ne doit jamais écraser `wp-config.php`, la base, `wp-content/uploads/`, WooCommerce, les autres extensions ni les données créées par les clients. Ne pas synchroniser tout `wp-content/` avec suppression des fichiers absents. Les changements de schéma ou de données doivent être traités séparément et testés avant publication.
+
+Tant que ces éléments ne sont pas connus, télécharger les trois ZIP validés et utiliser le téléversement natif de WordPress pour remplacer la version déjà installée, après sauvegarde. Ne pas désinstaller un plugin pour le mettre à jour.
+
+## Sauvegarde et retour à la version précédente
+
+Avant chaque publication, conserver la dernière version fonctionnelle des trois ZIP, leur commit et une sauvegarde datée de la base, de `uploads/` et de la configuration du serveur dans un espace privé. Utiliser la sauvegarde de l'hébergeur ou son panneau d'administration ; conserver au moins une copie hors du serveur et vérifier qu'elle est restaurable.
+
+1. Sur une copie de préparation, restaurer une sauvegarde et contrôler les commandes, les stocks, les médias et les accès. Ne pas envoyer d'e-mails ni appeler les paiements ou Iziship réels pendant cet essai.
+2. Publier le code validé, puis vérifier immédiatement l'accueil, l'ajout au panier, le passage de commande, le suivi et l'accès privé au CRM.
+3. Si une régression provient du code, remettre les ZIP de la dernière version fonctionnelle avec le panneau WordPress ou le gestionnaire de fichiers de l'hébergeur. Conserver les commandes et stocks actuels.
+4. Si une restauration de base devient nécessaire, suspendre les nouvelles ventes et inventorier les commandes et remboursements arrivés depuis la sauvegarde. Ne jamais restaurer automatiquement une ancienne base par-dessus des commandes récentes. Préparer leur récupération avant la restauration et réconcilier les paiements avec le prestataire.
+
+## Références officielles
+
+- [Image du runner Ubuntu 24.04](https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md) : outils disponibles dans l'environnement du workflow.
+- [Sécurisation des workflows GitHub](https://docs.github.com/en/actions/reference/security/secure-use) : permissions minimales et actions fixées par SHA.
+- [Artifacts GitHub](https://github.com/actions/upload-artifact) : conservation et récupération des fichiers de construction.
+- [Checkout v7.0.1](https://github.com/actions/checkout/releases/tag/v7.0.1) et [upload-artifact v7.0.2](https://github.com/actions/upload-artifact/releases/tag/v7.0.2) : versions retenues et vérifiées le 8 octobre 2026.

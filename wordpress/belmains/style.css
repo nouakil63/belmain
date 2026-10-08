@@ -1,7 +1,7 @@
 /*
 Theme Name: Belmains
 Description: Design Belmains validé avec fiche produit, panier et commande WooCommerce.
-Version: 0.2.0
+Version: 0.3.0
 Requires at least: 6.3
 Requires PHP: 8.0
 Author: NOK’S Consulting
@@ -22,3 +22,21 @@ body.belmains-page{background:#fdfbf8;color:#181d25}
 @media(max-width:600px){.admin-bar #shopify-section-menu_kooldogy_jpEgq8{top:0!important}.belmains-page-header{flex-wrap:wrap}.belmains-page-content{padding:40px 20px}}
 
 #belmains-product-form{margin:0}#belmains-product-form .add-to-cart{width:100%}.purchase-feedback{padding:12px 14px;border-radius:10px;background:#f2e7eb;color:#63182e;font-size:14px;margin-top:12px}.purchase-feedback[hidden]{display:none}.purchase-note{font-size:12px;color:#69625d;margin-top:12px}.add-to-cart:disabled{opacity:.6;cursor:not-allowed}
+
+.belmains-contact-form{max-width:720px;background:#fff;padding:clamp(22px,4vw,40px);border:1px solid #e5dcd2;border-radius:20px;margin:28px 0}
+.belmains-contact-form label{display:block;font-size:14px;line-height:1.5;font-weight:500;margin-bottom:8px;color:#352f2c}
+.belmains-contact-form :is(input:not([type="hidden"]):not([type="checkbox"]),textarea,select){display:block;width:100%;max-width:100%;min-height:48px;margin-top:8px;padding:12px 14px;border:1px solid #c9bdb2;border-radius:9px;background:#fff;color:#181d25;font:inherit;font-size:16px;line-height:1.5;box-sizing:border-box}
+.belmains-contact-form textarea{min-height:160px;resize:vertical}
+.belmains-contact-form :is(input,textarea,select,button):focus-visible{outline:3px solid #a5783d;outline-offset:3px}
+.belmains-contact-form button[type="submit"]{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:13px 28px;border:1px solid #63182e;border-radius:28px;background:#63182e;color:white;font:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.belmains-contact-form button[type="submit"]:hover{background:#431321}
+.belmains-contact-form small{display:block;color:#6c625d;font-size:13px;line-height:1.6}
+.belmains-contact-notice{max-width:720px;margin:24px 0;padding:18px 22px;border-radius:12px;border-left:4px solid #63182e;background:#f2e7eb;color:#431321}
+.belmains-contact :is(.woocommerce-message,.woocommerce-error){max-width:720px;padding:18px 22px;border-radius:12px;border:1px solid #e5dcd2;border-left:4px solid #63182e;background:#f2e7eb;color:#431321;list-style:none}
+.belmains-contact :is(.woocommerce-message,.woocommerce-error)::before{display:none}
+.belmains-contact .woocommerce-message{background:#edf3ed;border-left-color:#416847;color:#244b2b}
+.belmains-contact-field-error{display:block;color:#a02a22;font-size:13px;margin-top:6px}
+.belmains-contact-form [aria-invalid="true"]{border-color:#a02a22!important}
+.belmains-contact-privacy,.belmains-contact-required{font-size:13px;color:#6c625d;line-height:1.65}
+.belmains-contact-form [hidden]{display:none!important}
+@media(max-width:600px){.belmains-contact-form button[type="submit"]{width:100%}.belmains-commerce-nav{gap:4px 18px}}

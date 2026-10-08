@@ -49,12 +49,17 @@ add_filter( 'woocommerce_return_to_shop_redirect', function () { return home_url
 
 function belmains_migration_notice() {
     if ( ! current_user_can( 'manage_options' ) ) { return; }
-    echo '<div class="notice notice-info"><p>' . esc_html__( 'Belmains — préparation de la boutique : le panier est raccordé à WooCommerce lorsque le module Belmains Commerce est actif. Avant l’ouverture, confirmer le stock, la fiscalité, les paiements, Iziship et les coordonnées du vendeur. Le formulaire de contact et les avis restent des démonstrations.', 'belmains' ) . '</p></div>';
+    echo '<div class="notice notice-info"><p>' . esc_html__( 'Belmains — préparation de la boutique : le panier utilise WooCommerce et le contact enregistre les demandes dans le SAV du CRM. Avant l’ouverture, finaliser la fiscalité, les paiements, l’envoi des e-mails, Iziship et les pages commerciales. Les avis de démonstration sont réservés à la préparation.', 'belmains' ) . '</p></div>';
 }
 add_action( 'admin_notices', 'belmains_migration_notice' );
 
 function belmains_tracking_url() {
     $page_id = absint( get_option( 'belmains_tracking_page_id' ) );
+    return $page_id && 'publish' === get_post_status( $page_id ) ? get_permalink( $page_id ) : home_url( '/#contact' );
+}
+
+function belmains_contact_url() {
+    $page_id = absint( get_option( 'belmains_contact_page_id' ) );
     return $page_id && 'publish' === get_post_status( $page_id ) ? get_permalink( $page_id ) : home_url( '/#contact' );
 }
 

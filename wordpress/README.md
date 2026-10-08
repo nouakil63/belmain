@@ -4,7 +4,7 @@ Le thème `belmains/` reprend le design retenu, sa palette bordeaux, ses textes,
 
 ## État du livrable
 
-- Thème classique installable, version 0.2.0 ; WordPress 6.3 minimum, PHP 8.0 minimum.
+- Thème classique installable, version 0.3.0 ; WordPress 6.3 minimum, PHP 8.0 minimum.
 - Accueil rendu par WordPress, sans iframe ni constructeur de pages.
 - Images, vidéo, polices, styles et scripts livrés avec le thème ; leurs adresses s’adaptent au domaine d’installation.
 - Galerie, zoom, navigation mobile et animations repris du site validé.
@@ -12,13 +12,13 @@ Le thème `belmains/` reprend le design retenu, sa palette bordeaux, ses textes,
 - Pages WordPress ordinaires éditables dans l’administration, avec le même univers graphique.
 - Aucun produit ni aucune commande créés automatiquement. Aucun changement des réglages du site à l’activation.
 
-La fiche produit utilise maintenant le panier WooCommerce avec le plugin séparé `belmains-commerce/`. Les pages panier, commande, compte et suivi utilisent les fonctions WooCommerce natives et le design Belmains. Le formulaire de contact et les avis de l’accueil restent des démonstrations. L’accueil utilise un modèle PHP dédié dans `template-parts/landing.php`, et non des blocs éditables. Les paiements et Iziship restent à configurer avant les ventes.
+La fiche produit utilise maintenant le panier WooCommerce avec le plugin séparé `belmains-commerce/`. Les pages panier, commande, compte et suivi utilisent les fonctions WooCommerce natives et le design Belmains. Le contact enregistre les demandes dans le SAV privé du CRM. Les avis de l’accueil restent des démonstrations. L’accueil utilise un modèle PHP dédié dans `template-parts/landing.php`, et non des blocs éditables. Les paiements et Iziship restent à configurer avant les ventes.
 
 ## Installation, une fois l’hébergement choisi
 
 1. Installer WordPress sur l’hébergement de préparation et activer HTTPS.
 2. Régler le site en français et choisir « Demander aux moteurs de recherche de ne pas indexer ce site » pendant la préparation.
-3. Dans **Apparence → Thèmes → Ajouter → Téléverser un thème**, importer `belmains-wordpress-theme-0.2.0.zip`, puis activer **Belmains**.
+3. Dans **Apparence → Thèmes → Ajouter → Téléverser un thème**, importer `belmains-wordpress-theme-0.3.0.zip`, puis activer **Belmains**.
 4. Ouvrir l’accueil et contrôler la vidéo, les cinq visuels, le zoom et l’affichage mobile. Le thème fournit directement l’accueil, sans import de page requis.
 5. Installer WooCommerce et le plugin `belmains-commerce/`, puis configurer le produit et les pages comme indiqué ci-dessous. Poursuivre la configuration des paiements avant toute mise en vente.
 
@@ -40,7 +40,7 @@ Le script explicite `tools/provision-commerce.php` prépare un nouveau site : pr
 
 La configuration de TVA est laissée à confirmer : aucun taux ni régime fiscal n’est inventé. Aucun moyen de paiement de test n’est livré dans le plugin. La validation complète du passage de commande utilise une passerelle réservée à une copie locale isolée, sans débit et sans envoi d’e-mail.
 
-La mention de livraison validée est « Livraison Offerte — Livraison à domicile ou en point relais sous 48h/72h ». Le panier propose pour l’instant la livraison à domicile en France ; le transporteur et la sélection du point relais restent à connecter. La page de suivi utilise le numéro de commande et l’e-mail de facturation, puis affiche les informations réelles enregistrées. Les coordonnées du vendeur, les textes de vente et de retour, les dimensions du produit et les avis réels restent à renseigner. Les indicateurs de satisfaction déjà présents dans la maquette restent à justifier avant l’ouverture publique.
+La mention de livraison validée est « Livraison Offerte — Livraison à domicile ou en point relais sous 48h/72h ». Le panier propose pour l’instant la livraison à domicile en France ; le transporteur et la sélection du point relais restent à connecter. La page de suivi utilise le numéro de commande et l’e-mail de facturation, puis affiche les informations réelles enregistrées. Les coordonnées du vendeur, les textes de vente et de retour, les dimensions du produit et les avis réels restent à renseigner. Le compteur de satisfaction non justifié et les affirmations non confirmées de recharge en 15 minutes et de réponse en 24 heures ont été retirés. Les avis de démonstration restent à remplacer avant l’ouverture publique.
 
 Le domaine et l’hébergeur seront choisis plus tard, à la demande du client. Aucun achat, changement DNS ou déploiement WordPress distant n’a été effectué.
 
@@ -53,3 +53,18 @@ Validation sur WordPress 7.1.2 et WooCommerce 11.1.2 : accueil et galerie, ajout
 Les scripts de la galerie ne sont chargés que sur l’accueil. La suite `tests/commerce-integration.php` compte 57 contrôles réussis sur les prix, le stock, les commandes, l’API et les accès. `tests/tracking-form-integration.php` vérifie le suivi invité autorisé par WooCommerce et le refus des accès non autorisés. Ces suites sont réservées à la base locale isolée `bcrm_validation_`. Ne pas exécuter de tests de création de commandes sur la boutique commerciale.
 
 La base technique suit les points d’intégration documentés par WordPress : [structure d’un thème](https://developer.wordpress.org/themes/core-concepts/theme-structure/) et [chargement des styles et scripts](https://developer.wordpress.org/themes/core-concepts/including-assets/). Le test local utilise [WordPress Playground](https://developer.wordpress.org/playground/handbook/guides/programmatic-playground-cli/).
+
+
+## Contact et préparation à l’ouverture
+
+Le thème 0.3.0 dirige les liens Contact vers la page publiée contenant `[belmains_contact]`, reliée à Belmains CRM 0.2.0. Le formulaire fonctionne sans JavaScript : ses demandes apparaissent dans **Service client**, sans e-mail automatique. Une référence saisie par le visiteur reste une indication à vérifier, jamais une autorisation d’accès à une commande. Le formulaire conserve les champs à corriger pendant dix minutes au maximum et protège contre les doublons et les envois abusifs. Exclure Contact du cache pleine page.
+
+Le script explicite `tools/prepare-launch.php`, exécuté avec WP-CLI après activation du CRM, crée la page Contact et quatre brouillons français : mentions légales, CGV, confidentialité, livraison/retours. Il conserve les pages existantes, prépare les couleurs et le logo des e-mails, désactive l’indexation de la préproduction et masque uniquement la page d’exemple WordPress inchangée. Il ne configure ni taxe, ni paiement, ni adresse d’expéditeur et ne modifie pas le stock. Les brouillons ne sont pas publiés ni présentés comme des documents finalisés.
+
+Les informations du vendeur, le régime fiscal, les moyens de paiement, les conditions de livraison et les coordonnées de retour doivent être confirmés avant finalisation. Références de préparation : [CGV — Service Public](https://entreprendre.service-public.fr/vosdroits/F33527), [information sur les formulaires — CNIL](https://www.cnil.fr/fr/exemples-de-formulaire-de-collecte-de-donnees-caractere-personnel) et [conservation des données — CNIL](https://www.cnil.fr/fr/passer-laction/les-durees-de-conservation-des-donnees).
+
+Les e-mails WooCommerce utilisent la présentation Belmains. Leur génération est vérifiée sur une copie isolée sans envoi ; sur Local, les messages sont capturés dans Mailpit. Une réception réelle n’est pas confirmée : elle nécessite l’adresse professionnelle, un transport d’e-mail configuré et un essai de réception. Voir le [guide WooCommerce sur les e-mails](https://woocommerce.com/document/email-faq/).
+
+Le [workflow de validation et d’archives](DEPLOYMENT.md) automatise les contrôles de syntaxe et les ZIP dans GitHub. Le déploiement vers WordPress attend encore le choix de l’hébergement ; aucune clé ni donnée commerciale n’est incluse dans les paquets.
+
+Validation de cette étape : 74 contrôles Contact et 41 contrôles de confidentialité réussis sur la base isolée, puis essai HTTP du formulaire jusqu’au ticket privé, répétition sans doublon et correction des champs. Le rendu de la confirmation de commande a été vérifié pour le logo, les couleurs et les montants sans envoi. La boutique locale conserve 500 gants, zéro commande et zéro ticket de test ; les quatre pages commerciales restent en brouillon. Le contrôle visuel de la nouvelle page Contact sur mobile reste à effectuer, le navigateur étant indisponible dans la session de préparation du 8 octobre 2026.

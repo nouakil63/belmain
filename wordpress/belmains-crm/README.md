@@ -2,7 +2,7 @@
 
 Belmains CRM ajoute un espace de pilotage privé dans WordPress pour suivre la boutique WooCommerce, son audience consentie, ses clients et ses expéditions. Le module fonctionne sans abonnement CRM, sans bibliothèque distante et sans extension de suivi payante. L’hébergement, les paiements, la publicité et les prestations Iziship conservent leurs propres coûts.
 
-Version 0.1.1 — WordPress 6.3 minimum, PHP 8.0 minimum. WooCommerce est nécessaire pour les commandes, clients, stocks et expéditions. Le module utilise les interfaces WooCommerce et déclare sa compatibilité avec le stockage des commandes HPOS.
+Version 0.2.0 — WordPress 6.3 minimum, PHP 8.0 minimum. WooCommerce est nécessaire pour les commandes, clients, stocks et expéditions. Le module utilise les interfaces WooCommerce et déclare sa compatibilité avec le stockage des commandes HPOS.
 
 ## Installation et premier accès
 
@@ -14,7 +14,7 @@ Version 0.1.1 — WordPress 6.3 minimum, PHP 8.0 minimum. WooCommerce est néces
 
 L’activation crée les tables propres au CRM et programme la purge de l’audience. Elle ne crée aucun produit, client, commande, témoignage ou chiffre de démonstration. Sans données réelles, les états vides, les zéros et les valeurs indisponibles sont normaux.
 
-Le site de préparation actuel est `http://belmains.local/`. Le thème Belmains 0.2.0 et le plugin séparé Belmains Commerce raccordent la fiche produit au panier et à la commande WooCommerce. Le CRM exploite ces commandes ; il ne configure pas le paiement. Les moyens de paiement réels, Iziship et la fiscalité restent à finaliser avant l’ouverture des ventes.
+Le site de préparation actuel est `http://belmains.local/`. Le thème Belmains 0.3.0 et le plugin séparé Belmains Commerce raccordent la fiche produit au panier et à la commande WooCommerce. Le CRM exploite ces commandes ; il ne configure pas le paiement. Les moyens de paiement réels, Iziship et la fiscalité restent à finaliser avant l’ouverture des ventes.
 
 ## Les huit rubriques
 
@@ -26,7 +26,7 @@ Le site de préparation actuel est `http://belmains.local/`. Le thème Belmains 
 | **Expéditions** | Numéro et lien de suivi, transporteur, dates et état du colis ; compteurs d’expéditions, livraisons, incidents et retours ; repère de dépassement du délai interne. |
 | **Stocks** | Produits et variations, références, disponibilité, quantité lorsqu’elle est gérée, stock bas et lien vers la fiche WooCommerce pour modifier le stock. |
 | **Marketing** | Dépenses publicitaires saisies manuellement, sources et campagnes attribuées aux commandes, chiffre d’affaires associé et ROAS lorsqu’il est calculable. |
-| **Service client** | Demandes internes avec e-mail, commande associée, priorité, état ouvert/en attente/résolu et notes de traitement. |
+| **Service client** | Demandes du formulaire Contact et saisies internes, e-mail, référence, priorité, état ouvert/en attente/résolu et notes de traitement. |
 | **Connexions** | État de WooCommerce, préparation Iziship, dernière réception de suivi observée et préférences du CRM. |
 
 Les notes et demandes SAV sont internes : aucun e-mail n’est envoyé par leur création ou leur modification. Les réglages de stock restent ceux de WooCommerce ; le CRM n’introduit pas un stock parallèle.
@@ -93,3 +93,14 @@ Sauvegarder la base avec les commandes et les tables du CRM : événements, dema
 Désactiver **Belmains CRM** retire son interface, arrête son script de mesure et sa purge planifiée, sans effacer ses données ni les commandes. Réactiver le module rétablit la programmation. Ne pas utiliser le site commercial pour créer de faux visiteurs, commandes ou clients destinés à remplir les graphiques ; les essais doivent rester identifiés et séparés des données d’exploitation.
 
 Pour poursuivre le développement, travailler dans ce dossier, conserver les appels WooCommerce CRUD pour les commandes et valider les changements sur une copie du site. Contrôler notamment les permissions, remboursements, consentements, coûts inconnus et états de suivi avant diffusion. Le contrat des interfaces figure dans `../crm-contract.md`.
+
+
+## Formulaire de contact et données du SAV
+
+Créer une page publiée contenant `[belmains_contact]`, puis enregistrer son ID dans `belmains_contact_page_id`. Le script de préparation `../tools/prepare-launch.php` le fait explicitement ; rien n’est créé à l’activation du plugin. Les liens du thème pointent vers cette page. Le formulaire utilise WordPress, sans service externe ni abonnement.
+
+Le nom, l’e-mail, le sujet, le message et l’éventuelle référence saisie sont enregistrés dans un ticket ouvert de priorité normale. Aucun rattachement à une commande n’est réalisé automatiquement. Les champs sont validés côté serveur ; le ticket est accessible seulement aux gestionnaires autorisés. Les réponses au client restent manuelles et aucun e-mail n’est déclenché par une soumission ou une note du SAV.
+
+L’antipourriel utilise un champ piège, un contrôle de formulaire/origine, des quotas temporaires par IP hachée et e-mail haché, et un jeton contre les doubles envois. L’IP brute n’est pas conservée. Les valeurs à corriger restent au maximum dix minutes dans un état temporaire privé associé au navigateur. Aucun nom, e-mail ou message ne passe dans l’URL de retour. La page interdit le cache via WordPress ; l’exclure également dans le cache de l’hébergeur.
+
+Dans **Outils → Exporter les données** et **Effacer les données**, le CRM ajoute les tickets associés à l’e-mail vérifié selon la procédure WordPress. L’export est paginé ; l’effacement anonymise le sujet, le message, l’e-mail et la référence de commande du ticket, tout en conservant ses dates et son état. Les commandes et la conservation commerciale restent gérées séparément par WooCommerce. Aucun effacement n’est lancé automatiquement par le module ; la durée de conservation du SAV doit être définie avant l’ouverture.
