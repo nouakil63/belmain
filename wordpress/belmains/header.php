@@ -4,7 +4,7 @@
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#63182e">
+<meta name="theme-color" content="<?php echo esc_attr( sanitize_hex_color( belmains_value( 'brand_color', '#63182e' ) ) ?: '#63182e' ); ?>">
 <?php if ( ! has_site_icon() ) : ?>
 <link rel="icon" href="<?php echo esc_url( get_theme_file_uri( 'assets/belmains-favicon.png' ) ); ?>">
 <?php endif; ?>
@@ -15,7 +15,7 @@
 <?php if ( ! is_front_page() ) : ?>
 <a class="skip-link" href="#main">Aller au contenu</a>
 <header class="belmains-page-header">
- <a href="<?php echo esc_url( home_url( '/' ) ); ?>"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/belmains-logo.png' ) ); ?>" alt="Belmains — accueil" width="719" height="183"></a>
+ <a href="<?php echo esc_url( home_url( '/' ) ); ?>" aria-label="<?php echo esc_attr( belmains_value( 'brand_name', 'Belmains' ) . ' — accueil' ); ?>"><?php $logo = belmains_value( 'brand_logo', array( 'url' => get_theme_file_uri( 'assets/belmains-logo.png' ), 'alt' => 'Belmains' ) ); if ( belmains_media_url( $logo ) ) { belmains_image( $logo, '', true ); } else { echo esc_html( belmains_value( 'brand_name', 'Belmains' ) ); } ?></a>
  <?php if ( function_exists( 'wc_get_cart_url' ) ) : ?>
  <nav class="belmains-commerce-nav" aria-label="Navigation de la boutique">
   <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Accueil</a>
@@ -30,7 +30,7 @@
   <?php endif; ?>
  </nav>
  <?php else : ?>
- <a href="<?php echo esc_url( home_url( '/#fiche-produit' ) ); ?>">Découvrir le gant Belmains</a>
+ <a href="<?php echo esc_url( home_url( '/#fiche-produit' ) ); ?>"><?php echo esc_html( belmains_value( 'footer_product_label', 'Découvrir le produit' ) ); ?></a>
  <?php endif; ?>
 </header>
 <?php endif; ?>

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Belmains Commerce
  * Description: Relie la fiche Belmains au panier WooCommerce et applique les offres par quantité réelle de gants.
- * Version: 0.1.0
+ * Version: 0.2.0
  * Requires at least: 6.3
  * Requires PHP: 8.0
  * Requires Plugins: woocommerce
@@ -14,7 +14,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 final class Belmains_Commerce {
-    public const VERSION = '0.1.0';
+    public const VERSION = '0.2.0';
     public const SINGLE_CENTS = 8999;
     public const DUO_CENTS = 14999;
     public const REGULAR_CENTS = 10999;
@@ -22,6 +22,8 @@ final class Belmains_Commerce {
 
     public static function register() {
         if ( ! class_exists( 'WooCommerce' ) ) { return; }
+        require_once __DIR__ . '/includes/class-belmains-builder.php';
+        Belmains_Builder::register();
         add_action( 'wc_ajax_belmains_add_to_cart', array( __CLASS__, 'ajax_add_to_cart' ) );
         add_action( 'woocommerce_before_calculate_totals', array( __CLASS__, 'apply_offer' ), 1000 );
         add_action( 'woocommerce_cart_loaded_from_session', array( __CLASS__, 'apply_offer' ), 1000 );
@@ -47,13 +49,32 @@ final class Belmains_Commerce {
         return $product && $product->is_type( 'simple' ) && 'publish' === $product->get_status() ? $product : false;
     }
 
-    public static function price_cents( $quantity ) {
+    public static function offer_for_product( $product ) {
+        if ( ! $product ) { return array( 'single_cents' => 0, 'regular_cents' => 0, 'duo_enabled' => false, 'duo_cents' => 0, 'duo_regular_cents' => 0 ); }
+        $single = max( 0, (int) round( (float) $product->get_price( 'edit' ) * 100 ) );
+        $regular = max( 0, (int) round( (float) $product->get_regular_price( 'edit' ) * 100 ) );
+        $legacy = $product->get_id() === self::product_id() && ! $product->meta_exists( '_belmains_duo_enabled' );
+        $duo_enabled = $legacy || 'yes' === $product->get_meta( '_belmains_duo_enabled', true );
+        $duo = $legacy ? self::DUO_CENTS : (int) round( (float) $product->get_meta( '_belmains_duo_price', true ) * 100 );
+        $compare = $legacy ? 17999 : (int) round( (float) $product->get_meta( '_belmains_duo_compare_price', true ) * 100 );
+        return array( 'single_cents' => $single, 'regular_cents' => $regular, 'duo_enabled' => $duo_enabled && $duo > 0,
+            'duo_cents' => max( 0, $duo ), 'duo_regular_cents' => max( 0, $compare ) );
+    }
+
+    public static function managed_product( $id ) {
+        if ( ! $id || ! function_exists( 'wc_get_product' ) ) { return false; }
+        $product = wc_get_product( $id );
+        return $product && $product->is_type( 'simple' ) && ( (int) $id === self::product_id() || 'yes' === $product->get_meta( '_belmains_managed', true ) ) ? $product : false;
+    }
+
+    public static function price_cents( $quantity, $product = null ) {
         $quantity = max( 0, (int) $quantity );
-        return intdiv( $quantity, 2 ) * self::DUO_CENTS + ( $quantity % 2 ) * self::SINGLE_CENTS;
+        $offer = self::offer_for_product( $product ?: self::product() );
+        return $offer['duo_enabled'] ? intdiv( $quantity, 2 ) * $offer['duo_cents'] + ( $quantity % 2 ) * $offer['single_cents'] : $quantity * $offer['single_cents'];
     }
 
     private static function matches( $item ) {
-        return self::product_id() > 0 && (int) ( $item['product_id'] ?? 0 ) === self::product_id()
+        return (bool) self::managed_product( (int) ( $item['product_id'] ?? 0 ) )
             && empty( $item['variation_id'] );
     }
 
@@ -63,10 +84,11 @@ final class Belmains_Commerce {
             && (float) $quantity >= ( $allow_zero ? 0 : 1 ) && (float) $quantity <= self::MAX_QUANTITY;
     }
 
-    public static function cart_quantity( $cart, $except_key = null ) {
+    public static function cart_quantity( $cart, $except_key = null, $product_id = null ) {
         $quantity = 0;
+        $product_id = null === $product_id ? self::product_id() : (int) $product_id;
         foreach ( $cart->get_cart() as $key => $item ) {
-            if ( $key !== $except_key && self::matches( $item ) ) { $quantity += (float) $item['quantity']; }
+            if ( $key !== $except_key && (int) $item['product_id'] === $product_id && self::matches( $item ) ) { $quantity += (float) $item['quantity']; }
         }
         return $quantity;
     }
@@ -78,15 +100,20 @@ final class Belmains_Commerce {
      * This makes recalculation idempotent and avoids a 150.00 total for two gloves.
      */
     public static function apply_offer( $cart ) {
-        if ( ! self::product() ) { return; }
-        $quantity = self::cart_quantity( $cart );
-        if ( ! self::valid_quantity( $quantity ) ) { return; }
+        if ( 'EUR' !== get_woocommerce_currency() ) { return; }
+        $ids = array_unique( array_column( $cart->get_cart(), 'product_id' ) );
+        foreach ( $ids as $id ) {
+        $product = self::managed_product( $id );
+        if ( ! $product ) { continue; }
+        $offer = self::offer_for_product( $product );
+        $quantity = self::cart_quantity( $cart, null, $id );
+        if ( ! self::valid_quantity( $quantity ) ) { continue; }
         $quantity = (int) $quantity;
-        $total_cents = self::price_cents( $quantity );
+        $total_cents = self::price_cents( $quantity, $product );
         $allocated = 0;
         $processed = 0;
         foreach ( $cart->get_cart() as $key => $item ) {
-            if ( ! self::matches( $item ) || ! self::valid_quantity( $item['quantity'] ) ) { continue; }
+            if ( (int) $item['product_id'] !== (int) $id || ! self::matches( $item ) || ! self::valid_quantity( $item['quantity'] ) ) { continue; }
             $line_quantity = (int) $item['quantity'];
             $processed += $line_quantity;
             $next = intdiv( $total_cents * $processed, $quantity );
@@ -97,24 +124,27 @@ final class Belmains_Commerce {
             $cart->cart_contents[ $key ]['data']->set_price( $line_cents / 100 / $line_quantity );
             $cart->cart_contents[ $key ]['_belmains_offer_quantity'] = $quantity;
             $cart->cart_contents[ $key ]['_belmains_offer_line_cents'] = $line_cents;
+            $cart->cart_contents[ $key ]['_belmains_duo_applied'] = $offer['duo_enabled'] && $quantity >= 2;
+        }
         }
     }
 
     private static function unavailable_message() {
-        return 'Le gant Belmains est temporairement indisponible à la commande.';
+        return 'Ce produit est temporairement indisponible à la commande.';
     }
 
     private static function quantity_message() {
-        return 'Choisissez un nombre entier de gants, entre 1 et ' . self::MAX_QUANTITY . '.';
+        return 'Choisissez un nombre entier de produits, entre 1 et ' . self::MAX_QUANTITY . '.';
     }
 
     public static function validate_add( $passed, $product_id, $quantity, $variation_id = 0, $variation = array(), $cart_item_data = array() ) {
-        if ( (int) $product_id !== self::product_id() || ! self::product_id() ) { return $passed; }
-        if ( ! self::product() || $variation_id ) {
+        $product = self::managed_product( $product_id );
+        if ( ! $product ) { return $passed; }
+        if ( 'EUR' !== get_woocommerce_currency() || 'publish' !== $product->get_status() || $variation_id ) {
             wc_add_notice( self::unavailable_message(), 'error' );
             return false;
         }
-        $in_cart = WC()->cart ? self::cart_quantity( WC()->cart ) : 0;
+        $in_cart = WC()->cart ? self::cart_quantity( WC()->cart, null, $product_id ) : 0;
         if ( ! self::valid_quantity( $quantity ) || ! self::valid_quantity( $in_cart + (float) $quantity ) ) {
             wc_add_notice( self::quantity_message(), 'error' );
             return false;
@@ -124,7 +154,7 @@ final class Belmains_Commerce {
 
     public static function validate_update( $passed, $key, $item, $quantity ) {
         if ( ! self::matches( $item ) ) { return $passed; }
-        $others = WC()->cart ? self::cart_quantity( WC()->cart, $key ) : 0;
+        $others = WC()->cart ? self::cart_quantity( WC()->cart, $key, $item['product_id'] ) : 0;
         if ( ! self::valid_quantity( $quantity, true ) || ! self::valid_quantity( $others + (float) $quantity, true ) ) {
             wc_add_notice( self::quantity_message(), 'error' );
             return false;
@@ -133,12 +163,11 @@ final class Belmains_Commerce {
     }
 
     private static function cart_error( $cart ) {
-        $quantity = self::cart_quantity( $cart );
-        if ( ! $quantity ) { return ''; }
-        if ( ! self::product() ) { return self::unavailable_message(); }
-        if ( ! self::valid_quantity( $quantity ) ) { return self::quantity_message(); }
         foreach ( $cart->get_cart() as $item ) {
-            if ( self::matches( $item ) && ! self::valid_quantity( $item['quantity'] ) ) { return self::quantity_message(); }
+            if ( ! self::matches( $item ) ) { continue; }
+            $product = self::managed_product( $item['product_id'] );
+            if ( 'EUR' !== get_woocommerce_currency() || 'publish' !== $product->get_status() ) { return self::unavailable_message(); }
+            if ( ! self::valid_quantity( $item['quantity'] ) || ! self::valid_quantity( self::cart_quantity( $cart, null, $item['product_id'] ) ) ) { return self::quantity_message(); }
         }
         return '';
     }
@@ -155,7 +184,7 @@ final class Belmains_Commerce {
     }
 
     public static function quantity_args( $args, $product ) {
-        if ( $product && $product->get_id() === self::product_id() ) {
+        if ( $product && self::managed_product( $product->get_id() ) ) {
             $args['step'] = 1;
             $current_max = isset( $args['max_value'] ) ? (float) $args['max_value'] : -1;
             $args['max_value'] = $current_max >= 0 ? min( $current_max, self::MAX_QUANTITY ) : self::MAX_QUANTITY;
@@ -164,7 +193,7 @@ final class Belmains_Commerce {
     }
 
     public static function cart_item_price( $html, $item, $key ) {
-        if ( self::matches( $item ) && (int) ( $item['_belmains_offer_quantity'] ?? 0 ) >= 2 ) {
+        if ( self::matches( $item ) && ! empty( $item['_belmains_duo_applied'] ) ) {
             return '<span class="belmains-offer-price">Offre duo appliquée</span>';
         }
         return $html;
@@ -173,13 +202,13 @@ final class Belmains_Commerce {
     public static function mini_cart_quantity( $html, $item, $key ) {
         if ( ! self::matches( $item ) || ! isset( $item['_belmains_offer_line_cents'] ) ) { return $html; }
         $quantity = (int) $item['quantity'];
-        return '<span class="quantity">' . esc_html( $quantity . ( 1 === $quantity ? ' gant' : ' gants' ) )
+        return '<span class="quantity">' . esc_html( $quantity . ( 1 === $quantity ? ' produit' : ' produits' ) )
             . ' — ' . WC()->cart->get_product_subtotal( $item['data'], $quantity ) . '</span>';
     }
 
     public static function item_data( $data, $item ) {
-        if ( self::matches( $item ) && (int) ( $item['_belmains_offer_quantity'] ?? 0 ) >= 2 ) {
-            $data[] = array( 'key' => 'Offre', 'value' => 'Tarif duo appliqué par paire de gants dans le panier.' );
+        if ( self::matches( $item ) && ! empty( $item['_belmains_duo_applied'] ) ) {
+            $data[] = array( 'key' => 'Offre', 'value' => 'Tarif duo appliqué par paire de produits dans le panier.' );
         }
         return $data;
     }
@@ -194,8 +223,9 @@ final class Belmains_Commerce {
     /** Configuration for the theme; do not cache personalized cart pages. */
     public static function frontend_config() {
         $product = self::product();
+        if ( class_exists( 'Belmains_Builder' ) && Belmains_Builder::is_preview() ) { return array( 'available' => false, 'preview' => true ); }
         if ( ! $product ) { return array( 'available' => false ); }
-        return array(
+        return array_merge( self::offer_for_product( $product ), array(
             'available' => $product->is_purchasable() && $product->is_in_stock(),
             'product_id' => $product->get_id(),
             'ajax_url' => WC_AJAX::get_endpoint( 'belmains_add_to_cart' ),
@@ -204,11 +234,8 @@ final class Belmains_Commerce {
             'checkout_url' => wc_get_checkout_url(),
             'cart_count' => WC()->cart ? WC()->cart->get_cart_contents_count() : 0,
             'currency' => 'EUR',
-            'single_cents' => self::SINGLE_CENTS,
-            'duo_cents' => self::DUO_CENTS,
-            'regular_cents' => self::REGULAR_CENTS,
             'max_quantity' => self::MAX_QUANTITY,
-        );
+        ) );
     }
 
     private static function ajax_error( $message, $status = 400 ) {

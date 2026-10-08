@@ -1,6 +1,7 @@
 <?php
 /** Belmains storefront theme. Products and pages are provisioned separately. */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
+require_once get_theme_file_path( 'inc/storefront.php' );
 
 function belmains_setup() {
     add_theme_support( 'title-tag' );
@@ -27,15 +28,9 @@ function belmains_enqueue_assets() {
         wp_enqueue_script( 'belmains-gsap', get_theme_file_uri( 'assets/gsap.min.js' ), array(), $version, $args );
         wp_enqueue_script( 'belmains-scrolltrigger', get_theme_file_uri( 'assets/ScrollTrigger.min.js' ), array( 'belmains-gsap' ), $version, $args );
         wp_enqueue_script( 'belmains-interactions', get_theme_file_uri( 'interactions.js' ), array( 'belmains-scrolltrigger' ), $version, $args );
-        $product = function_exists( 'belmains_commerce_product' ) ? belmains_commerce_product() : false;
-        if ( $product ) {
-            wp_localize_script( 'belmains-interactions', 'BelmainsShop', array(
-                'endpoint' => WC_AJAX::get_endpoint( 'belmains_add_to_cart' ),
-                'nonce' => wp_create_nonce( 'belmains_add_to_cart' ),
-                'productId' => $product->get_id(), 'cartUrl' => wc_get_cart_url(),
-                'trackingUrl' => belmains_tracking_url(),
-            ) );
-        }
+        $config = class_exists( 'Belmains_Commerce' ) ? Belmains_Commerce::frontend_config() : array( 'available' => false );
+        $config = array_merge( $config, belmains_display_offers() );
+        wp_localize_script( 'belmains-interactions', 'BelmainsShop', $config );
     }
 }
 add_action( 'wp_enqueue_scripts', 'belmains_enqueue_assets' );

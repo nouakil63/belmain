@@ -1,6 +1,20 @@
 # Belmains Commerce
 
-Extension gratuite qui relie la fiche Belmains à un vrai panier WooCommerce. Elle ne crée automatiquement ni produit, ni page, ni moyen de paiement, ni réglage fiscal. Son activation n’envoie aucun e-mail et ne crée aucune commande.
+Extension gratuite qui relie la fiche Belmains à un vrai panier WooCommerce et fournit l’éditeur **Ma boutique**. Elle ne crée automatiquement ni produit, ni page, ni moyen de paiement, ni réglage fiscal. Son activation n’envoie aucun e-mail et ne crée aucune commande.
+
+## Modifier sa boutique
+
+Ouvrir **Ma boutique** dans le menu WordPress. Choisir le produit à travailler, puis une rubrique : informations et prix, images et vidéo, ou textes de la page. Les photos se choisissent dans la médiathèque WordPress ; les listes peuvent être complétées et réordonnées. Le stock et la référence restent accessibles dans la fiche WooCommerce depuis le lien fourni : publier un texte ou un nouveau prix ne réécrit pas le stock.
+
+- **Enregistrer le brouillon** conserve les modifications dans WordPress sans les afficher aux visiteurs. Le brouillon peut être repris depuis un autre appareil.
+- **Prévisualiser** enregistre le brouillon puis ouvre un aperçu réservé aux personnes autorisées. L’aperçu ne permet pas d’acheter avec des prix de brouillon.
+- **Publier les modifications** applique les contenus et prix au produit déjà affiché.
+- **Publier et afficher ce produit** remplace le produit mis en avant sur l’accueil après une confirmation explicite dans l’éditeur.
+- **+ Préparer un nouveau produit** duplique les contenus dans un autre produit en brouillon. Sa référence est vide et son stock est à zéro : renseigner son stock réel dans WooCommerce avant la vente. Les photos déjà présentes sont réutilisées, sans copie inutile de fichiers.
+
+Chaque produit conserve son propre contenu et son brouillon. Changer de produit mis en avant ne supprime ni l’ancien produit ni les anciennes commandes. Les modifications non enregistrées sont signalées avant de quitter l’éditeur. Si une autre session a modifié la fiche, recharger les données avant d’enregistrer pour éviter d’écraser son travail.
+
+Le thème Belmains 0.4.0 est nécessaire pour afficher ces contenus sur la version 3 du site. Les champs contrôlent une mise en page prévue pour la boutique : aucun code HTML à écrire. Les données du builder sont enregistrées dans la base WordPress et les nouveaux médias dans la médiathèque ; les ZIP de mise à jour contiennent uniquement le code. Une migration doit transférer aussi la base et les médias.
 
 ## Installation
 
@@ -27,7 +41,7 @@ La quantité indique toujours le **nombre réel de gants**. Une même référenc
 
 La formule est `floor(quantité / 2) × 149,99 + (quantité % 2) × 89,99`. Elle s’applique à chaque calcul du panier et après restauration de session, y compris aux achats via l’API Store de WooCommerce. Deux ajouts successifs d’un gant déclenchent donc aussi l’offre duo. Les champs de prix envoyés par le navigateur ne sont pas lus.
 
-Les tarifs sont centralisés dans les constantes PHP de l’extension. Modifier seulement le prix produit dans l’administration ne modifie pas l’offre du panier : faire évoluer ces constantes et la présentation du thème ensemble. La promotion duo est appliquée dans l’unité fiscale de prix configurée dans WooCommerce ; pour afficher exactement les montants convenus au client, la configuration TTC/HT et les taux doivent être cohérents. L’extension bloque ce produit si la boutique utilise une autre devise.
+Les prix unitaires proviennent du produit WooCommerce. L’offre duo est paramétrée par produit dans **Ma boutique**, puis utilisée par la fiche et le panier après publication. Les montants ci-dessus correspondent au gant actuel et peuvent évoluer depuis l’éditeur. Désactiver l’offre duo fait revenir au prix unitaire pour chaque article. Les produits déjà présents dans un panier conservent leur propre règle d’offre quand le produit mis en avant change. La promotion duo est appliquée dans l’unité fiscale de prix configurée dans WooCommerce ; pour afficher exactement les montants convenus au client, la configuration TTC/HT et les taux doivent être cohérents. L’extension bloque le produit mis en avant si la boutique utilise une autre devise.
 
 Les calculs répartissent des centimes entiers entre les lignes. WooCommerce reçoit le prix unitaire non arrondi, puis calcule et arrondit le montant de la ligne. Le panier classique affiche « Offre duo appliquée » au lieu d’un trompeur prix unitaire arrondi à 75,00 €. Le montant facturé est celui du total WooCommerce ; les remboursements utilisent les totaux et taxes enregistrés sur la commande. Pour un remboursement d’une seule unité d’un duo, vérifier le montant partiel proposé par WooCommerce : 149,99 € ne peut pas se diviser en deux montants identiques au centime.
 

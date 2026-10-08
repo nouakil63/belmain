@@ -1,4 +1,4 @@
-Belmains — thème de préproduction 0.3.0
+Belmains — thème de préproduction 0.4.0
 
 Installer le ZIP dans Apparence > Thèmes > Ajouter > Téléverser un thème.
 Activer sur un WordPress de préparation. L’accueil s’affiche automatiquement.
@@ -6,7 +6,10 @@ Activer sur un WordPress de préparation. L’accueil s’affiche automatiquemen
 Ce premier livrable migre le design, les ressources locales et les interactions.
 La vidéo et les cinq visuels sont inclus. Aucun constructeur de pages requis.
 Les pages WordPress ordinaires utilisent leur contenu éditable dans WordPress.
-L’accueil est pour l’instant un modèle PHP dédié : template-parts/landing.php.
+L’accueil conserve le design validé et se modifie dans « Ma boutique » grâce à
+Belmains Commerce 0.2.0 : textes, médias, couleurs, sections, prix et offres.
+Les brouillons sont enregistrés dans WordPress. L’aperçu privé ne modifie pas
+la boutique publique ; la publication est une action volontaire.
 
 Le panier, les offres et le stock sont gérés par WooCommerce et Belmains Commerce.
 Le suivi utilise les commandes WooCommerce et leurs informations d’expédition.

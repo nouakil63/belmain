@@ -55,7 +55,7 @@ def validate_relative_path(component: str, relative: PurePosixPath) -> None:
         }
     elif parts[0] == "assets":
         allowed = suffix in ASSET_EXTENSIONS
-    elif component == "belmains" and parts[0] == "template-parts":
+    elif component == "belmains" and parts[0] in {"template-parts", "inc"}:
         allowed = suffix == ".php"
     elif component != "belmains" and parts[0] == "includes":
         allowed = suffix == ".php"
@@ -83,7 +83,7 @@ def collect_files(root: Path, component: str) -> list[tuple[Path, PurePosixPath]
                 for part in relative.parts
             ):
                 raise ValueError(f"Forbidden package directory: {component}/{relative}")
-            if relative.parts[0] not in ({"assets", "template-parts"} if component == "belmains" else {"assets", "includes"}):
+            if relative.parts[0] not in ({"assets", "template-parts", "inc"} if component == "belmains" else {"assets", "includes"}):
                 raise ValueError(f"Unexpected package directory: {component}/{relative}")
         for name in filenames:
             path = Path(current) / name
