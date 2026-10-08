@@ -1,4 +1,4 @@
-Belmains — thème de préproduction 0.4.0
+Belmains — thème de préproduction 0.4.1
 
 Installer le ZIP dans Apparence > Thèmes > Ajouter > Téléverser un thème.
 Activer sur un WordPress de préparation. L’accueil s’affiche automatiquement.

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Belmains Commerce
  * Description: Relie la fiche Belmains au panier WooCommerce et applique les offres par quantité réelle de gants.
- * Version: 0.2.0
+ * Version: 0.2.1
  * Requires at least: 6.3
  * Requires PHP: 8.0
  * Requires Plugins: woocommerce
@@ -14,7 +14,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 final class Belmains_Commerce {
-    public const VERSION = '0.2.0';
+    public const VERSION = '0.2.1';
     public const SINGLE_CENTS = 8999;
     public const DUO_CENTS = 14999;
     public const REGULAR_CENTS = 10999;

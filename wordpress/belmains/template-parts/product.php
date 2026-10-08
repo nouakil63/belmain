@@ -1,6 +1,13 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) { exit; }
-extract( $args, EXTR_SKIP );
+// WordPress exposes query variables such as $name before loading template parts.
+// Assign our arguments explicitly so a query slug cannot replace the product title.
+$view = $args['view'];
+$product = $args['product'];
+$can_buy = $args['can_buy'];
+$offer = $args['offer'];
+$name = $args['name'];
+$cart_url = $args['cart_url'];
 $gallery = array();
 $product_heading = belmains_value( 'hero_enabled' ) && trim( wp_strip_all_tags( belmains_value( 'hero_title' ) ) ) ? 'h2' : 'h1';
 $video = belmains_value( 'product_video', array() );
