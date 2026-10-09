@@ -1,6 +1,6 @@
 # Préparer les mises à jour WordPress
 
-GitHub vérifie le code et prépare les trois archives installables de Belmains. **Cette procédure ne met pas le site en ligne et ne déploie pas les mises à jour sur WordPress.** Le raccordement au futur hébergement reste à configurer lorsque le domaine, le serveur et ses accès seront connus.
+GitHub vérifie le code et prépare les trois archives installables de Belmains. **Ce workflow ne déploie pas les mises à jour sur WordPress.** Une copie est installée chez Infomaniak à `https://preparation.belmains.com/` depuis le 9 octobre 2026 ; le déploiement automatique reste à raccorder.
 
 ## Ce qui est automatisé
 
@@ -37,6 +37,10 @@ Avant une mise à jour, modifier l'en-tête `Version` du composant concerné et 
 
 La première migration est une opération distincte des mises à jour de code. Elle doit transférer l'état existant de la boutique, y compris sa base et ses médias, depuis une sauvegarde de préparation contrôlée. Ne pas recréer le produit ni réinitialiser son stock avec le script de provisionnement lors de cette migration.
 
+**Périmètre de la base locale :** la boutique et l'installation de validation partagent la même base MySQL, avec deux préfixes distincts. Sélectionner explicitement toutes les tables du préfixe commercial `wp_` et exclure `bcrm_validation_` lors de l'export. Un export complet de la base emporterait aussi les données de test. Contrôler la liste des tables dans l'export et inclure celles des extensions nouvellement installées ; le nombre constaté le 8 octobre 2026 est de 57 tables commerciales, dont trois tables Revolut. Ce nombre doit être recalculé si les extensions évoluent. Les anciennes sauvegardes globales ne sont pas des paquets de migration prêts à importer.
+
+Conserver les sauvegardes SQL et la configuration locale dans un emplacement privé hors du dépôt et du répertoire Web. La copie de `wp-config.php` sert au retour arrière local : ne pas la transférer telle quelle vers l'hébergement. Recréer la configuration de destination et préserver les protections de préparation (paiements désactivés, mode test, site non ouvert à la vente) avant sa première requête HTTP. Exclure les caches, journaux et anciennes sauvegardes de l'archive de transfert. Vérifier l'intégrité de l'archive ne remplace pas un essai de restauration.
+
 1. Choisir l'hébergement et le domaine, obtenir les accès à son panneau de gestion et à WordPress, activer HTTPS.
 2. Créer une copie de préparation non indexée. Installer les versions compatibles de WordPress, PHP et WooCommerce ; migrer la base et les médias avec l'outil fourni par l'hébergeur ou une méthode adaptée à ses accès. WP-CLI n'est pas supposé disponible.
 3. Adapter les URL avec un outil WordPress qui préserve les données sérialisées, puis contrôler les liens, les images et le panier. Ne pas effectuer un remplacement brut dans un export SQL.
@@ -44,6 +48,18 @@ La première migration est une opération distincte des mises à jour de code. E
 5. Tester sur la copie une commande, une annulation et un remboursement avec remise en stock, le suivi invité, les notifications et l'affichage mobile. Vérifier ensuite les réglages de vente réels avant d'ouvrir le site.
 
 ## Raccorder les futures mises à jour automatiques
+
+### État de la copie Infomaniak au 9 octobre 2026
+
+La migration a été effectuée via WebFTP et phpMyAdmin authentifiés depuis le Manager. Le site utilise WordPress 7.1.3 et les tables `wp_`. Les tables `wp_1527127_` de l’installation vierge sont conservées, avec une sauvegarde SQL et une copie de sa configuration dans un emplacement local privé. La sauvegarde de départ contient 57 tables ; l’import prend les 55 tables hors utilisateurs, puis conserve les deux tables du nouvel administrateur Infomaniak sous le préfixe de destination. Les mots de passe et clés de configuration ne sont pas réécrits à partir de l’installation locale. L’adresse administrative est `contact@belmains.com`.
+
+Les URL ont été adaptées avec `wp search-replace --export --precise`, avec extensions chargées pour conserver les objets sérialisés. Les GUID et les comptes locaux ont été exclus du remplacement. L’import ne contient aucune suppression de table. Les fichiers `wp-content/` sont transférés sans caches ni journaux ; l’archive est conservée hors de la racine Web.
+
+`tools/staging-guard.php` est installé comme `wp-content/mu-plugins/belmains-staging-guard.php` **sur cette copie uniquement**. Il bloque les visiteurs publics, l’API REST non administrative, les paiements et les e-mails ; il impose noindex et empêche le lanceur asynchrone Action Scheduler. La configuration conserve `WCPAY_DEV_MODE=true`, `WP_ENVIRONMENT_TYPE=staging`, `DISABLE_WP_CRON=true` et `WP_CACHE=false`. Ce fichier reste actif même si un réglage de visibilité est changé dans l’administration. Sa suppression relève de la validation d’ouverture, avec remise en service explicite des connecteurs et tâches planifiées. Il n’est pas inclus dans les trois ZIP de mise à jour.
+
+Le bloc `WPSuperCache` de `.htaccess` a été retiré sur la préparation : il servait encore la page vierge en cache aux visiteurs déconnectés, en contournant PHP malgré `WP_CACHE=false`. Les règles WordPress, la compression et la protection Git sont conservées. Le contrôle après déconnexion confirme désormais la page « Boutique en cours de préparation ». Le cache pleine page restera désactivé jusqu’à la définition de ses exclusions (panier, commande, compte, contact et administration). Transférer les fichiers de configuration validés par le téléversement WebFTP ; la saisie du contenu PHP dans son éditeur a produit une erreur de syntaxe, corrigée par l’envoi du fichier exact.
+
+Pour revenir à l’installation vierge, restaurer sa configuration privée (ancien préfixe de tables) et retirer la protection de préparation uniquement si nécessaire. Aucun retour de base ne doit viser des commandes reçues après l’ouverture. Ne pas transférer les tables locales de validation ni publier les archives SQL.
 
 La cible sera uniquement le code du thème et des deux plugins Belmains. Pour automatiser le transfert, il faudra connaître le domaine HTTPS, le mécanisme offert par l'hébergeur (déploiement Git, SFTP/SSH ou autre), le chemin exact de WordPress et la manière de sauvegarder/restaurer le site.
 
