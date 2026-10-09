@@ -88,7 +88,7 @@ Le paquet et le script de transfert ont été contrôlés par SHA-256, puis les 
 Restent avant la mise en vente :
 
 1. Informer Iziship du changement d'URL de connexion, sans recréer la clé. Les médias existants sur le sous-domaine peuvent rester accessibles ; tout remplacement ultérieur de contenu sérialisé doit utiliser un outil compatible WordPress.
-2. Présenter le domaine à Revolut après reconnexion. La publication ne confirme ni l'acceptation du dossier Merchant API ni l'ouverture des paiements.
+2. Faire autoriser l'accès à l'intégration WooCommerce par la propriétaire dans Revolut. Après reconnexion le 10 octobre, le dossier API indique « Nous sommes déjà en train de vérifier vos informations » et « Aucune action supplémentaire requise ». L'adresse actuellement examinée n'a pas pu être confirmée. Le bouton « Connecter » de l'intégration WooCommerce répond « Vous n'y avez pas accès » pour Norman Ouakil. Aucun raccordement ni paiement réel n'a été activé.
 3. Valider les retours, la fiscalité, les e-mails, les paiements et le parcours mobile avant l'ouverture commerciale.
 
 `tests/catalog-integration.php` vérifie les refus d'achat/checkout classique et Store API, le maintien de l'API administrative, le blocage REST public, les e-mails, les avis et l'indexation, uniquement sur les tables locales `bcrm_validation_`. Aucun produit ni commande n'est créé par ces contrôles.
