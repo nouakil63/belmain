@@ -1,0 +1,53 @@
+/*
+Theme Name: Belmains
+Description: Design Belmains validé avec fiche produit, panier et commande WooCommerce.
+Version: 0.4.2
+Requires at least: 6.3
+Requires PHP: 8.0
+Author: NOK’S Consulting
+Text Domain: belmains
+*/
+body.belmains-page{background:#fdfbf8;color:#181d25}
+.belmains-page-header{padding:24px clamp(20px,5vw,72px);display:flex;align-items:center;justify-content:space-between;gap:24px;background:white;border-bottom:1px solid #e9e3da}
+.belmains-page-header img{display:block;width:200px;height:auto}
+.belmains-page-header a{color:var(--belmains-brand, #63182e);text-decoration:none}
+.belmains-page-content{max-width:1100px;min-height:60vh;margin:auto;padding:64px 24px;font-size:16px;line-height:1.8}
+.belmains-page-content h1{font-size:clamp(32px,5vw,54px);line-height:1.2;margin-bottom:30px;color:#431321}
+.belmains-page-content h2,.belmains-page-content h3{margin:28px 0 14px;line-height:1.3}
+.belmains-page-content p{margin-bottom:18px}.belmains-page-content a{color:var(--belmains-brand, #63182e);text-decoration:underline}
+.belmains-page-content img{max-width:100%;height:auto}.belmains-page-content ul,.belmains-page-content ol{padding-left:24px}
+.belmains-page-footer{text-align:center;padding:30px 20px;background:#f5f0e7;color:var(--belmains-brand, #63182e);font-size:13px}
+.admin-bar #shopify-section-menu_kooldogy_jpEgq8{top:32px!important}
+@media(max-width:782px){.admin-bar #shopify-section-menu_kooldogy_jpEgq8{top:46px!important}}
+@media(max-width:600px){.admin-bar #shopify-section-menu_kooldogy_jpEgq8{top:0!important}.belmains-page-header{flex-wrap:wrap}.belmains-page-content{padding:40px 20px}}
+
+#belmains-product-form{margin:0}#belmains-product-form .add-to-cart{width:100%}.purchase-feedback{padding:12px 14px;border-radius:10px;background:#f2e7eb;color:var(--belmains-brand, #63182e);font-size:14px;margin-top:12px}.purchase-feedback[hidden]{display:none}.purchase-note{font-size:12px;color:#69625d;margin-top:12px}.add-to-cart:disabled{opacity:.6;cursor:not-allowed}
+
+.belmains-contact-form{max-width:720px;background:#fff;padding:clamp(22px,4vw,40px);border:1px solid #e5dcd2;border-radius:20px;margin:28px 0}
+.belmains-contact-form label{display:block;font-size:14px;line-height:1.5;font-weight:500;margin-bottom:8px;color:#352f2c}
+.belmains-contact-form :is(input:not([type="hidden"]):not([type="checkbox"]),textarea,select){display:block;width:100%;max-width:100%;min-height:48px;margin-top:8px;padding:12px 14px;border:1px solid #c9bdb2;border-radius:9px;background:#fff;color:#181d25;font:inherit;font-size:16px;line-height:1.5;box-sizing:border-box}
+.belmains-contact-form textarea{min-height:160px;resize:vertical}
+.belmains-contact-form :is(input,textarea,select,button):focus-visible{outline:3px solid #a5783d;outline-offset:3px}
+.belmains-contact-form button[type="submit"]{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:13px 28px;border:1px solid var(--belmains-brand, #63182e);border-radius:28px;background:var(--belmains-brand, #63182e);color:white;font:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.belmains-contact-form button[type="submit"]:hover{background:#431321}
+.belmains-contact-form small{display:block;color:#6c625d;font-size:13px;line-height:1.6}
+.belmains-contact-notice{max-width:720px;margin:24px 0;padding:18px 22px;border-radius:12px;border-left:4px solid var(--belmains-brand, #63182e);background:#f2e7eb;color:#431321}
+.belmains-contact :is(.woocommerce-message,.woocommerce-error){max-width:720px;padding:18px 22px;border-radius:12px;border:1px solid #e5dcd2;border-left:4px solid var(--belmains-brand, #63182e);background:#f2e7eb;color:#431321;list-style:none}
+.belmains-contact :is(.woocommerce-message,.woocommerce-error)::before{display:none}
+.belmains-contact .woocommerce-message{background:#edf3ed;border-left-color:#416847;color:#244b2b}
+.belmains-contact-field-error{display:block;color:#a02a22;font-size:13px;margin-top:6px}
+.belmains-contact-form [aria-invalid="true"]{border-color:#a02a22!important}
+.belmains-contact-privacy,.belmains-contact-required{font-size:13px;color:#6c625d;line-height:1.65}
+.belmains-contact-form [hidden]{display:none!important}
+@media(max-width:600px){.belmains-contact-form button[type="submit"]{width:100%}.belmains-commerce-nav{gap:4px 18px}}
+/* Editor-driven variants retain the approved V3 spacing and responsive layout. */
+.belmains-preview-banner{padding:14px 22px;background:#f6e6bb;color:#33280c;text-align:center;font-size:14px;line-height:1.6}.belmains-preview-banner a{font-weight:700;text-decoration:underline;margin-left:12px}
+.kd-menu-menu_kooldogy_jpEgq8{--bg:#fff;--bg-rgb:255,255,255;--ink:#181d25;--accent:var(--gold);--accent-rgb:191,151,86;--opacity-scrolled:.7}
+.hero-editorial{--bg:#fff;--ink:#181d25;--muted:#6b5d4e;--accent:var(--red);--btn-bg:#f8f5ee;--btn-text:#000}
+.promesses{--bg:#f8f5ee;--card-bg:#fff;--ink:#181d25;--muted:#181d25;--accent:var(--red)}
+.kd-testimonials-testimonial_custom_JztQEh{--bg:#f8f5ee;--ink:#181d25;--muted:#6b5d4e;--accent:var(--gold);--card-bg:#fff}
+.faq-section{--bg:#fff;--card-bg:#f8f5ee;--border:var(--red);--ink:#181d25;--muted:#4a4640;--accent:var(--red)}
+.belmains-text-only{grid-template-columns:minmax(0,1fr)!important;max-width:860px;margin-inline:auto}.belmains-text-only .iwt-content{max-width:none}.belmains-reviews-note{font-size:12px;line-height:1.6;color:#73695d;margin:16px 0 0}
+.rich-text__heading em{color:var(--red)}.product-price .woocommerce-Price-amount{font-size:inherit}.product-price .woocommerce-Price-currencySymbol{font-size:inherit}.promesses-grid{grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr))}
+.kd-drawer-close-menu_kooldogy_jpEgq8{font-size:30px}.kd-testimonials-nav-testimonial_custom_JztQEh{font-size:25px}
+@media(max-width:600px){.belmains-preview-banner{font-size:12px;padding:12px 16px}.belmains-preview-banner a{display:block;margin:4px 0 0}.promesses-grid{grid-template-columns:1fr}}
