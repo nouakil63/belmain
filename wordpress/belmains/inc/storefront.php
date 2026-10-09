@@ -18,8 +18,10 @@ function belmains_storefront_view() {
 
 function belmains_value( $key, $fallback = '' ) {
     $view = belmains_storefront_view();
-    return $view['values'][ $key ] ?? $fallback;
+    return apply_filters( 'belmains_storefront_value', $view['values'][ $key ] ?? $fallback, $key );
 }
+
+function belmains_catalog_only() { return (bool) apply_filters( 'belmains_catalog_only', false ); }
 
 function belmains_rich( $value ) { return wp_kses( (string) $value, array( 'em' => array(), 'strong' => array(), 'br' => array() ) ); }
 function belmains_paragraphs( $value ) { return wpautop( esc_html( (string) $value ) ); }

@@ -71,6 +71,23 @@ Tant que ces éléments ne sont pas connus, télécharger les trois ZIP validés
 
 ## Sauvegarde et retour à la version précédente
 
+### Vitrine sans vente — préparation du 9 octobre 2026
+
+`belmains.com` et `www.belmains.com` sont maintenant rattachés au site Infomaniak existant comme alias, avec mise à jour DNS et certificat Let's Encrypt. Le domaine principal du site et les options WordPress restent `preparation.belmains.com` tant que la publication ci-dessous n'est pas terminée. L'enregistrement A de `belmains.com` répond avec l'IP Infomaniak ; le MX répond toujours chez Infomaniak. HTTPS présente actuellement la page de préparation, sans avertissement de certificat.
+
+Le thème 0.4.2 ajoute un affichage de vitrine compatible avec `tools/public-catalog-guard.php`. Ce garde est destiné à **remplacer**, sous le même nom distant `wp-content/mu-plugins/belmains-staging-guard.php`, le garde de préparation. Ne pas installer les deux simultanément. Il autorise seulement l'accueil publié pour les visiteurs : panier, compte, formulaires et brouillons restent fermés. Les achats sont bloqués par les contrôles WooCommerce et Store API, pas seulement par le bouton. Les e-mails, l'audience, l'indexation et le lanceur asynchrone restent désactivés. Les avis de démonstration et les conditions de livraison/retour non finalisées ne sont pas présentés comme disponibles à l'achat. Le contact de cette vitrine passe par `mailto:contact@belmains.com`.
+
+Avant remplacement, un export privé complet de la base distante a été conservé hors dépôt et hors racine Web (70 tables, y compris les tables de l'installation vierge et la clé Iziship existante). Un ZIP limité aux cinq fichiers de thème modifiés et au garde, ainsi qu'un ZIP inverse, sont préparés hors dépôt. **Ces fichiers ne sont pas encore déployés : le contrôle de sécurité du navigateur a bloqué l'ouverture de la session WebFTP.** Ne pas contourner ce blocage par un autre canal de session.
+
+Pour terminer après rétablissement autorisé de WebFTP :
+
+1. Déposer l'archive limitée dans le dossier privé `backups`, puis extraire ses six fichiers dans le répertoire WordPress existant. Vérifier le rendu et le bouton désactivé. Ne pas transférer une ancienne base ni écraser les connecteurs.
+2. Passer les options scalaires `home` et `siteurl` de `https://preparation.belmains.com` à `https://belmains.com`. Les médias existants sur le sous-domaine peuvent rester accessibles ; tout remplacement ultérieur de contenu sérialisé doit utiliser un outil compatible WordPress.
+3. Vérifier les accès HTTPS déconnectés, les images, les liens de contact, le rendu mobile, l'absence d'avis de démonstration et l'impossibilité de commander. Vérifier l'administration et conserver stock/commandes inchangés. Informer Iziship du changement d'URL de connexion, sans recréer la clé.
+4. Présenter le domaine à Revolut seulement une fois la vitrine effectivement visible. La publication ne confirme ni l'acceptation du dossier Merchant API ni l'ouverture des paiements. L'ouverture commerciale nécessite toujours la validation des retours, de la fiscalité, des e-mails et des paiements.
+
+`tests/catalog-integration.php` vérifie les refus d'achat/checkout classique et Store API, le maintien de l'API administrative, le blocage REST public, les e-mails, les avis et l'indexation, uniquement sur les tables locales `bcrm_validation_`. Aucun produit ni commande n'est créé par ces contrôles.
+
 Avant chaque publication, conserver la dernière version fonctionnelle des trois ZIP, leur commit et une sauvegarde datée de la base, de `uploads/` et de la configuration du serveur dans un espace privé. Utiliser la sauvegarde de l'hébergeur ou son panneau d'administration ; conserver au moins une copie hors du serveur et vérifier qu'elle est restaurable.
 
 1. Sur une copie de préparation, restaurer une sauvegarde et contrôler les commandes, les stocks, les médias et les accès. Ne pas envoyer d'e-mails ni appeler les paiements ou Iziship réels pendant cet essai.

@@ -54,6 +54,7 @@ function belmains_tracking_url() {
 }
 
 function belmains_contact_url() {
+    if ( belmains_catalog_only() ) { return 'mailto:contact@belmains.com'; }
     $page_id = absint( get_option( 'belmains_contact_page_id' ) );
     return $page_id && 'publish' === get_post_status( $page_id ) ? get_permalink( $page_id ) : home_url( '/#contact' );
 }
