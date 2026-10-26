@@ -51,7 +51,7 @@ def validate_relative_path(component: str, relative: PurePosixPath) -> None:
     suffix = relative.suffix.casefold()
     if len(parts) == 1:
         allowed = suffix in {".php", ".css", ".js"} or relative.name.casefold() in {
-            "readme.md", "readme.txt", "license", "license.md", "license.txt",
+            "readme.md", "readme.txt", "shipping.md", "license", "license.md", "license.txt",
         }
     elif parts[0] == "assets":
         allowed = suffix in ASSET_EXTENSIONS

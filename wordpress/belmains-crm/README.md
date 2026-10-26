@@ -2,7 +2,7 @@
 
 Belmains CRM ajoute un espace de pilotage privé dans WordPress pour suivre la boutique WooCommerce, son audience consentie, ses clients et ses expéditions. Le module fonctionne sans abonnement CRM, sans bibliothèque distante et sans extension de suivi payante. L’hébergement, les paiements, la publicité et les prestations Iziship conservent leurs propres coûts.
 
-Version 0.2.0 — WordPress 6.3 minimum, PHP 8.0 minimum. WooCommerce est nécessaire pour les commandes, clients, stocks et expéditions. Le module utilise les interfaces WooCommerce et déclare sa compatibilité avec le stockage des commandes HPOS.
+Version 0.3.0 — WordPress 6.3 minimum, PHP 8.0 minimum. WooCommerce est nécessaire pour les commandes, clients, stocks et expéditions. Le module utilise les interfaces WooCommerce et déclare sa compatibilité avec le stockage des commandes HPOS.
 
 ## Installation et premier accès
 
@@ -14,7 +14,7 @@ Version 0.2.0 — WordPress 6.3 minimum, PHP 8.0 minimum. WooCommerce est néces
 
 L’activation crée les tables propres au CRM et programme la purge de l’audience. Elle ne crée aucun produit, client, commande, témoignage ou chiffre de démonstration. Sans données réelles, les états vides, les zéros et les valeurs indisponibles sont normaux.
 
-Le site de préparation actuel est `http://belmains.local/`. Le thème Belmains 0.3.0 et le plugin séparé Belmains Commerce raccordent la fiche produit au panier et à la commande WooCommerce. Le CRM exploite ces commandes ; il ne configure pas le paiement. Les moyens de paiement réels, Iziship et la fiscalité restent à finaliser avant l’ouverture des ventes.
+Le développement se teste sur une copie locale. La boutique hébergée utilise `https://belmains.com/` ; son ouverture commerciale reste une étape séparée de la mise à jour du CRM. Le thème Belmains 0.3.0 et le plugin séparé Belmains Commerce raccordent la fiche produit au panier et à la commande WooCommerce. Le CRM exploite ces commandes ; il ne configure pas le paiement. Les moyens de paiement réels, Iziship et la fiscalité restent à finaliser avant l’ouverture des ventes.
 
 ## Les huit rubriques
 
@@ -23,7 +23,7 @@ Le site de préparation actuel est `http://belmains.local/`. Le thème Belmains 
 | **Vue d’ensemble** | Commandes, chiffre d’affaires net, remboursements, panier moyen, unités vendues, clients récurrents, marge selon les coûts connus ; courbes quotidiennes ; visiteurs, sessions, sources, appareils et étapes d’achat mesurées. |
 | **Commandes** | Recherche, filtres et pagination ; détail des articles et coordonnées ; coûts historiques ; notes internes ; suivi du colis ; accès à la commande WooCommerce ; export CSV de la période. |
 | **Clients** | Clients inscrits et invités, e-mail et téléphone, commandes et dépenses sur la période, première et dernière commande de cette période, segment et export CSV. |
-| **Expéditions** | Numéro et lien de suivi, transporteur, dates et état du colis ; compteurs d’expéditions, livraisons, incidents et retours ; repère de dépassement du délai interne. |
+| **Expéditions** | Plusieurs colis et retours par commande ; transporteurs, liens officiels, dates, relais confirmé, historique, filtres, alertes de délai, CSV, message à copier et bon de préparation imprimable. |
 | **Stocks** | Produits et variations, références, disponibilité, quantité lorsqu’elle est gérée, stock bas et lien vers la fiche WooCommerce pour modifier le stock. |
 | **Marketing** | Dépenses publicitaires saisies manuellement, sources et campagnes attribuées aux commandes, chiffre d’affaires associé et ROAS lorsqu’il est calculable. |
 | **Service client** | Demandes du formulaire Contact et saisies internes, e-mail, référence, priorité, état ouvert/en attente/résolu et notes de traitement. |
@@ -43,7 +43,7 @@ Les notes et demandes SAV sont internes : aucun e-mail n’est envoyé par leur 
 
 Les analyses agrégées et recherches étendues sont limitées à 5 000 commandes. Au-delà, un avertissement indique que les résultats sont partiels et invite à réduire la période ; la marge complète n’est pas annoncée. La liste simple des commandes reste paginée. Le résumé commercial peut être conservé en cache pendant 60 secondes ; les modifications de commandes invalident ce cache.
 
-Les exports portent sur toute la période, indépendamment de la recherche ou du filtre de statut affichés. Ils sont limités à 5 000 lignes. Le SAV affiche les 200 demandes les plus récemment mises à jour ; les compteurs couvrent toutes les demandes. Le marketing limite le détail visible à 5 000 dépenses/campagnes et le signale ; son total de dépenses inclut toutes les saisies correspondantes.
+Les exports de commandes et clients portent sur toute la période, indépendamment de la recherche ou du filtre de statut affichés. L’export des colis applique au contraire les filtres visibles (recherche, transporteur, état, sens et priorité). Ils sont limités à 5 000 lignes. Le SAV affiche les 200 demandes les plus récemment mises à jour ; les compteurs couvrent toutes les demandes. Le marketing limite le détail visible à 5 000 dépenses/campagnes et le signale ; son total de dépenses inclut toutes les saisies correspondantes.
 
 ## Audience et consentement
 
@@ -65,24 +65,21 @@ Le ROAS observé est le chiffre d’affaires attribué hors taxes et après remb
 
 Cette version n’envoie pas de relances de panier abandonné, ne synchronise pas les statistiques des régies et ne suit pas les ouvertures d’e-mails.
 
-## Iziship : compte actif, connexion à réaliser
+## Expéditions et raccordement Iziship
 
-Le compte Iziship est actif, mais la boutique locale en HTTP n’est pas joignable depuis Iziship. La présence du module ne signifie donc pas que la connexion fonctionne. Il faut d’abord une boutique WordPress accessible publiquement en HTTPS.
+**Expéditions** gère jusqu’à 50 colis par commande, envoi ou retour, chacun avec son transporteur, son numéro, son état et ses dates. Les liens Chronopost, Colissimo et La Poste utilisent l’outil officiel La Poste. Mondial Relay, DPD, DHL, UPS, GLS et les autres transporteurs peuvent recevoir un lien HTTPS fourni par le logisticien. Un lien de suivi ouvre le site du transporteur ; il n’importe pas ses événements.
 
-Le raccordement préparé utilise la remontée du numéro de suivi dans la métadonnée WooCommerce **`tracking_number`**, sans achat d’une extension de suivi. Le [guide WooCommerce d’Iziship](https://wiki.iziship.co/article/01-Votre-boutique-en-ligne/02-WooCommerce/01-guide-connexion) sert de référence pour la configuration avec leur équipe.
+Le détail de commande permet d’ajouter ou modifier un colis, l’archiver et le restaurer, conserver un lien privé vers son étiquette, renseigner le relais confirmé et une note interne. Le message client est préparé à copier, sans envoi automatique. Le bon de préparation imprimable n’est pas une étiquette d’affranchissement. Les adresses de retour Chronopost et Colissimo confirmées par Iziship sont présentées selon le transporteur ; elles ne changent pas l’origine espagnole des expéditions.
 
-Une fois le domaine prêt :
+Les compteurs couvrent les colis actifs de la période de création des commandes, avant les filtres. La liste place en premier les erreurs d’import, incidents, délais dépassés et numéros manquants. Un retard utilise la date prévue renseignée ou, à défaut, la date d’expédition plus le délai interne en jours calendaires. Ce repère ne prouve pas un incident. Le statut commercial de la commande reste distinct et visible.
 
-1. Vérifier que l’adresse HTTPS de la boutique et son API WooCommerce sont accessibles à Iziship.
-2. Créer dans **WooCommerce → Réglages → Avancé → API REST** une clé dédiée à Iziship, en lecture/écriture, pour un utilisateur autorisé.
-3. Transmettre ces accès par le canal sécurisé convenu avec Iziship et demander la remontée dans `tracking_number`. Ne pas mettre les clés dans GitHub, les notes de commande ou un export.
-4. Vérifier une expédition réelle ou un essai convenu avec Iziship : numéro reçu sur la bonne commande, visibilité dans le CRM et lien de suivi correct.
+La remontée existante de **`tracking_number`** via l’API WooCommerce reste reconnue. Un nouveau numéro est conservé comme colis supplémentaire ; un numéro répété ne recrée pas le colis. La présence du numéro ne prouve pas l’expédition. « Terminée » dans WooCommerce ne prouve pas la livraison. Les états de transport sont renseignés par l’équipe ou importés au moyen du contrat facultatif décrit dans [SHIPPING.md](SHIPPING.md).
 
-Aucune clé n’est créée ni transmise automatiquement par ce plugin. **Connexions** indique les écritures de suivi reçues via l’API WooCommerce ; cette observation seule ne prouve pas l’identité du service émetteur.
+Le contrat d’événements Belmains est préparé mais **aucune compatibilité native Iziship n’est annoncée sans essai**. Il faut convenir avec leur équipe des données réellement envoyées, du transporteur et de la correspondance des références. Le [guide WooCommerce d’Iziship](https://wiki.iziship.co/article/01-Votre-boutique-en-ligne/02-WooCommerce/01-guide-connexion) reste la référence pour leurs accès. Une clé dédiée lecture/écriture, transmise par un canal sécurisé, permet leur raccordement ; aucune clé n’est créée ni transmise par le CRM.
 
-**Expédié et livré sont deux états distincts.** Iziship peut marquer la commande WooCommerce « Terminée » lors de l’expédition. Le CRM ne transforme pas cet état en livraison confirmée. Les états « En transit », « En point relais », « Livré », « Incident » et « Retourné », ainsi que leurs dates, se renseignent manuellement tant qu’une source d’événements transporteur n’est pas raccordée. Le délai de référence est un repère interne, pas une confirmation transporteur.
+Les états reçus sont horodatés, dédoublonnés et conservés dans l’historique. Un événement ancien ne remplace pas un état plus récent. Les sauvegardes concurrentes sont refusées pour éviter une perte de données. L’interface montre les 100 derniers événements reçus et exporte l’historique privé complet, jusqu’à 1 000 événements par commande. Les erreurs d’import apparaissent sur la commande et dans le filtre « Import à vérifier ».
 
-Si le transporteur ou le lien ne sont pas fournis, les compléter dans le détail de commande ; aucun lien n’est inventé. Le CRM présente un suivi principal par commande. Pour plusieurs colis, consulter également le détail WooCommerce. Le suivi est ajouté aux vues de commande autorisées et aux e-mails WooCommerce existants ; une modification manuelle du suivi n’envoie pas à elle seule un nouvel e-mail.
+Le suivi de tous les colis actifs est ajouté aux vues de commande autorisées et aux e-mails WooCommerce existants. Notes internes, étiquettes et diagnostics techniques sont exclus des informations client. Aucune saisie de suivi ne déclenche un e-mail, un remboursement, une commande d’expédition, un achat d’étiquette, un changement de stock ou de paiement. L’interrogation automatique des transporteurs et le sélecteur de relais au paiement restent à raccorder au logisticien.
 
 ## Données privées et maintenance
 

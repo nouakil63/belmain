@@ -383,6 +383,7 @@ class BCRM_Commerce {
 			$address['state'] ?? '', $address['country'] ?? '',
 		) ) ) );
 		$result['billing_phone'] = $order->get_billing_phone();
+		$result['shipping'] = BCRM_Shipping::detail( $order );
 		$result['costs'] = self::costs( $order );
 		$result['customer_note'] = $order->get_customer_note();
 		$result['notes'] = array();

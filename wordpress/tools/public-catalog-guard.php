@@ -7,7 +7,38 @@ defined( 'ABSPATH' ) || exit;
 
 add_filter( 'belmains_catalog_only', '__return_true' );
 add_filter( 'pre_option_blog_public', '__return_zero' );
-add_filter( 'pre_wp_mail', '__return_false', PHP_INT_MAX );
+// Permit only an administrator's explicit WP Mail SMTP test; transactional mail stays closed.
+function belmains_catalog_mail_gate( $pre, $atts ) {
+    if ( ! is_admin() || ! current_user_can( 'manage_options' )
+        || 'POST' !== ( $_SERVER['REQUEST_METHOD'] ?? '' )
+        || 'wp-mail-smtp-tools' !== ( $_GET['page'] ?? '' )
+        || 'test' !== ( $_GET['tab'] ?? 'test' )
+        || '1' !== ( $_POST['wp-mail-smtp-post'] ?? '' )
+        || ! is_string( $_POST['_wpnonce'] ?? null )
+        || ! wp_verify_nonce( wp_unslash( $_POST['_wpnonce'] ), 'wp-mail-smtp-test' ) ) {
+        return false;
+    }
+    $form = $_POST['wp-mail-smtp'] ?? array();
+    $recipient = is_array( $form ) && is_array( $form['test'] ?? null ) ? ( $form['test']['email'] ?? '' ) : '';
+    $recipient = is_string( $recipient ) ? is_email( wp_unslash( $recipient ) ) : false;
+    $to = $atts['to'] ?? array();
+    $to = is_array( $to ) ? array_values( $to ) : array( $to );
+    if ( ! $recipient || array( $recipient ) !== $to || ! empty( $atts['attachments'] ) ) {
+        return false;
+    }
+    $headers = $atts['headers'] ?? array();
+    $headers = is_array( $headers ) ? $headers : explode( "\n", str_replace( "\r\n", "\n", $headers ) );
+    $test_header = false;
+    foreach ( $headers as $header ) {
+        if ( ! is_string( $header ) || preg_match( '/[\r\n]|^\s*(?:Cc|Bcc)\s*:/i', $header ) ) {
+            return false;
+        }
+        $test_header = $test_header || 'X-Mailer-Type:WPMailSMTP/Admin/Test' === trim( $header );
+    }
+    // Preserve any previous suppression (notably on the isolated validation installation).
+    return $test_header ? $pre : false;
+}
+add_filter( 'pre_wp_mail', 'belmains_catalog_mail_gate', PHP_INT_MAX, 2 );
 add_filter( 'woocommerce_available_payment_gateways', '__return_empty_array', PHP_INT_MAX );
 add_filter( 'woocommerce_is_purchasable', '__return_false', PHP_INT_MAX );
 add_filter( 'woocommerce_variation_is_purchasable', '__return_false', PHP_INT_MAX );
@@ -63,7 +94,6 @@ add_action( 'template_redirect', static function () {
 }, -100 );
 add_filter( 'belmains_storefront_value', static function ( $value, $key ) {
     $overrides = array(
-        'reviews_enabled' => false,
         'promises_enabled' => false,
         'brand_ribbon_enabled' => false,
         'announcement' => 'Ouverture prochaine · Découvrez le gant Belmains',
@@ -80,6 +110,6 @@ add_filter( 'belmains_storefront_value', static function ( $value, $key ) {
 }, 10, 2 );
 add_action( 'admin_notices', static function () {
     if ( current_user_can( 'manage_options' ) ) {
-        echo '<div class="notice notice-warning"><p><strong>Vitrine publique uniquement :</strong> commandes, paiements, e-mails et mesure d’audience désactivés. La mise en vente nécessite une validation séparée.</p></div>';
+        echo '<div class="notice notice-warning"><p><strong>Vitrine publique uniquement :</strong> commandes, paiements, e-mails automatiques et mesure d’audience désactivés. Les e-mails de test lancés par un administrateur dans WP Mail SMTP sont autorisés. La mise en vente nécessite une validation séparée.</p></div>';
     }
 } );

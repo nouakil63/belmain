@@ -62,7 +62,7 @@ $external->set_header( 'Content-Type', 'application/json' ); $external->set_body
 $external_response = rest_do_request( $external );
 bcrm_check( 200 === $external_response->get_status(), 'real Woo REST metadata update accepted' );
 $tracking = BCRM_Tracking::get( wc_get_order( $order->get_id() ) );
-bcrm_check( 'TEST-COLIS-0001' === $tracking['number'] && 'shipped' === $tracking['status'], 'incoming tracking number observed as shipment only' );
+bcrm_check( 'TEST-COLIS-0001' === $tracking['number'] && 'label_created' === $tracking['status'], 'incoming tracking number proves registration, not dispatch or delivery' );
 bcrm_check( ! empty( BCRM_Tracking::integration()['last_sync'] ), 'external receipt timestamp recorded' );
 bcrm_check( 400 === bcrm_req( 'orders/' . $order->get_id() . '/tracking', 'POST', array( 'url' => 'javascript:alert(1)' ) )->get_status(), 'unsafe tracking URL rejected' );
 bcrm_check( 200 === bcrm_req( 'orders/' . $order->get_id() . '/tracking', 'POST', array( 'number' => 'TEST-COLIS-0001', 'carrier' => 'Transporteur de validation', 'url' => 'https://example.com/tracking/TEST-COLIS-0001', 'status' => 'delivered', 'shipped_at' => $from, 'delivered_at' => $to ) )->get_status(), 'manual delivery recorded distinctly' );

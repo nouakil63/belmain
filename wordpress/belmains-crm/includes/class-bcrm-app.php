@@ -98,6 +98,13 @@ class BCRM_App {
             $data = self::data( $r ); return BCRM_Commerce::add_note( absint( $r['id'] ), $data['note'] ?? '' );
         } );
         $route( '/orders/(?P<id>\d+)/tracking', 'POST', function ( $r ) { return BCRM_Tracking::save( absint( $r['id'] ), self::data( $r ) ); } );
+        $route( '/parcels', 'GET', function ( $r ) {
+            $range = self::range( $r ); if ( is_wp_error( $range ) ) { return $range; }
+            return BCRM_Shipping::listing( ...array_merge( $range, self::list_args( $r ), array( sanitize_key( (string) $r['carrier'] ), sanitize_key( (string) $r['direction'] ), sanitize_key( (string) $r['attention'] ) ) ) );
+        } );
+        $route( '/orders/(?P<id>\d+)/parcels', 'POST', function ( $r ) { return BCRM_Shipping::save( absint( $r['id'] ), self::data( $r ) ); } );
+        $route( '/shipping-export', 'GET', array( 'BCRM_Shipping', 'export' ) );
+        $route( '/orders/(?P<id>\d+)/shipping-history', 'GET', function ( $r ) { return BCRM_Shipping::history( absint( $r['id'] ) ); } );
         $route( '/integration', 'GET', function () { return BCRM_Tracking::integration(); } );
         $route( '/settings', 'GET', function () { return self::settings(); } );
         $route( '/settings', 'POST', function ( $r ) {

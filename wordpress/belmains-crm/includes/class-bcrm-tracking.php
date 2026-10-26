@@ -9,6 +9,10 @@ final class BCRM_Tracking {
 
 	private const STATUSES = array(
 		'pending'    => 'En attente de suivi',
+		'label_created' => 'Numéro de suivi reçu',
+		'out_for_delivery' => 'En cours de livraison',
+		'cancelled' => 'Annulé',
+		'partial' => 'Partiellement livré',
 		'shipped'    => 'Expédié',
 		'in_transit' => 'En transit',
 		'relay'      => 'Disponible en point relais',
@@ -19,6 +23,8 @@ final class BCRM_Tracking {
 
 	public static function register() {
 		add_action( 'woocommerce_rest_insert_shop_order_object', array( __CLASS__, 'observe_rest_update' ), 20, 3 );
+		add_action( 'woocommerce_rest_insert_shop_order_object', array( 'BCRM_Shipping', 'observe_events' ), 25, 2 );
+		add_filter( 'woocommerce_rest_pre_insert_shop_order_object', array( 'BCRM_Shipping', 'protect_document' ), 10, 2 );
 		add_action( 'woocommerce_track_order', array( __CLASS__, 'authorize_tracked_order' ) );
 		add_action( 'woocommerce_order_details_after_order_table', array( __CLASS__, 'customer_tracking' ) );
 		add_action( 'woocommerce_email_after_order_table', array( __CLASS__, 'email_tracking' ), 20, 4 );
@@ -26,6 +32,11 @@ final class BCRM_Tracking {
 
 	/** Do not mistake WooCommerce's completed status for a carrier delivery event. */
 	public static function get( $order ) {
+		if ( $order instanceof WC_Order && BCRM_Shipping::has_document( $order ) ) { return BCRM_Shipping::summary( $order ); }
+		return self::legacy( $order );
+	}
+
+	public static function legacy( $order ) {
 		if ( ! $order instanceof WC_Order ) {
 			return self::empty_tracking();
 		}
@@ -55,7 +66,7 @@ final class BCRM_Tracking {
 
 		$status = (string) $order->get_meta( '_bcrm_tracking_status', true );
 		if ( ! isset( self::STATUSES[ $status ] ) ) {
-			$status = '' !== $number ? 'shipped' : 'pending';
+			$status = '' !== $number ? 'label_created' : 'pending';
 		}
 
 		return array(
@@ -74,7 +85,7 @@ final class BCRM_Tracking {
 
 	/** The order creation date defines this cohort, not a claimed shipment event date. */
 	public static function shipments( $from, $to, $page = 1, $search = '', $status = '' ) {
-		$metrics = array_fill_keys( array( 'awaiting', 'shipped', 'in_transit', 'relay', 'delivered', 'exception', 'returned' ), 0 );
+		$metrics = array_fill_keys( array( 'awaiting', 'shipped', 'in_transit', 'relay', 'delivered', 'exception', 'returned', 'partial', 'label_created', 'out_for_delivery', 'cancelled' ), 0 );
 		$result = array( 'items' => array(), 'metrics' => $metrics, 'total' => 0, 'pages' => 0, 'page' => max( 1, (int) $page ), 'warnings' => array() );
 		if ( ! function_exists( 'wc_get_orders' ) || ! class_exists( 'BCRM_Commerce' ) ) {
 			$result['warnings'][] = 'Activez WooCommerce pour consulter les expéditions.';
@@ -143,7 +154,7 @@ final class BCRM_Tracking {
 		}
 		if ( self::text( $values['number'], 120 ) !== $current['number'] ) {
 			if ( ! array_key_exists( 'status', $data ) ) {
-				$values['status'] = '' !== $values['number'] ? 'shipped' : 'pending';
+				$values['status'] = '' !== $values['number'] ? 'label_created' : 'pending';
 			}
 			foreach ( array( 'url', 'shipped_at', 'delivered_at' ) as $key ) {
 				if ( ! array_key_exists( $key, $data ) ) {
@@ -178,7 +189,8 @@ final class BCRM_Tracking {
 		$order->update_meta_data( '_bcrm_tracking_status_manual', 'yes' );
 		$order->update_meta_data( '_bcrm_tracking_manual_updated_at', current_datetime()->format( DATE_ATOM ) );
 		$order->save();
-		return array( 'success' => true );
+		$result = BCRM_Shipping::capture_legacy( $order, true, $current['number'] );
+		return is_wp_error( $result ) ? $result : array( 'success' => true );
 	}
 
 	/** Observe only evidence in an authenticated Woo REST write, never guess an API. */
@@ -208,7 +220,7 @@ final class BCRM_Tracking {
 		$order->update_meta_data( '_bcrm_tracking_external_observed_at', $now );
 		$order->update_meta_data( '_bcrm_tracking_evidence', 'woocommerce_rest:meta_data.tracking_number' );
 		if ( $changed || ! $order->get_meta( '_bcrm_tracking_status', true ) ) {
-			$order->update_meta_data( '_bcrm_tracking_status', '' !== $number ? 'shipped' : 'pending' );
+			$order->update_meta_data( '_bcrm_tracking_status', '' !== $number ? 'label_created' : 'pending' );
 			$order->update_meta_data( '_bcrm_tracking_status_manual', 'no' );
 			if ( $changed ) {
 				// A new parcel must not inherit another parcel's delivery event or URL.
@@ -220,17 +232,27 @@ final class BCRM_Tracking {
 		$order->save();
 		update_option( 'bcrm_iziship_last_sync', $now, false );
 		update_option( 'bcrm_iziship_external_updates', (int) get_option( 'bcrm_iziship_external_updates', 0 ) + 1, false );
+		$result = BCRM_Shipping::capture_legacy( $order );
+		$fresh = wc_get_order( $order->get_id() );
+		$fresh->read_meta_data( true );
+		if ( is_wp_error( $result ) ) {
+			$fresh->update_meta_data( '_bcrm_shipping_import_error', array( 'at' => $now, 'message' => $result->get_error_message(), 'channel' => 'tracking_number' ) );
+		} elseif ( 'tracking_number' === ( $fresh->get_meta( '_bcrm_shipping_import_error', true )['channel'] ?? '' ) ) {
+			$fresh->delete_meta_data( '_bcrm_shipping_import_error' );
+		}
+		$fresh->save_meta_data();
 	}
 
 	public static function integration() {
 		$public = self::site_public_https();
 		$last_sync = get_option( 'bcrm_iziship_last_sync', '' );
+		$last_events = get_option( 'bcrm_shipping_events_last_received', '' );
 		$warnings = array(
 			'Configuration Iziship : choisissez la remontée du numéro dans la métadonnée tracking_number. Les notes de commande ne sont pas analysées automatiquement.',
 			'Les mises à jour comptées sont des écritures WooCommerce REST reçues sur tracking_number. Ce signal ne permet pas, à lui seul, de certifier l’identité du service émetteur.',
-			'Iziship marque la commande Terminée lors de l’expédition. Les événements Livré, Incident, Relais et Retourné doivent être renseignés manuellement tant qu’une source transporteur documentée n’est pas raccordée.',
-			'Le numéro de suivi est reconnu gratuitement. Si Iziship ne fournit ni transporteur ni URL, complétez ces champs dans la commande ; aucun lien n’est inventé.',
-			'Cette version présente un suivi principal par commande. Si une extension existante fournit plusieurs colis, le dernier est affiché ; consultez alors la commande WooCommerce pour le détail complet.',
+			'Une commande Terminée ne prouve pas une livraison. Les événements de transport sont manuels ou reçus par un connecteur configuré ; aucun transporteur n’est interrogé automatiquement.',
+			'Le numéro de suivi est reconnu gratuitement. Choisissez le transporteur : un lien officiel La Poste est généré pour Chronopost, Colissimo et La Poste. Les autres transporteurs acceptent un lien HTTPS fourni.',
+			'Plusieurs colis et retours sont gérés par commande, avec un historique séparé. Les étiquettes doivent être créées chez votre logisticien ; leur lien peut être conservé dans le dossier privé.',
 		);
 		if ( ! function_exists( 'wc_get_order' ) ) {
 			$warnings[] = 'WooCommerce doit être activé avant de configurer la connexion.';
@@ -240,20 +262,23 @@ final class BCRM_Tracking {
 		} else {
 			$warnings[] = 'Une adresse HTTPS publique est configurée ; son accessibilité effective depuis Iziship reste à vérifier lors du raccordement.';
 		}
-		if ( ! $last_sync ) {
+		if ( ! $last_sync && ! $last_events ) {
 			$warnings[] = 'Aucune écriture de suivi externe observée. La connexion n’est pas encore confirmée.';
 		}
 		return array(
 			'method' => 'tracking_number',
 			'last_sync' => $last_sync ?: null,
 			'external_updates' => (int) get_option( 'bcrm_iziship_external_updates', 0 ),
+			'events_last_received' => $last_events ?: null,
+			'automatic_carrier_polling' => false,
 			'site_public_https' => $public,
 			'guide_url' => 'https://wiki.iziship.co/article/01-Votre-boutique-en-ligne/02-WooCommerce/01-guide-connexion',
 			'rest_keys_url' => admin_url( 'admin.php?page=wc-settings&tab=advanced&section=keys' ),
 			'fields' => array(
 				array( 'name' => 'tracking_number', 'description' => 'Métadonnée WooCommerce : numéro de suivi écrit par Iziship via une clé REST dédiée en lecture/écriture.' ),
-				array( 'name' => '_wc_shipment_tracking_items', 'description' => 'Lecture facultative si une extension de suivi existante renseigne déjà ce tableau ; aucune extension payante requise.' ),
-				array( 'name' => '_bcrm_tracking_*', 'description' => 'Transporteur, URL HTTPS, dates et statut de livraison renseignés dans ce CRM ; distincts du statut commercial WooCommerce.' ),
+				array( 'name' => '_wc_shipment_tracking_items', 'description' => 'Reprise initiale des suivis déjà présents, avant la première modification dans le nouveau gestionnaire de colis.' ),
+				array( 'name' => '_bcrm_shipping_v2', 'description' => 'Dossier interne protégé : colis, retours et historique, distincts du statut commercial WooCommerce.' ),
+				array( 'name' => '_belmains_shipping_events', 'description' => 'Contrat facultatif du connecteur Belmains : lots d’événements horodatés, dédoublonnés et associés à chaque colis. Un adaptateur doit être raccordé au fournisseur réel.' ),
 			),
 			'warnings' => $warnings,
 		);
@@ -295,6 +320,29 @@ final class BCRM_Tracking {
 	}
 
 	private static function render_tracking( $order, $plain_text ) {
+		$parcels = BCRM_Shipping::customer_parcels( $order );
+		if ( $parcels ) {
+			foreach ( $parcels as $index => $p ) {
+				$title = ( 'return' === $p['direction'] ? 'Suivi du retour' : 'Suivi de votre colis' ) . ( count( $parcels ) > 1 ? ' ' . ( $index + 1 ) : '' );
+				$lines = array( 'Statut : ' . $p['status_label'], 'Numéro de suivi : ' . $p['number'] );
+				if ( $p['carrier'] ) { $lines[] = 'Transporteur : ' . $p['carrier']; }
+				if ( $p['shipped_at'] ) { $lines[] = 'Expédition : ' . self::display_date( $p['shipped_at'] ); }
+				if ( $p['delivered_at'] ) { $lines[] = 'Livraison renseignée : ' . self::display_date( $p['delivered_at'] ); }
+				if ( $p['expected_at'] && ! in_array( $p['status'], array( 'delivered', 'returned' ), true ) ) { $lines[] = 'Livraison estimée : ' . self::display_date( $p['expected_at'] ); }
+				if ( $p['relay_name'] ) { $lines[] = 'Point relais : ' . $p['relay_name'] . ( $p['relay_address'] ? ' — ' . $p['relay_address'] : '' ); }
+				if ( $plain_text ) {
+					echo "\n" . wp_strip_all_tags( $title ) . "\n" . implode( "\n", array_map( 'wp_strip_all_tags', $lines ) ) . "\n";
+					if ( $p['url'] ) { echo 'Suivre le colis : ' . esc_url_raw( $p['url'] ) . "\n"; }
+				} else {
+					echo '<section class="bcrm-order-tracking"><h2>' . esc_html( $title ) . '</h2>';
+					foreach ( $lines as $line ) { echo '<p>' . esc_html( $line ) . '</p>'; }
+					if ( $p['url'] ) { echo '<p><a href="' . esc_url( $p['url'] ) . '" target="_blank" rel="noopener noreferrer">Suivre mon colis</a></p>'; }
+					echo '</section>';
+				}
+			}
+			return;
+		}
+		if ( BCRM_Shipping::has_document( $order ) ) { return; }
 		$tracking = self::get( $order );
 		if ( '' === $tracking['number'] && 'pending' === $tracking['status'] ) {
 			return;

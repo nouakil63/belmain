@@ -1,4 +1,4 @@
-# Belmains CRM v0.1 — implementation contract
+# Belmains CRM v0.3 — implementation contract
 
 Plugin: wordpress/belmains-crm/, vanilla PHP 8 / WordPress admin / JS CSS without build.
 Main constants BCRM_VERSION, BCRM_PATH, BCRM_URL. Admin page slug belmains-crm. Capability manage_woocommerce OR manage_options; all private REST endpoints use WordPress cookie auth + nonce. WooCommerce CRUD, HPOS compatible. No demo data in real metrics.
@@ -21,6 +21,17 @@ GET shipments?from&to&page&search&status returns {items: order items above, metr
 POST orders/{id}/tracking body {number,carrier,url,status,shipped_at,delivered_at}; statuses: pending,shipped,in_transit,relay,delivered,exception,returned. Validate HTTPS tracking URL; do NOT infer delivered from Woo completed. Returns {success:true}.
 GET integration returns {method:'tracking_number',last_sync:null|string,external_updates:number,site_public_https:bool,guide_url,rest_keys_url,fields:[{name,description}],warnings:[]}.
 No Iziship credential is created/transmitted automatically. Standard Iziship Woo REST metadata writes are observed; tracking_number primary, carrier optional. API keys managed via Woo settings. Real connection requires HTTPS publicly reachable site and sending dedicated keys to Iziship via agreed secure channel; don't claim connected until observed external updates.
+
+Version 0.3 additions (legacy endpoints above remain):
+- GET orders/{id} includes `shipping:{revision,parcels,events,events_total,carriers,statuses,import_error}`. Each parcel has a stable id, direction, carrier, number, status, dates, relay, internal note, private label URL, source and archive flag. Last 100 received events in the detail; all history available separately.
+- GET parcels?from&to&page&search&status&carrier&direction&attention returns `{items:[{order_id,order_number,customer,email,order_status,revision,parcel,import_error}],total,pages,page,metrics,partial,warnings,carriers,statuses}`. Metrics before filters; period is order creation cohort. Attention: overdue, incident, missing_tracking, import_error. Page size 20.
+- POST orders/{id}/parcels body `{revision:int,parcel:{id?:string,...fields}}`. Reversible archive via `archived:bool`. Stale revision or concurrent write returns 409. Does not change stock, payment, commercial status or send emails.
+- GET shipping-export uses the same filters; returns `{filename,csv}`, maximum 5,000 complete rows. CSV neutralizes spreadsheet formulas and excludes internal note/label fields.
+- GET orders/{id}/shipping-history returns `{order_id,exported_at,shipping}` with all private parcel data and events; permission required, never public.
+- GET integration adds `events_last_received` and `automatic_carrier_polling:false`. It reports observed writes, not verified provider identity.
+- Status `label_created` means tracking number received, without dispatch evidence. New statuses also include out_for_delivery, cancelled and aggregate partial. A number alone never implies shipped.
+
+Adapter format, protections, limits and upgrade/rollback instructions: [belmains-crm/SHIPPING.md](belmains-crm/SHIPPING.md). Optional `_belmains_shipping_events` is a Belmains contract, not an assertion of Iziship-native support. Customer projections exclude internal notes, label URLs and diagnostics.
 
 GET settings returns {analytics_enabled:bool,retention_days:90,low_stock_threshold:5,shipping_sla_days:3}.
 POST settings body same fields (retention 30..365, low_stock 1..100, sla 1..30). Admin permissions, nonce.
