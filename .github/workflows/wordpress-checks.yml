@@ -55,6 +55,11 @@ jobs:
           done < <(find wordpress -type f -name '*.js' -print0)
           test "$count" -gt 0
 
+      - name: Vérifier le déploiement sur une boutique factice isolée
+        run: |
+          python3 -m py_compile wordpress/tools/deploy-pull.py
+          python3 wordpress/tests/deploy-pull-test.py
+
       - name: Produire et vérifier les archives
         run: python3 wordpress/tools/package-release.py --output-dir artifacts/wordpress
 
