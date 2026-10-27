@@ -1,0 +1,31 @@
+name: WordPress — notifier la publication Infomaniak
+
+on:
+  workflow_run:
+    workflows: ['WordPress — validation et archives']
+    types: [completed]
+    branches: ['codex/version-3-bordeaux']
+
+# Never check out or execute code from the triggering revision.
+permissions: {}
+
+concurrency:
+  group: belmains-production-notification
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'codex/version-3-bordeaux' &&
+      github.event.workflow_run.head_repository.full_name == 'nouakil63/belmain'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Demander la publication de la dernière révision validée
+        run: >-
+          curl --fail --silent --show-error
+          --connect-timeout 15 --max-time 180
+          --retry 4 --retry-delay 60 --retry-max-time 480 --retry-all-errors
+          https://belmains.com/belmains-deploy-check.php
