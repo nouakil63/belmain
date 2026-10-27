@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Belmains Commerce
  * Description: Relie la fiche Belmains au panier WooCommerce et applique les offres par quantité réelle de gants.
- * Version: 0.2.1
+ * Version: 0.2.2
  * Requires at least: 6.3
  * Requires PHP: 8.0
  * Requires Plugins: woocommerce
@@ -14,7 +14,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 final class Belmains_Commerce {
-    public const VERSION = '0.2.1';
+    public const VERSION = '0.2.2';
     public const SINGLE_CENTS = 8999;
     public const DUO_CENTS = 14999;
     public const REGULAR_CENTS = 10999;
@@ -24,6 +24,10 @@ final class Belmains_Commerce {
         if ( ! class_exists( 'WooCommerce' ) ) { return; }
         require_once __DIR__ . '/includes/class-belmains-builder.php';
         Belmains_Builder::register();
+        // Keep the catalog's tax-inclusive prices (including the duo offer) fixed
+        // across destinations. WooCommerce extracts the local tax from that total.
+        // Rates, tax activation and the shipping-address setting remain explicit.
+        add_filter( 'woocommerce_adjust_non_base_location_prices', '__return_false' );
         add_action( 'wc_ajax_belmains_add_to_cart', array( __CLASS__, 'ajax_add_to_cart' ) );
         add_action( 'woocommerce_before_calculate_totals', array( __CLASS__, 'apply_offer' ), 1000 );
         add_action( 'woocommerce_cart_loaded_from_session', array( __CLASS__, 'apply_offer' ), 1000 );

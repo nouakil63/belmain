@@ -237,6 +237,7 @@ final class Belmains_Commerce_Integration {
 		$baseline = BCRM_Commerce::summary( $from, $from )['metrics'];
 		$checkout = WC()->checkout();
 		$checkout_data = array(
+			'ship_to_different_address' => 0,
 			'billing_first_name' => 'Camille', 'billing_last_name' => 'Validation commerce',
 			'billing_email' => 'commerce-validation@example.invalid', 'billing_phone' => '0100000000',
 			'billing_address_1' => 'Adresse de validation', 'billing_city' => 'Paris',

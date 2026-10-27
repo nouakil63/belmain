@@ -47,6 +47,14 @@ Les calculs répartissent des centimes entiers entre les lignes. WooCommerce re�
 
 Les coupons WooCommerce restent possibles et s’appliquent après le tarif de l’offre. La limite technique est de 999 gants par panier, avec une quantité entière et les contrôles de stock habituels de WooCommerce. Un panier contenant une quantité indisponible reste bloqué par WooCommerce au passage de commande.
 
+## TVA et prix TTC constants — version 0.2.2
+
+La politique confirmée pour Belmains conserve 89,99 € TTC pour un gant et 149,99 € TTC pour deux dans les pays desservis. Le plugin désactive l'ajustement des prix selon le taux du pays de base : WooCommerce extrait la TVA de destination du montant TTC. Cette politique s'applique aux prix saisis TTC dans la boutique, y compris aux produits hors offre duo. Les taux et les frais de livraison restent gérés par WooCommerce.
+
+L'installation ne crée aucun taux et n'active pas les taxes. La configuration doit conserver les prix saisis et affichés TTC, utiliser l'adresse de livraison et contenir les taux applicables à l'activité, avec leurs exceptions territoriales. Le pays de base et les destinations desservies doivent être vérifiés avec les informations fiscales confirmées. Un taux national ne suffit pas à déterminer les obligations de collecte ; les régimes OSS/IOSS et les ventes hors UE restent des questions distinctes. Une table importée ne se met pas à jour automatiquement.
+
+Les commandes existantes gardent leurs montants historiques. Tester les quantités, lignes séparées, coupons, remboursements, clients exonérés et adresses non couvertes sur les tables locales `bcrm_validation_` avant déploiement. La suite `../tests/tax-integration.php` contrôle les calculs réels de WooCommerce. Le filtre utilisé est documenté par [WooCommerce](https://woocommerce.com/document/keep-tax-inclusive-prices-across-locations/) et doit être revérifié après ses mises à jour. Pour revenir à la politique précédente, réinstaller le ZIP sauvegardé de Commerce ; ne pas désinstaller le plugin ni recalculer les anciennes commandes.
+
 ## Contrat avec le thème
 
 `belmains_commerce_product()` retourne le produit WooCommerce configuré et publié, ou `false`. `Belmains_Commerce::frontend_config()` expose une configuration sérialisable :
