@@ -1,0 +1,33 @@
+# Belmains — version 3 retenue
+
+Maquette statique de présentation, sans paiement réel ni transmission des formulaires.
+
+## Modifications du 28 septembre 2026
+
+- Bordeaux des autres maquettes : #63182e, avec #431321 au survol.
+- Suppression du bandeau de bienvenue, de sa vague décorative, du bloc « Les caractéristiques » et du carrousel « Pourquoi ? ».
+- Suppression des promesses de retour gratuit sous 30 jours et de la mention « sans justification », y compris dans la fiche produit et la fenêtre livraison/retours.
+- Trois cartes de promesses, avec « Livraison Offerte » et livraison à domicile ou en point relais sous 48h/72h.
+- 1 produit : 89,99 € au lieu de 109,99 € ; 2 produits : 149,99 € au lieu de 179,99 €.
+- Sélection des offres synchronisée avec la quantité et les totaux du panier. Au-delà de deux produits, chaque paire complète bénéficie du tarif duo et le produit restant du tarif individuel. Calculs en centimes.
+- Flèches du diaporama : 60 px sur ordinateur, 50 px sur mobile, également visibles sur téléphone.
+
+## Vidéo dans la fiche produit
+
+La première vue de la galerie reprend le film du gant en rotation de l’en-tête de la maquette 1. Lecture muette en boucle, commande lecture/pause et arrêt automatique hors écran, dans un onglet masqué ou lors du passage à une photo. La lecture automatique respecte la préférence de mouvement réduit et le mode économie de données. Les prix sont conservés.
+
+## Visuels français de la fiche produit
+
+Cinq créations photographiques avec textes français sont ajoutées après la vidéo : pause bien-être, chaleur, fonctions, commandes et rituel quotidien. Les références fournies ont guidé les scènes et la photo du gant existant a guidé son apparence. Les textes techniques des visuels utilisent les fonctions déjà présentées dans les références.
+
+La galerie contient six vues : la vidéo du gant en rotation, puis les cinq visuels français. Les anciennes vues statiques du gant sont retirées de la galerie. Les miniatures défilent horizontalement pour préserver la longueur de la page. Chaque image peut être agrandie dans une fenêtre avec zoom, fermeture par Échap et retour au bouton d’origine. Les images sont livrées en WebP avec miniatures dédiées et chargement différé.
+
+## Fichiers
+
+`index.html`, `base.css`, `sections.css`, `maquette.css`, `interactions.js` et `assets/` constituent la page autonome. Servir ce dossier avec un serveur de fichiers statiques pour la prévisualisation.
+
+## Validation
+
+Contrôles dans le navigateur à 1280, 390 et 320 pixels : affichage, absence de débordement horizontal, offres, panier pour 1/2/3 produits et panier vide, changement de diapositive, images et console JavaScript.
+
+Les avis en attente, formulaires, guide des tailles et commande restent ceux de la maquette initiale.
