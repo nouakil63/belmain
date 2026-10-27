@@ -1,3 +1,9 @@
+# Déploiement WordPress Belmains
+
+Le raccordement automatique GitHub → Infomaniak est documenté dans [AUTOMATIC-DEPLOYMENT.md](AUTOMATIC-DEPLOYMENT.md). La branche de publication est `codex/version-3-bordeaux` ; elle conserve le CRM 0.3.0 et le garde de préparation.
+
+Les sections ci-dessous sont l'historique de préparation d'octobre 2026. Les mentions de déploiement manuel et les anciens états Revolut ne décrivent pas le raccordement actuel.
+
 # Préparer les mises à jour WordPress
 
 GitHub vérifie le code et prépare les trois archives installables de Belmains. **Ce workflow ne déploie pas les mises à jour sur WordPress.** La vitrine est publiée chez Infomaniak à `https://belmains.com/` depuis le 10 octobre 2026, avec les achats désactivés ; le déploiement automatique reste à raccorder.
