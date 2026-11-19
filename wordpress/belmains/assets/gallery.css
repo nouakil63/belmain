@@ -1,0 +1,17 @@
+/* The gallery keeps the established Belmains type, palette and generous spacing. */
+.belmains-gallery{max-width:1180px;margin:0 auto;padding:64px clamp(20px,4vw,48px) 72px}
+.belmains-gallery-intro{max-width:720px;margin:0 0 44px}
+.belmains-gallery-intro h1{margin:0 0 20px;color:var(--belmains-brand,#63182e);font-size:clamp(36px,4.8vw,60px);line-height:1.12;letter-spacing:-.6px;text-wrap:balance}
+.belmains-gallery-intro p{max-width:54ch;margin:0;color:#5c5751;font-size:18px;line-height:1.7;letter-spacing:0}
+.belmains-video-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:28px}
+.belmains-video{min-width:0;margin:0}
+.belmains-gallery-video{display:block;width:100%;height:auto;aspect-ratio:9/16;object-fit:contain;background:#181d25;border-radius:10px;overflow:hidden;color:#fff}
+.belmains-gallery-video:focus-visible{outline:3px solid var(--belmains-accent,#bf9756);outline-offset:5px}
+.belmains-video figcaption{padding:20px 0 0}
+.belmains-video h2{margin:0 0 8px;color:var(--belmains-brand,#63182e);font-size:24px;line-height:1.3}
+.belmains-video figcaption p{margin:0;color:#5c5751;font-size:15px;line-height:1.7;letter-spacing:0}
+.belmains-gallery-return{margin-top:48px;padding-top:28px;border-top:1px solid #e9e3da}
+.belmains-gallery-return a{display:inline-flex;align-items:center;min-height:48px;padding:12px 24px;border-radius:28px;background:var(--belmains-brand,#63182e);color:#fff;font-size:15px;font-weight:600;letter-spacing:0;text-decoration:none}
+.belmains-gallery-return a:hover{background:#431321}
+@media(max-width:760px){.belmains-gallery{padding-top:40px;padding-bottom:48px}.belmains-gallery-intro{margin-bottom:30px}.belmains-gallery-intro p{font-size:16px}.belmains-video-grid{grid-template-columns:minmax(0,1fr);gap:36px;max-width:390px;margin:0 auto}.belmains-video figcaption{padding-top:16px}.belmains-video h2{font-size:23px}.belmains-gallery-return{margin-top:36px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}

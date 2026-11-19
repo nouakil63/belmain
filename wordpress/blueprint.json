@@ -1,0 +1,9 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "preferredVersions": {"php": "8.3", "wp": "latest"},
+  "steps": [
+    {"step": "activateTheme", "themeFolderName": "belmains"},
+    {"step": "setSiteOptions", "options": {"blogname": "Belmains", "blogdescription": "Le bien-être entre vos mains", "blog_public": "0"}},
+    {"step": "runPHP", "code": "<?php require '/wordpress/wp-load.php'; wp_insert_post(array('post_type'=>'page','post_status'=>'publish','post_title'=>'Page de validation WordPress','post_name'=>'validation-wordpress','post_content'=>'<p>Cette page vérifie que le contenu WordPress reste éditable avec le thème Belmains.</p>'));"}
+  ]
+}
