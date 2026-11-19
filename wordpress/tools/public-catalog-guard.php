@@ -81,17 +81,29 @@ add_action( 'wp_enqueue_scripts', static function () {
     wp_dequeue_style( 'bcrm-consent' );
     remove_action( 'wp_footer', array( 'BCRM_Audience', 'consent' ) );
 }, PHP_INT_MAX );
-add_action( 'template_redirect', static function () {
+/** Only the explicitly published gallery may join the public landing page. */
+function belmains_catalog_gallery_is_public() {
+    $page_id = absint( get_option( 'belmains_gallery_page_id', 0 ) );
+    return $page_id && is_page( $page_id ) && 'page' === get_post_type( $page_id )
+        && 'publish' === get_post_status( $page_id )
+        && 'page-galerie.php' === get_page_template_slug( $page_id )
+        && '' === (string) get_post_field( 'post_password', $page_id )
+        && ! is_preview() && ! isset( $_GET['belmains_preview'] ) && ! is_feed() && ! is_embed()
+        && in_array( $_SERVER['REQUEST_METHOD'] ?? 'GET', array( 'GET', 'HEAD' ), true );
+}
+
+function belmains_catalog_template_redirect() {
     if ( ! in_array( $_SERVER['REQUEST_METHOD'] ?? 'GET', array( 'GET', 'HEAD' ), true ) ) {
         wp_die( esc_html( belmains_catalog_closed_message() ), 'Belmains — Ouverture prochaine', array( 'response' => 503 ) );
     }
     if ( current_user_can( 'manage_woocommerce' ) || current_user_can( 'manage_options' ) ) { return; }
-    // Only the published landing page is public; drafts, forms and account pages stay closed.
-    if ( ! is_front_page() || is_preview() || isset( $_GET['belmains_preview'] ) ) {
+    // Keep every other page, draft, form and account route closed.
+    if ( ( ! is_front_page() && ! belmains_catalog_gallery_is_public() ) || is_preview() || isset( $_GET['belmains_preview'] ) ) {
         wp_safe_redirect( home_url( '/#fiche-produit' ), 302 );
         exit;
     }
-}, -100 );
+}
+add_action( 'template_redirect', 'belmains_catalog_template_redirect', -100 );
 add_filter( 'belmains_storefront_value', static function ( $value, $key ) {
     $overrides = array(
         'promises_enabled' => false,

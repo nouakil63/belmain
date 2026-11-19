@@ -23,6 +23,18 @@ jobs:
     name: Syntaxe PHP / JavaScript et ZIP installables
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: ci-belmain-only
+          MARIADB_ROOT_HOST: '%'
+          MARIADB_DATABASE: belmains_validation
+        ports:
+          - '127.0.0.1:3306:3306'
+        options: >-
+          --health-cmd="mariadb-admin ping --silent -h localhost -pci-belmain-only"
+          --health-interval=5s --health-timeout=5s --health-retries=12
     steps:
       - name: Lire le dépôt
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -60,6 +72,80 @@ jobs:
           python3 -m py_compile wordpress/tools/deploy-pull.py
           python3 wordpress/tests/deploy-pull-test.py
           php wordpress/tests/deploy-runtime-test.php
+
+      - name: Vérifier la galerie et la fermeture sur WordPress isolé
+        run: |
+          set -euo pipefail
+          php -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);'
+          runtime="$RUNNER_TEMP/belmains-validation"
+          mkdir -p "$runtime/site" artifacts/gallery
+          curl --fail --location --retry 3 --output "$runtime/wp-cli.phar" https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar
+          wp() { php "$runtime/wp-cli.phar" --path="$runtime/site" "$@"; }
+          wp core download --version=7.1.3 --force
+          wp config create --dbname=belmains_validation --dbuser=root --dbpass=ci-belmain-only --dbhost=127.0.0.1:3306 --dbprefix=bcrm_validation_ --extra-php <<'PHP'
+          define('WP_ENVIRONMENT_TYPE', 'local');
+          define('WP_HTTP_BLOCK_EXTERNAL', true);
+          define('DISABLE_WP_CRON', true);
+          define('WP_AUTO_UPDATE_CORE', false);
+          define('WP_CACHE', false);
+          PHP
+          mkdir -p "$runtime/site/wp-content/mu-plugins"
+          cat > "$runtime/site/wp-content/mu-plugins/isolated-validation.php" <<'PHP'
+          <?php
+          add_filter('pre_wp_mail', '__return_false', PHP_INT_MAX);
+          add_filter('pre_http_request', static function () { return new WP_Error('isolated_validation', 'External HTTP blocked.'); }, PHP_INT_MAX);
+          add_filter('automatic_updater_disabled', '__return_true');
+          add_filter('action_scheduler_allow_async_request_runner', '__return_false');
+          PHP
+          wp core install --url=http://127.0.0.1:8899 --title='Belmains validation' --admin_user=validation_admin --admin_password=ci-validation-only --admin_email=validation@example.invalid --skip-email
+          curl --fail --location --retry 3 --output "$runtime/woocommerce.zip" https://downloads.wordpress.org/plugin/woocommerce.11.1.2.zip
+          unzip -q "$runtime/woocommerce.zip" -d "$runtime/site/wp-content/plugins"
+          cp -R wordpress/belmains "$runtime/site/wp-content/themes/"
+          cp -R wordpress/belmains-commerce wordpress/belmains-crm "$runtime/site/wp-content/plugins/"
+          wp plugin activate woocommerce belmains-commerce belmains-crm
+          wp theme activate belmains
+          wp --user=validation_admin eval-file "$GITHUB_WORKSPACE/wordpress/tests/gallery-access-integration.php" | tee artifacts/gallery/gallery-access-checks.txt
+          wp --user=validation_admin eval-file "$GITHUB_WORKSPACE/wordpress/tests/catalog-integration.php" | tee artifacts/gallery/catalog-checks.txt
+          wp eval '$id=wp_insert_post(array("post_type"=>"page","post_status"=>"publish","post_title"=>"Galerie","post_name"=>"galerie"),true); if(is_wp_error($id)){throw new RuntimeException($id->get_error_message());} update_post_meta($id,"_wp_page_template","page-galerie.php"); update_option("belmains_gallery_page_id",$id);'
+          wp rewrite structure '/%postname%/'
+          cp wordpress/tools/public-catalog-guard.php "$runtime/site/wp-content/mu-plugins/belmains-staging-guard.php"
+          cat > "$runtime/router.php" <<'PHP'
+          <?php
+          $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+          if ('/' !== $path && is_file(__DIR__ . '/site' . $path)) { return false; }
+          require __DIR__ . '/site/index.php';
+          PHP
+          php -S 127.0.0.1:8899 -t "$runtime/site" "$runtime/router.php" > "$runtime/server.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 20); do
+            if curl --silent --fail http://127.0.0.1:8899/galerie/ --output artifacts/gallery/gallery-preview.html; then break; fi
+            sleep 1
+          done
+          test -s artifacts/gallery/gallery-preview.html
+          curl --fail --silent http://127.0.0.1:8899/ --output artifacts/gallery/front-preview.html
+          test "$(curl --silent --output artifacts/gallery/rest-closure.json --write-out '%{http_code}' http://127.0.0.1:8899/wp-json/)" = 503
+          grep -q belmains_preparation artifacts/gallery/rest-closure.json
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:8899/checkout/)" = 302
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          html = Path('artifacts/gallery/gallery-preview.html').read_text()
+          assert len(re.findall(r'<video\b', html)) == 3
+          assert not re.search(r'<video\b[^>]*\bautoplay\b', html)
+          assert all(name + '.mp4' in html for name in ('belmains-decouverte', 'belmains-quotidien', 'belmains-rituel'))
+          assert 'aria-current="page">Galerie</a>' in html
+          assert 'Galerie</a>' in Path('artifacts/gallery/front-preview.html').read_text()
+          print('HTTP gallery, navigation, native players and catalog closure passed.')
+          PY
+
+      - name: Conserver les aperçus et contrôles de galerie
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: belmains-gallery-preview-${{ github.sha }}
+          path: artifacts/gallery/
+          retention-days: 7
+          if-no-files-found: error
 
       - name: Produire et vérifier les archives
         run: python3 wordpress/tools/package-release.py --output-dir artifacts/wordpress

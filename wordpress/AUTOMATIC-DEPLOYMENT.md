@@ -29,3 +29,13 @@ Un changement direct des fichiers en ligne bloque la publication suivante : comp
 - Pour revenir à du code antérieur, publier un commit de retour sur la branche. Ne jamais restaurer automatiquement une ancienne base de production.
 
 Le dossier `site/` est une ancienne vitrine statique. La production est WordPress ; une modification visuelle destinée au site doit être appliquée aux sources `wordpress/belmains/` ou aux extensions concernées. Les textes enregistrés avec l'éditeur WordPress restent dans sa base et ne sont pas remplacés par les archives.
+
+## Galerie publique pendant la préparation
+
+La galerie est une exception étroite dans le garde autoritaire `tools/public-catalog-guard.php` : seule la page configurée par `belmains_gallery_page_id`, publiée avec le template `page-galerie.php`, sans mot de passe ni aperçu, est accessible en GET/HEAD. Les flux, intégrations embarquées, autres pages, écritures REST, achats, paiements, e-mails et indexation restent protégés. Le thème ne retire ni ne contourne le garde.
+
+Le garde n'est toujours pas installé par les trois ZIP. Après publication du thème et vérification de la révision déployée, une installation contrôlée passe par le checkout relu `~/belmains-deployment/source/wordpress/tools/publish-gallery.php`, exécuté avec WP-CLI et les deux paramètres explicites `BELMAINS_GALLERY_PUBLISH=1` et `BELMAINS_GALLERY_REVISION=SHA_COMPLET`.
+
+Cet outil vérifie la révision, l'empreinte du garde et les trois manifestes avant tout changement. Il prend les verrous du récepteur dans le même ordre, refuse une récupération en attente, sauvegarde le garde, l'état et la page/option dans `gallery-backups/` hors du Web, puis crée la nouvelle page en brouillon. Il installe atomiquement le garde vérifié, met à jour uniquement `current.json.guard_sha256` en conservant la révision et tous les manifestes, et publie la page en dernier. Une page existante étrangère au mécanisme ne peut pas être écrasée. En cas d'échec, le garde, l'état, l'option et le statut antérieur sont restaurés ; une nouvelle page passe à la corbeille sans suppression définitive.
+
+Ne jamais réinitialiser toute la référence ou ignorer une différence pour faire accepter ce changement. Le programme de déploiement de confiance reste inchangé et continue d'exiger l'égalité stricte avec la nouvelle empreinte approuvée. Les tests `gallery-access-integration.php` s'exécutent uniquement sur l'installation locale `bcrm_validation_`, réseau externe et cron bloqués ; les contrôles publics finaux se limitent à GET/HEAD et aux lectures des protections.

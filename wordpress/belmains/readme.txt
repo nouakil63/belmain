@@ -1,4 +1,4 @@
-Belmains — thème de préproduction 0.4.1
+Belmains — thème WordPress 0.4.3
 
 Installer le ZIP dans Apparence > Thèmes > Ajouter > Téléverser un thème.
 Activer sur un WordPress de préparation. L’accueil s’affiche automatiquement.
@@ -21,3 +21,12 @@ configurer. Les avis de démonstration sont réservés à la préproduction.
 
 Ne pas confondre installation du thème et ouverture des ventes.
 Une notice dans l’administration rappelle l’état de la migration.
+
+Galerie vidéo — version 0.4.3
+Le modèle « Galerie Belmains » présente trois clips locaux avec leurs affiches.
+Les lecteurs natifs ne se lancent pas automatiquement et démarrer une vidéo
+met les autres en pause. Les fichiers sont dans assets/gallery/.
+La page est créée séparément dans WordPress ; l’option belmains_gallery_page_id
+la désigne. Les liens de menu apparaissent seulement pour une page publiée,
+sans mot de passe et utilisant page-galerie.php. Le thème ne modifie aucun
+contrôle d’accès : l’autorisation publique reste gérée par le garde du site.

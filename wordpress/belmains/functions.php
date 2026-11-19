@@ -23,6 +23,10 @@ function belmains_enqueue_assets() {
     if ( class_exists( 'WooCommerce' ) ) {
         wp_enqueue_style( 'belmains-commerce', get_theme_file_uri( 'woocommerce.css' ), array( 'belmains-wordpress' ), $version );
     }
+    if ( is_page_template( 'page-galerie.php' ) ) {
+        wp_enqueue_style( 'belmains-gallery', get_theme_file_uri( 'assets/gallery.css' ), array( 'belmains-wordpress' ), $version );
+        wp_enqueue_script( 'belmains-gallery', get_theme_file_uri( 'assets/gallery.js' ), array(), $version, array( 'strategy' => 'defer', 'in_footer' => true ) );
+    }
     if ( is_front_page() ) {
         $args = array( 'strategy' => 'defer', 'in_footer' => true );
         wp_enqueue_script( 'belmains-gsap', get_theme_file_uri( 'assets/gsap.min.js' ), array(), $version, $args );
@@ -37,6 +41,7 @@ add_action( 'wp_enqueue_scripts', 'belmains_enqueue_assets' );
 
 function belmains_body_classes( $classes ) {
     $classes[] = is_front_page() ? 'belmains-landing' : 'belmains-page';
+    if ( is_page_template( 'page-galerie.php' ) ) { $classes[] = 'belmains-gallery-page'; }
     return $classes;
 }
 add_filter( 'body_class', 'belmains_body_classes' );
@@ -57,6 +62,27 @@ function belmains_contact_url() {
     if ( belmains_catalog_only() ) { return 'mailto:contact@belmains.com'; }
     $page_id = absint( get_option( 'belmains_contact_page_id' ) );
     return $page_id && 'publish' === get_post_status( $page_id ) ? get_permalink( $page_id ) : home_url( '/#contact' );
+}
+
+/** Return only a deliberately provisioned, public gallery page. No page is created here. */
+function belmains_gallery_page_id() {
+    $page_id = absint( get_option( 'belmains_gallery_page_id', 0 ) );
+    if ( ! $page_id || 'page' !== get_post_type( $page_id ) || 'publish' !== get_post_status( $page_id )
+        || 'page-galerie.php' !== get_page_template_slug( $page_id )
+        || '' !== (string) get_post_field( 'post_password', $page_id ) ) {
+        return 0;
+    }
+    return $page_id;
+}
+
+function belmains_gallery_url() {
+    $page_id = belmains_gallery_page_id();
+    return $page_id ? get_permalink( $page_id ) : '';
+}
+
+function belmains_is_gallery() {
+    $page_id = belmains_gallery_page_id();
+    return $page_id && is_page( $page_id );
 }
 
 add_action( 'wp', function () {

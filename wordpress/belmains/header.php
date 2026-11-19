@@ -16,21 +16,21 @@
 <a class="skip-link" href="#main">Aller au contenu</a>
 <header class="belmains-page-header">
  <a href="<?php echo esc_url( home_url( '/' ) ); ?>" aria-label="<?php echo esc_attr( belmains_value( 'brand_name', 'Belmains' ) . ' — accueil' ); ?>"><?php $logo = belmains_value( 'brand_logo', array( 'url' => get_theme_file_uri( 'assets/belmains-logo.png' ), 'alt' => 'Belmains' ) ); if ( belmains_media_url( $logo ) ) { belmains_image( $logo, '', true ); } else { echo esc_html( belmains_value( 'brand_name', 'Belmains' ) ); } ?></a>
- <?php if ( function_exists( 'wc_get_cart_url' ) ) : ?>
- <nav class="belmains-commerce-nav" aria-label="Navigation de la boutique">
+ <nav class="belmains-commerce-nav belmains-site-nav" aria-label="Navigation principale">
   <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Accueil</a>
-  <a href="<?php echo esc_url( wc_get_cart_url() ); ?>"<?php echo is_cart() ? ' aria-current="page"' : ''; ?>>Panier</a>
-  <?php $belmains_contact_page_id = absint( get_option( 'belmains_contact_page_id', 0 ) ); ?>
-  <?php if ( $belmains_contact_page_id && 'publish' === get_post_status( $belmains_contact_page_id ) ) : ?>
-  <a href="<?php echo esc_url( belmains_contact_url() ); ?>"<?php echo is_page( $belmains_contact_page_id ) ? ' aria-current="page"' : ''; ?>>Contact</a>
+  <?php $belmains_gallery_url = belmains_gallery_url(); ?>
+  <?php if ( $belmains_gallery_url ) : ?>
+  <a href="<?php echo esc_url( $belmains_gallery_url ); ?>"<?php echo belmains_is_gallery() ? ' aria-current="page"' : ''; ?>>Galerie</a>
   <?php endif; ?>
+  <?php if ( ! belmains_catalog_only() && function_exists( 'wc_get_cart_url' ) ) : ?>
+  <a href="<?php echo esc_url( wc_get_cart_url() ); ?>"<?php echo is_cart() ? ' aria-current="page"' : ''; ?>>Panier</a>
+  <?php endif; ?>
+  <?php $belmains_contact_page_id = absint( get_option( 'belmains_contact_page_id', 0 ) ); ?>
+  <a href="<?php echo esc_url( belmains_contact_url() ); ?>"<?php echo ! belmains_catalog_only() && $belmains_contact_page_id && is_page( $belmains_contact_page_id ) ? ' aria-current="page"' : ''; ?>>Contact</a>
   <?php $belmains_tracking_page_id = absint( get_option( 'belmains_tracking_page_id', 0 ) ); ?>
-  <?php if ( $belmains_tracking_page_id && 'publish' === get_post_status( $belmains_tracking_page_id ) ) : ?>
+  <?php if ( ! belmains_catalog_only() && $belmains_tracking_page_id && 'publish' === get_post_status( $belmains_tracking_page_id ) ) : ?>
   <a href="<?php echo esc_url( get_permalink( $belmains_tracking_page_id ) ); ?>"<?php echo is_page( $belmains_tracking_page_id ) ? ' aria-current="page"' : ''; ?>>Suivre ma commande</a>
   <?php endif; ?>
  </nav>
- <?php else : ?>
- <a href="<?php echo esc_url( home_url( '/#fiche-produit' ) ); ?>"><?php echo esc_html( belmains_value( 'footer_product_label', 'Découvrir le produit' ) ); ?></a>
- <?php endif; ?>
 </header>
 <?php endif; ?>
