@@ -1,4 +1,4 @@
-Belmains — thème WordPress 0.4.3
+Belmains — thème WordPress 0.4.4
 
 Installer le ZIP dans Apparence > Thèmes > Ajouter > Téléverser un thème.
 Activer sur un WordPress de préparation. L’accueil s’affiche automatiquement.

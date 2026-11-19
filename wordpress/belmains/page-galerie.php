@@ -6,15 +6,15 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 get_header();
 $videos = array(
-    array( 'file' => 'belmains-decouverte', 'title' => 'Découvrir Belmains', 'description' => 'Le gant présenté en images.' ),
-    array( 'file' => 'belmains-quotidien', 'title' => 'Belmains au quotidien', 'description' => 'Un autre regard sur le gant Belmains.' ),
-    array( 'file' => 'belmains-rituel', 'title' => 'Le rituel Belmains', 'description' => 'Un aperçu du gant et de son utilisation.' ),
+    array( 'file' => 'belmains-decouverte', 'title' => 'Le gant en action', 'description' => 'Découvrez le gant Belmains de près, porté sur la main, avec un aperçu de ses commandes.' ),
+    array( 'file' => 'belmains-quotidien', 'title' => 'Pour les mains qui font tant', 'description' => 'Des gestes du quotidien à la pause sur le canapé : découvrez Belmains, pour soi ou à offrir.' ),
+    array( 'file' => 'belmains-rituel', 'title' => 'Une attention pour sa maman', 'description' => 'Une idée cadeau pour remercier sa maman et lui offrir un moment de détente.' ),
 );
 ?>
 <main id="main" class="belmains-gallery">
  <div class="belmains-gallery-intro">
   <h1>Belmains en mouvement</h1>
-  <p>Découvrez le gant Belmains à travers une sélection de nos vidéos.</p>
+  <p>Découvrez le gant Belmains en action et des idées pour l’offrir à ceux que vous aimez.</p>
  </div>
  <section class="belmains-video-grid" aria-label="Les vidéos Belmains">
  <?php foreach ( $videos as $index => $video ) : ?>
