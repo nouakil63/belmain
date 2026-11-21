@@ -93,7 +93,7 @@ jobs:
           cat > "$runtime/site/wp-content/mu-plugins/isolated-validation.php" <<'PHP'
           <?php
           add_filter('pre_wp_mail', '__return_false', PHP_INT_MAX);
-          add_filter('pre_http_request', static function () { return new WP_Error('isolated_validation', 'External HTTP blocked.'); }, PHP_INT_MAX);
+          add_filter('pre_http_request', static function ($pre, $args, $url) { file_put_contents(WP_CONTENT_DIR . '/http-attempts.log', $url . "\n", FILE_APPEND | LOCK_EX); return new WP_Error('isolated_validation', 'External HTTP blocked.'); }, PHP_INT_MAX, 3);
           add_filter('automatic_updater_disabled', '__return_true');
           add_filter('action_scheduler_allow_async_request_runner', '__return_false');
           PHP
@@ -106,9 +106,18 @@ jobs:
           wp theme activate belmains
           wp --user=validation_admin eval-file "$GITHUB_WORKSPACE/wordpress/tests/gallery-access-integration.php" | tee artifacts/gallery/gallery-access-checks.txt
           wp --user=validation_admin eval-file "$GITHUB_WORKSPACE/wordpress/tests/catalog-integration.php" | tee artifacts/gallery/catalog-checks.txt
+          # Extension officielle Meta, version et empreinte figées : le verrou de consentement du CRM est validé contre elle.
+          curl --fail --location --retry 3 --output "$runtime/meta-for-woocommerce.zip" https://downloads.wordpress.org/plugin/facebook-for-woocommerce.3.7.9.zip
+          echo "4b7ec01889dd3ba8e1a530b0f6f2992550d3b272de943feb3062dfdaa1dd128b  $runtime/meta-for-woocommerce.zip" | sha256sum --check
+          unzip -q "$runtime/meta-for-woocommerce.zip" -d "$runtime/site/wp-content/plugins"
+          wp plugin activate facebook-for-woocommerce
+          wp --user=validation_admin eval-file "$GITHUB_WORKSPACE/wordpress/tests/meta-integration.php" | tee artifacts/gallery/meta-checks.txt
+          grep -q 'Meta gate checks passed with the official extension' artifacts/gallery/meta-checks.txt
+          wp option update wc_facebook_pixel_id 123456789012345
+          wp option update facebook_config '{"pixel_id":"123456789012345"}' --format=json
+          wp option update wc_facebook_access_token ci-validation-only
           wp eval '$id=wp_insert_post(array("post_type"=>"page","post_status"=>"publish","post_title"=>"Galerie","post_name"=>"galerie"),true); if(is_wp_error($id)){throw new RuntimeException($id->get_error_message());} update_post_meta($id,"_wp_page_template","page-galerie.php"); update_option("belmains_gallery_page_id",$id);'
           wp rewrite structure '/%postname%/'
-          cp wordpress/tools/public-catalog-guard.php "$runtime/site/wp-content/mu-plugins/belmains-staging-guard.php"
           cat > "$runtime/router.php" <<'PHP'
           <?php
           $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -118,12 +127,43 @@ jobs:
           php -S 127.0.0.1:8899 -t "$runtime/site" "$runtime/router.php" > "$runtime/server.log" 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          # Boutique ouverte : l'extension Meta ne s'exprime et n'émet qu'avec l'accord publicitaire.
+          attempts="$runtime/site/wp-content/http-attempts.log"
+          for attempt in $(seq 1 20); do
+            if curl --silent --fail http://127.0.0.1:8899/ --output artifacts/gallery/open-no-answer.html; then break; fi
+            sleep 1
+          done
+          test -s artifacts/gallery/open-no-answer.html
+          : > "$attempts"
+          curl --fail --silent http://127.0.0.1:8899/ --output artifacts/gallery/open-no-answer.html
+          curl --fail --silent --cookie 'bcrm_ads=no' http://127.0.0.1:8899/ --output artifacts/gallery/open-refused.html
+          if grep -qi 'facebook' "$attempts"; then echo 'Meta was contacted without the advertising accord.'; exit 1; fi
+          curl --fail --silent --cookie 'bcrm_ads=yes' --user-agent 'Mozilla/5.0 (validation)' --dump-header artifacts/gallery/open-accepted.headers http://127.0.0.1:8899/ --output artifacts/gallery/open-accepted.html
+          grep -q '^https://graph\.facebook\.com/.*/123456789012345/events' "$attempts"
+          grep -qi '^cache-control: private' artifacts/gallery/open-accepted.headers
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          meta = re.compile(r'fbevents|facebook\.net|facebook\.com|wc-facebook|FacebookSignals|123456789012345')
+          for name in ('open-no-answer', 'open-refused'):
+              page = Path(f'artifacts/gallery/{name}.html').read_text()
+              assert not meta.search(page), name
+              assert 'BelmainsAudience' in page and 'data-bcrm-purpose="ads"' in page, name
+          accepted = Path('artifacts/gallery/open-accepted.html').read_text()
+          assert 'connect.facebook.net/en_US/fbevents.js' in accepted and '123456789012345' in accepted
+          print('Open shop: official Meta extension silent without the accord, running with it.')
+          PY
+          # Vitrine d'avant ouverture : tout reste fermé, même avec un accord.
+          cp wordpress/tools/public-catalog-guard.php "$runtime/site/wp-content/mu-plugins/belmains-staging-guard.php"
+          : > "$attempts"
           for attempt in $(seq 1 20); do
             if curl --silent --fail http://127.0.0.1:8899/galerie/ --output artifacts/gallery/gallery-preview.html; then break; fi
             sleep 1
           done
           test -s artifacts/gallery/gallery-preview.html
           curl --fail --silent http://127.0.0.1:8899/ --output artifacts/gallery/front-preview.html
+          curl --fail --silent --cookie 'bcrm_ads=yes' --user-agent 'Mozilla/5.0 (validation)' http://127.0.0.1:8899/ --output artifacts/gallery/front-accepted-closed.html
+          if grep -qi 'facebook' "$attempts"; then echo 'Meta was contacted behind the protected catalogue.'; exit 1; fi
           test "$(curl --silent --output artifacts/gallery/rest-closure.json --write-out '%{http_code}' http://127.0.0.1:8899/wp-json/)" = 503
           grep -q belmains_preparation artifacts/gallery/rest-closure.json
           test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:8899/checkout/)" = 302
@@ -135,8 +175,11 @@ jobs:
           assert not re.search(r'<video\b[^>]*\bautoplay\b', html)
           assert all(name + '.mp4' in html for name in ('belmains-decouverte', 'belmains-quotidien', 'belmains-rituel'))
           assert 'aria-current="page">Galerie</a>' in html
-          assert 'Galerie</a>' in Path('artifacts/gallery/front-preview.html').read_text()
-          print('HTTP gallery, navigation, native players and catalog closure passed.')
+          front = Path('artifacts/gallery/front-preview.html').read_text()
+          assert 'Galerie</a>' in front
+          accepted = Path('artifacts/gallery/front-accepted-closed.html').read_text()
+          assert not re.search(r'BelmainsAudience|bcrm-consent|fbevents|facebook\.net|facebook\.com|wc-facebook|FacebookSignals|123456789012345', front + html + accepted)
+          print('HTTP gallery, navigation, native players, catalog closure and closed Meta extension passed.')
           PY
 
       - name: Conserver les aperçus et contrôles de galerie

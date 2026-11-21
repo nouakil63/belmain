@@ -33,8 +33,9 @@ Version 0.3 additions (legacy endpoints above remain):
 
 Adapter format, protections, limits and upgrade/rollback instructions: [belmains-crm/SHIPPING.md](belmains-crm/SHIPPING.md). Optional `_belmains_shipping_events` is a Belmains contract, not an assertion of Iziship-native support. Customer projections exclude internal notes, label URLs and diagnostics.
 
-GET settings returns {analytics_enabled:bool,retention_days:90,low_stock_threshold:5,shipping_sla_days:3}.
-POST settings body same fields (retention 30..365, low_stock 1..100, sla 1..30). Admin permissions, nonce.
+GET settings returns {analytics_enabled:bool,retention_days:90,low_stock_threshold:5,shipping_sla_days:3,meta_domain_verification:'',meta_status:'missing'|'unconnected'|'closed'|'on',meta_pixel:''}.
+POST settings body same fields (retention 30..365, low_stock 1..100, sla 1..30; meta_domain_verification 16..64 alphanumerics, the pasted Meta tag, or empty; meta_status and meta_pixel are read-only). Admin permissions, nonce.
+Meta advertising: delegated to the official Meta for WooCommerce extension, which owns the pixel identifier and its connection tokens. Belmains CRM is the gate: the extension runs only for a request carrying cookie bcrm_ads=yes, never while belmains_catalog_only is true, never for managers. Without the accord no pixel is printed and no server event is sent. Purchase is reported from the confirmation page only.
 GET tickets?status returns {items:[{id,subject,customer_email,order_id,status,priority,message,created_at,updated_at}],counts:{open,pending,closed}}.
 POST tickets body {subject,customer_email,order_id,status,priority,message}. POST tickets/{id} body {status,priority,note}. Internal tickets only, no automatic emails. UI creates/updates with clear confirmation.
 GET export?type=orders|customers&from&to returns {filename,csv}; authenticated, formula escaped. UI blob download. No public CSV endpoint.

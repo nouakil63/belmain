@@ -39,14 +39,37 @@ class BCRM_Audience {
     }
     private static function enabled() { return ! empty( BCRM_App::settings()['analytics_enabled'] ); }
     public static function enqueue() {
-        if ( ! self::enabled() || BCRM_App::can_manage() ) { return; }
+        if ( BCRM_App::can_manage() ) { return; }
+        $audience = self::enabled();
+        $meta = BCRM_Meta::config();
+        if ( ! $audience && ! $meta ) { return; }
         wp_enqueue_style( 'bcrm-consent', BCRM_URL . 'assets/audience.css', array(), BCRM_VERSION );
         wp_enqueue_script( 'bcrm-audience', BCRM_URL . 'assets/audience.js', array(), BCRM_VERSION, true );
-        wp_localize_script( 'bcrm-audience', 'BelmainsAudience', array( 'endpoint' => esc_url_raw( rest_url( 'belmains-crm/v1/collect' ) ), 'cookiePath' => '/', 'isProduct' => function_exists( 'is_product' ) && is_product(), 'isCheckout' => function_exists( 'is_checkout' ) && is_checkout() && ! is_order_received_page() ) );
+        wp_localize_script( 'bcrm-audience', 'BelmainsAudience', array( 'audience' => $audience, 'meta' => $meta, 'endpoint' => esc_url_raw( rest_url( 'belmains-crm/v1/collect' ) ), 'cookiePath' => '/', 'isProduct' => function_exists( 'is_product' ) && is_product(), 'isCheckout' => function_exists( 'is_checkout' ) && is_checkout() && ! is_order_received_page() ) );
     }
     public static function consent() {
-        if ( ! self::enabled() || BCRM_App::can_manage() ) { return; }
-        echo '<aside id="bcrm-consent" class="bcrm-consent" aria-label="Mesure d’audience" hidden><div><strong>Nous aider à améliorer Belmains</strong><p>Acceptez-vous la mesure des visites et du parcours d’achat ? Ces statistiques restent sur notre site. Aucun outil publicitaire n’est utilisé.</p></div><div class="bcrm-consent-actions"><button type="button" data-bcrm-consent="yes">Accepter</button><button type="button" data-bcrm-consent="no">Refuser</button></div></aside><button type="button" id="bcrm-privacy-choice" class="bcrm-privacy-choice">Mes choix de mesure d’audience</button>';
+        if ( BCRM_App::can_manage() ) { return; }
+        $audience = self::enabled();
+        $ads = BCRM_Meta::active();
+        if ( ! $audience && ! $ads ) { return; }
+        if ( ! $ads ) {
+            echo '<aside id="bcrm-consent" class="bcrm-consent" aria-label="Mesure d’audience" hidden><div><strong>Nous aider à améliorer Belmains</strong><p>Acceptez-vous la mesure des visites et du parcours d’achat ? Ces statistiques restent sur notre site. Aucun outil publicitaire n’est utilisé.</p></div><div class="bcrm-consent-actions"><button type="button" data-bcrm-consent="yes">Accepter</button><button type="button" data-bcrm-consent="no">Refuser</button></div></aside><button type="button" id="bcrm-privacy-choice" class="bcrm-privacy-choice">Mes choix de mesure d’audience</button>';
+            return;
+        }
+        // Advertising is a separate purpose: it is never bundled with the local statistics.
+        $privacy = function_exists( 'get_privacy_policy_url' ) ? get_privacy_policy_url() : '';
+        $link = $privacy ? ' <a href="' . esc_url( $privacy ) . '">Politique de confidentialité</a>' : '';
+        $meta = '<strong>Publicité Meta (Facebook, Instagram)</strong> Meta Platforms Ireland Ltd. dépose des traceurs et reçoit, depuis votre navigateur et depuis notre serveur, vos pages vues, ajouts au panier et achats sur ce site, avec votre adresse IP. Vos coordonnées de commande peuvent lui être transmises sous forme hachée. Ces données servent à mesurer nos publicités et à vous présenter nos annonces sur Facebook et Instagram.';
+        echo '<aside id="bcrm-consent" class="bcrm-consent bcrm-consent--ads" aria-label="Vos choix de confidentialité" hidden><div><strong>Vos choix de confidentialité</strong>';
+        if ( $audience ) {
+            echo '<p>Avec votre accord, Belmains utilise des traceurs pour deux finalités : la mesure d’audience de ce site et la publicité sur Facebook et Instagram. Vous pouvez tout accepter, tout refuser ou choisir par finalité. Votre choix est conservé six mois et reste modifiable en bas de page.' . $link . '</p></div>';
+            echo '<div class="bcrm-consent-purposes" id="bcrm-consent-purposes" hidden><label><input type="checkbox" data-bcrm-purpose="audience"><span><strong>Mesure d’audience</strong> Statistiques de visite et de parcours d’achat. Elles restent sur notre site.</span></label><label><input type="checkbox" data-bcrm-purpose="ads"><span>' . $meta . '</span></label></div>';
+            echo '<div class="bcrm-consent-actions"><button type="button" data-bcrm-consent="yes">Tout accepter</button><button type="button" data-bcrm-consent="no">Tout refuser</button><button type="button" data-bcrm-consent="custom" aria-expanded="false" aria-controls="bcrm-consent-purposes">Personnaliser</button></div>';
+        } else {
+            echo '<p>' . $meta . ' Votre choix est conservé six mois et reste modifiable en bas de page.' . $link . '</p></div>';
+            echo '<div class="bcrm-consent-actions"><button type="button" data-bcrm-consent="yes">Accepter</button><button type="button" data-bcrm-consent="no">Refuser</button></div>';
+        }
+        echo '</aside><button type="button" id="bcrm-privacy-choice" class="bcrm-privacy-choice">Gérer mes choix de confidentialité</button>';
     }
     private static function cookie_ids() {
         if ( ( $_COOKIE['bcrm_consent'] ?? '' ) !== 'yes' ) { return false; }

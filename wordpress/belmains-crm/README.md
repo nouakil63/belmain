@@ -1,8 +1,8 @@
 # Belmains CRM
 
-Belmains CRM ajoute un espace de pilotage privé dans WordPress pour suivre la boutique WooCommerce, son audience consentie, ses clients et ses expéditions. Le module fonctionne sans abonnement CRM, sans bibliothèque distante et sans extension de suivi payante. L’hébergement, les paiements, la publicité et les prestations Iziship conservent leurs propres coûts.
+Belmains CRM ajoute un espace de pilotage privé dans WordPress pour suivre la boutique WooCommerce, son audience consentie, ses clients et ses expéditions. Le module fonctionne sans abonnement CRM, sans bibliothèque distante et sans extension de suivi payante. Seule exception : la publicité Meta, confiée à l’extension officielle Meta for WooCommerce, que le CRM ne laisse fonctionner qu’après l’accord du visiteur. L’hébergement, les paiements, la publicité et les prestations Iziship conservent leurs propres coûts.
 
-Version 0.3.0 — WordPress 6.3 minimum, PHP 8.0 minimum. WooCommerce est nécessaire pour les commandes, clients, stocks et expéditions. Le module utilise les interfaces WooCommerce et déclare sa compatibilité avec le stockage des commandes HPOS.
+Version 0.4.0 — WordPress 6.3 minimum, PHP 8.0 minimum. WooCommerce est nécessaire pour les commandes, clients, stocks et expéditions. Le module utilise les interfaces WooCommerce et déclare sa compatibilité avec le stockage des commandes HPOS.
 
 ## Installation et premier accès
 
@@ -47,13 +47,46 @@ Les exports de commandes et clients portent sur toute la période, indépendamme
 
 ## Audience et consentement
 
-La mesure locale commence après **Accepter**. **Refuser** laisse la navigation possible sans comptage. Le bouton **Mes choix de mesure d’audience** permet de revenir sur ce choix. Les visites de l’administration et des gestionnaires sont exclues du script de mesure.
+Tant que l’extension Meta n’est pas connectée, le bandeau ne porte que sur la mesure d’audience. La mesure locale commence après **Accepter**. **Refuser** laisse la navigation possible sans comptage. Le bouton **Mes choix de mesure d’audience** permet de revenir sur ce choix. Les visites de l’administration et des gestionnaires sont exclues du script de mesure.
 
 Les identifiants d’audience sont pseudonymes. La table d’événements ne conserve pas les e-mails clients, les adresses IP, les paramètres complets des URL ou les agents utilisateurs. Les commandes commerciales restent naturellement dans WooCommerce avec les informations nécessaires à leur traitement.
 
 La préférence est mémorisée jusqu’à 180 jours, l’identifiant visiteur jusqu’à 30 jours et la session pendant 30 minutes d’inactivité. Les événements sont conservés 90 jours par défaut, réglables entre 30 et 365 jours, puis supprimés par la planification WordPress. Désactiver la mesure arrête les nouvelles collectes ; cela ne supprime pas immédiatement l’historique conservé.
 
 La conversion correspond aux visiteurs mesurés dans la période ayant aussi un achat payé tracé dans cette période, divisés par les visiteurs mesurés. L’achat peut être enregistré jusqu’à sept jours après la création d’une commande consentie. La navigation refusée, les bloqueurs, plusieurs appareils et les paiements plus tardifs limitent la couverture. Les étapes du parcours sont des nombres d’événements, pas des personnes uniques à chaque étape. Les commandes et ajouts au panier de la maquette sont exclus des achats et ajouts WooCommerce.
+
+## Publicité Meta (Facebook et Instagram)
+
+La publicité Meta repose sur l’extension officielle **Meta for WooCommerce** (éditeur : Meta, validée ici en version 3.7.9). Elle fournit le pixel, l’API Conversions (envois depuis le serveur) et la synchronisation du catalogue. Belmains CRM n’envoie rien lui-même à Meta : il décide, visite par visite, si l’extension a le droit de fonctionner.
+
+**Pourquoi ce verrou.** Laissée seule, l’extension charge le script de Meta et envoie un événement serveur dès la première page, avant toute réponse au bandeau. Constaté sur l’installation isolée : pour un visiteur sans accord, un `PageView` part du serveur avec son adresse IP et son navigateur. Le CRM l’en empêche.
+
+**Fonctionnement.** La décision est prise sur le serveur à chaque requête, par les filtres officiels `facebook_for_woocommerce_integration_pixel_enabled` et `facebook_signals_held`. Sans accord publicitaire, l’extension ne construit pas son suivi : aucun script, aucun cookie Meta, aucun appel à Meta ni à un CDN, aucun événement serveur. L’accord est le cookie `bcrm_ads=yes`, posé par le bandeau ; toute autre valeur vaut refus. L’extension reste aussi fermée pour un gestionnaire connecté et tant que la vitrine d’avant ouverture est en place, même si un accord existe.
+
+**Consentement.** La publicité est une finalité distincte de la mesure d’audience. Dès que l’extension est connectée, le bandeau propose **Tout accepter**, **Tout refuser** et **Personnaliser** (deux cases non cochées). Le refus est aussi simple que l’accord, le choix est conservé six mois et reste modifiable par le lien **Gérer mes choix de confidentialité**. Un visiteur qui avait déjà répondu pour l’audience est interrogé à nouveau pour cette nouvelle finalité. Avec un signal de refus du navigateur (Global Privacy Control, Do Not Track), le bandeau ne s’ouvre pas seul et rien n’est chargé.
+
+Comme la décision est prise sur le serveur, la page est **rechargée une fois** juste après l’accord : c’est la page rechargée qui porte le pixel. Le formulaire de commande n’est jamais rechargé (la saisie serait perdue) ; l’accord y prend effet à la page suivante. Le retrait révoque le pixel immédiatement, supprime les cookies `_fbp` et `_fbc`, et les pages suivantes sont servies sans l’extension.
+
+**Événements, après accord uniquement** : `PageView`, `ViewContent`, `AddToCart`, `InitiateCheckout` et `Purchase`. Chacun part du navigateur et du serveur avec le même identifiant, pour que Meta ne le compte qu’une fois ; l’ajout au panier part du serveur seulement, la boutique redirigeant aussitôt vers le panier. Deux réglages propres à Belmains complètent l’extension :
+
+- La page d’accueil est la fiche produit de la boutique, mais l’extension ne reconnaît que le gabarit produit de WooCommerce. Le CRM lui fait déclarer `ViewContent` pour le produit affiché sur l’accueil.
+- D’origine, l’extension déclare l’achat dès la création de la commande, paiement encore en attente : un paiement refusé ou abandonné compte alors comme une vente (constaté sur l’installation isolée). Le CRM retire ces deux déclenchements anticipés ; l’achat est déclaré depuis la page de confirmation seulement. Le filtre `bcrm_meta_purchase_on_confirmation_only` (renvoyer `false`) rétablit le comportement d’origine.
+
+**Données transmises à Meta, après accord.** Pages vues, produit consulté, panier, commande (produits, montant TTC, devise, numéro de commande), adresse IP, navigateur et identifiants publicitaires Meta. Si la correspondance avancée automatique est activée sur le pixel dans le Gestionnaire d’événements, l’extension joint à l’achat les coordonnées de facturation hachées (e-mail, nom, téléphone, ville, code postal, pays). L’identifiant de produit est l’identifiant WooCommerce du produit : laisser l’extension créer et alimenter le catalogue plutôt que le saisir à la main.
+
+**Mise en service, dans cet ordre.**
+
+1. Publier cette version du CRM. Sans l’extension, elle ne change rien pour les visiteurs.
+2. Mettre à jour la politique de confidentialité : un texte est proposé dans **Réglages → Confidentialité → guide de politique**.
+3. Installer et activer **Meta for WooCommerce** depuis **Extensions → Ajouter**. La publication automatique ne l’installe pas et ne la met pas à jour.
+4. La connecter dans **Marketing → Facebook** avec un compte administrateur de l’entreprise Meta : choisir la page, le compte publicitaire, le pixel et le catalogue. Aucun identifiant n’est à saisir dans le CRM.
+5. Contrôler dans **Belmains CRM → Connexions** : l’état passe à « En attente de l’ouverture », puis « Actif après accord » une fois la vitrine ouverte. Le code de vérification du domaine, si Meta Business le demande, se colle au même endroit.
+
+Ne jamais connecter l’extension sur un site où ce verrou n’est pas publié : elle mesurerait tous les visiteurs sans leur accord. Les gestionnaires connectés ne sont jamais mesurés : pour contrôler les événements, utiliser une fenêtre privée non connectée, puis l’outil de test d’événements de Meta.
+
+**Limites à connaître.** Les refus et les bloqueurs réduisent le nombre d’événements : les chiffres de Meta resteront inférieurs aux commandes réelles de WooCommerce. Un client qui paie mais ne revient pas sur la page de confirmation n’est pas déclaré comme achat. Avec un cache de pages, une page gardée en cache est servie sans l’extension, y compris à un visiteur qui a accepté ; le CRM marque les pages servies avec l’extension comme privées (`Cache-Control: private`, `DONOTCACHEPAGE`) pour qu’elles ne soient jamais servies à quelqu’un d’autre. Le verrou s’appuie sur des filtres et des points d’accroche de l’extension : relancer `tests/meta-integration.php` sur l’installation isolée avant d’accepter une mise à jour de celle-ci.
+
+Validation : `tests/meta-integration.php` (62 contrôles sur la base isolée avec l’extension officielle active, 17 sans elle) et `tests/meta-consent-ui.cjs` (26 contrôles DOM). Aucun de ces essais ne contacte Meta : les appels sont interceptés et comptés.
 
 ## Marketing manuel
 

@@ -5,7 +5,12 @@ class BCRM_App {
     public static function settings() {
         return wp_parse_args( (array) get_option( 'bcrm_settings', array() ), array(
             'analytics_enabled' => true, 'retention_days' => 90, 'low_stock_threshold' => 5, 'shipping_sla_days' => 3,
+            'meta_domain_verification' => '',
         ) );
+    }
+    /** Stored preferences plus the read-only state of the official Meta extension. */
+    private static function settings_view( $settings ) {
+        return array_merge( $settings, array( 'meta_status' => BCRM_Meta::status(), 'meta_pixel' => BCRM_Meta::pixel_id() ) );
     }
     public static function activate() {
         BCRM_Audience::install();
@@ -21,6 +26,7 @@ class BCRM_App {
     public static function register() {
         if ( get_option( 'bcrm_db_version' ) !== BCRM_VERSION ) { self::activate(); }
         BCRM_Audience::register();
+        BCRM_Meta::register();
         BCRM_Tracking::register();
         if ( is_callable( array( 'BCRM_Commerce', 'register' ) ) ) { BCRM_Commerce::register(); }
         add_action( 'admin_menu', function () {
@@ -106,7 +112,7 @@ class BCRM_App {
         $route( '/shipping-export', 'GET', array( 'BCRM_Shipping', 'export' ) );
         $route( '/orders/(?P<id>\d+)/shipping-history', 'GET', function ( $r ) { return BCRM_Shipping::history( absint( $r['id'] ) ); } );
         $route( '/integration', 'GET', function () { return BCRM_Tracking::integration(); } );
-        $route( '/settings', 'GET', function () { return self::settings(); } );
+        $route( '/settings', 'GET', function () { return self::settings_view( self::settings() ); } );
         $route( '/settings', 'POST', function ( $r ) {
             $data = self::data( $r ); $settings = self::settings();
             if ( array_key_exists( 'analytics_enabled', $data ) ) { $settings['analytics_enabled'] = rest_sanitize_boolean( $data['analytics_enabled'] ); }
@@ -116,7 +122,12 @@ class BCRM_App {
                     $settings[ $key ] = (int) $data[ $key ];
                 }
             }
-            update_option( 'bcrm_settings', $settings, false ); return $settings;
+            if ( array_key_exists( 'meta_domain_verification', $data ) ) {
+                $value = BCRM_Meta::sanitize_domain_verification( $data['meta_domain_verification'] );
+                if ( null === $value ) { return new WP_Error( 'bcrm_setting', 'Le code de vérification de domaine Meta est invalide.', array( 'status' => 400 ) ); }
+                $settings['meta_domain_verification'] = $value;
+            }
+            update_option( 'bcrm_settings', $settings, false ); return self::settings_view( $settings );
         }, function () { return current_user_can( 'manage_options' ); } );
         $route( '/tickets', 'GET', function ( $r ) { return BCRM_Support::listing( sanitize_key( (string) $r->get_param( 'status' ) ) ); } );
         $route( '/tickets', 'POST', function ( $r ) { return BCRM_Support::create( self::data( $r ) ); } );
