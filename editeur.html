@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Éditeur produit — Belmains</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Jost:wght@300;400;500;600&display=swap">
+<style>
+:root{--rouge:#a8121f;--rouge-f:#7d0c16;--noir:#181d25;--or:#bf9756;--or-c:#d4b06a;--or-pale:#e9dcc3;
+  --ivoire:#f8f5ee;--ivoire-or:#f5eedf;--gris:#6b6257;--ligne:#e6dfd2;--vert:#2f7d4f;
+  --display:"Cormorant Garamond",Georgia,serif;--sans:"Jost",system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:var(--sans);font-size:14.5px;color:var(--noir);background:var(--ivoire);display:flex;flex-direction:column}
+button,input,textarea,select{font-family:inherit;font-size:inherit}
+.top{display:flex;align-items:center;gap:14px;padding:10px 18px;background:#fff;border-bottom:1px solid var(--ligne);flex-wrap:wrap;z-index:5}
+.top .brand{font-family:var(--display);font-weight:700;font-size:1.35rem;letter-spacing:.2em;text-transform:uppercase}
+.top .brand span{color:var(--rouge)}
+.top .sub{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--or);font-weight:500}
+.top .grow{flex:1}
+.etat{font-size:.8rem;color:var(--gris)}
+.etat.ok{color:var(--vert)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:30px;border:1px solid var(--noir);background:#fff;color:var(--noir);cursor:pointer;font-weight:500;font-size:.86rem;letter-spacing:.03em;white-space:nowrap}
+.btn:hover{background:var(--ivoire)}
+.btn.red{background:var(--rouge);border-color:var(--rouge);color:#fff}
+.btn.red:hover{background:var(--rouge-f)}
+.btn.gold{background:var(--or);border-color:var(--or);color:var(--noir)}
+.btn.petit{padding:5px 11px;font-size:.78rem}
+.btn.txt{border-color:transparent;background:transparent;color:var(--gris)}
+.btn.txt:hover{color:var(--rouge)}
+.corps{flex:1;display:grid;grid-template-columns:440px 1fr;min-height:0}
+aside{overflow:auto;background:#fff;border-right:1px solid var(--ligne);padding:0 0 60px}
+.apercu{display:flex;flex-direction:column;min-width:0;background:var(--ivoire)}
+.apercu-bar{display:flex;align-items:center;gap:10px;padding:8px 16px;font-size:.78rem;color:var(--gris);border-bottom:1px solid var(--ligne);background:var(--ivoire)}
+.apercu-bar .seg{display:inline-flex;border:1px solid var(--ligne);border-radius:20px;overflow:hidden;background:#fff}
+.apercu-bar .seg button{border:0;background:transparent;padding:5px 12px;cursor:pointer;color:var(--gris)}
+.apercu-bar .seg button.on{background:var(--noir);color:#fff}
+.cadre{flex:1;display:flex;justify-content:center;padding:14px;min-height:0}
+iframe{border:1px solid var(--ligne);background:#fff;width:100%;height:100%;border-radius:8px;box-shadow:0 20px 50px -30px rgba(24,29,37,.3);transition:width .3s}
+.cadre.mobile iframe{width:390px}
+
+/* formulaire */
+.intro{padding:16px 20px 6px;color:var(--gris);font-weight:300;font-size:.9rem;line-height:1.5}
+.sec{border-top:1px solid var(--ligne)}
+.sec>summary{list-style:none;cursor:pointer;padding:14px 20px;display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:600;font-size:1.2rem}
+.sec>summary::-webkit-details-marker{display:none}
+.sec>summary i{font-style:normal;font-family:var(--sans);font-size:.68rem;letter-spacing:.2em;color:var(--or);font-weight:500;min-width:26px}
+.sec>summary::after{content:"+";margin-left:auto;color:var(--or);font-size:1.3rem;font-weight:300}
+.sec[open]>summary::after{content:"–"}
+.sec>div{padding:2px 20px 18px;display:flex;flex-direction:column;gap:14px}
+label.ch{display:flex;flex-direction:column;gap:5px}
+label.ch>span,.gr>span.lbl{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gris);font-weight:500;display:flex;justify-content:space-between;gap:8px}
+label.ch small,.gr small{font-size:.74rem;color:var(--gris);font-weight:300;text-transform:none;letter-spacing:0}
+input[type=text],input[type=number],textarea{width:100%;border:1px solid var(--ligne);border-radius:8px;padding:9px 11px;background:#fff;color:var(--noir);line-height:1.45}
+input[type=text]:focus,textarea:focus{outline:2px solid var(--or-c);outline-offset:1px;border-color:var(--or)}
+textarea{resize:vertical;min-height:64px}
+textarea.grand{min-height:120px}
+.gr{display:flex;flex-direction:column;gap:8px}
+.item{border:1px solid var(--ligne);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;background:var(--ivoire);position:relative}
+.item .num{font-size:.66rem;letter-spacing:.18em;color:var(--or);font-weight:500;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.item .num button{border:0;background:transparent;color:var(--gris);cursor:pointer;font-size:1rem;line-height:1;padding:2px 6px}
+.item .num button:hover{color:var(--rouge)}
+.item input[type=text],.item textarea{background:#fff}
+.ajout{align-self:flex-start}
+/* image */
+.img{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:start}
+.img .vue{width:96px;height:96px;border-radius:8px;border:1px dashed var(--or);background:repeating-linear-gradient(135deg,#f1ece2 0 12px,#ece5d7 12px 24px);display:flex;align-items:center;justify-content:center;color:var(--or);font-size:1.3rem;overflow:hidden}
+.img .vue img{width:100%;height:100%;object-fit:cover}
+.img .acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.img .nom{font-size:.74rem;color:var(--gris);word-break:break-all}
+.img input[type=file]{display:none}
+.galerie{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.galerie .v{aspect-ratio:1;border-radius:6px;overflow:hidden;border:1px solid var(--ligne);position:relative;background:#fff}
+.galerie .v img{width:100%;height:100%;object-fit:cover}
+.galerie .v b{position:absolute;left:3px;bottom:2px;font-size:.6rem;color:#fff;text-shadow:0 0 3px #000}
+.galerie .v button{position:absolute;right:0;top:0;border:0;background:rgba(168,18,31,.9);color:#fff;font-size:.7rem;cursor:pointer;line-height:1;padding:2px 5px}
+/* modale */
+.voile{position:fixed;inset:0;background:rgba(24,29,37,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.voile.on{display:flex}
+.modal{background:#fff;border-radius:14px;max-width:560px;width:100%;padding:28px 30px;display:flex;flex-direction:column;gap:14px;box-shadow:0 40px 80px -30px rgba(0,0,0,.5)}
+.modal h2{font-family:var(--display);margin:0;font-size:1.7rem}
+.modal ol{margin:0;padding-left:20px;line-height:1.6}
+.modal code{background:var(--ivoire);padding:1px 6px;border-radius:4px;font-size:.9em}
+.modal .acts{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.aide{font-size:.78rem;color:var(--gris);background:var(--ivoire);border-radius:8px;padding:8px 12px;line-height:1.5}
+.aide b{font-weight:500}
+@media (max-width:980px){.corps{grid-template-columns:1fr}aside{max-height:50vh}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div><div class="brand">Bel<span>mains</span></div><div class="sub">Éditeur produit</div></div>
+  <div class="grow"></div>
+  <span class="etat" id="etat">Brouillon enregistré automatiquement</span>
+  <button class="btn" id="bNouveau" title="Repart d'une copie du produit actuellement en ligne">Nouveau produit (copie)</button>
+  <button class="btn" id="bOuvrir">Ouvrir un fichier produit…</button>
+  <input type="file" id="fOuvrir" accept=".js,.json" hidden>
+  <button class="btn red" id="bPack">Télécharger le pack ↓</button>
+</div>
+
+<div class="corps">
+  <aside id="form">
+    <p class="intro">Modifiez les textes et les photos : l'aperçu se met à jour en direct. Rien ne change dans la mise en page.
+      Mise en forme : <b>*mot*</b> = italique rouge dans un titre, <b>**mot**</b> = gras, ligne vide = nouveau paragraphe.</p>
+  </aside>
+  <div class="apercu">
+    <div class="apercu-bar">
+      <span>Aperçu en direct</span>
+      <span class="seg"><button class="on" data-w="desk">Ordinateur</button><button data-w="mobile">Mobile</button></span>
+      <span class="grow" style="flex:1"></span>
+      <button class="btn petit txt" id="bRecharger">Recharger l'aperçu</button>
+    </div>
+    <div class="cadre" id="cadre"><iframe id="iframe" title="Aperçu du site"></iframe></div>
+  </div>
+</div>
+
+<div class="voile" id="voile">
+  <div class="modal">
+    <h2>Pack prêt à déposer</h2>
+    <p>Le fichier <code id="mNom">produit.zip</code> est téléchargé. Pour mettre le produit en ligne&nbsp;:</p>
+    <ol>
+      <li>Décompressez-le <b>à la racine du site</b> (le dossier qui contient <code>index.html</code>).</li>
+      <li>Acceptez de remplacer <code>produit.js</code> : c'est lui qui active le nouveau produit.</li>
+      <li>Publiez le site comme d'habitude. C'est tout.</li>
+    </ol>
+    <p class="aide">Le pack contient : <code>produits/<span class="mSlug"></span>.js</code> (tous les textes), <code>images/<span class="mSlug"></span>/</code> (les photos que vous avez choisies) et <code>produit.js</code> (une ligne : le produit actif).<br>
+    Pour revenir à un ancien produit : rouvrir <code>produit.js</code> et remettre son nom.</p>
+    <div class="acts"><button class="btn" id="bFermer">Fermer</button></div>
+  </div>
+</div>
+
+<script src="produit.js"></script>
+<script src="outils/jszip.min.js"></script>
+<script>
+(function(){
+  'use strict';
+  var CLE_BROUILLON = 'belmains.brouillon';
+  var D = null;              /* la fiche en cours d'édition */
+  var iframe = document.getElementById('iframe');
+  var form = document.getElementById('form');
+  var etat = document.getElementById('etat');
+
+  /* ================= SCHÉMA DU FORMULAIRE =================
+     Chaque champ pointe vers une clé de la fiche produit (produits/<slug>.js).
+     Types : text, textarea, number, image, images, liste (fixe ou libre). */
+  var SECTIONS = [
+    {n:'01', titre:'Produit & référencement', champs:[
+      {c:'nom', l:'Nom du produit', t:'text', aide:'Utilisé pour le nom du fichier et le référencement.'},
+      {c:'slug', l:'Nom de fichier', t:'text', aide:'Nom du fichier dans produits/. Pour un nouveau produit (bouton « Nouveau produit »), il suit le nom automatiquement.'},
+      {c:'seo.titre', l:'Titre Google (balise title)', t:'text'},
+      {c:'seo.description', l:'Description Google', t:'textarea', aide:'Environ 150 caractères.'},
+      {c:'seo.prix', l:'Prix (données structurées)', t:'text', aide:'Ex. 59.90 — laisser vide tant que le prix n\'est pas fixé.'},
+      {c:'seo.image', l:'Image de partage (réseaux sociaux)', t:'image', sans:true, aide:'Facultatif : par défaut, la photo principale de la fiche.'}
+    ]},
+    {n:'02', titre:'Haut de page', champs:[
+      {c:'bandeau', l:'Bandeau rouge tout en haut', t:'text'},
+      {c:'menu', l:'Lien du menu vers le produit', t:'text'},
+      {c:'defilant', l:'Bandeau défilant noir', t:'text'},
+      {c:'hero.surtitre', l:'Surtitre', t:'text'},
+      {c:'hero.titre', l:'Grand titre', t:'textarea', aide:'Une ligne du formulaire = une ligne à l\'écran. *mot* passe en rouge italique.'},
+      {c:'hero.texte', l:'Texte d\'introduction', t:'textarea'},
+      {c:'hero.bouton', l:'Bouton principal', t:'text'},
+      {c:'hero.boutonSecondaire', l:'Bouton secondaire', t:'text'},
+      {c:'hero.preuve', l:'Preuve sociale (à côté des étoiles)', t:'text'},
+      {c:'hero.sceau', l:'Texte du sceau tournant', t:'text'},
+      {c:'hero.photo', l:'Grande photo', t:'image'},
+      {c:'hero.pastilles', l:'Deux pastilles flottantes', t:'liste', fixe:true, sous:[{c:'petit',l:'Petit texte'},{c:'grand',l:'Grand texte'}]}
+    ]},
+    {n:'03', titre:'Pourquoi ce produit', champs:[
+      {c:'pourquoi.photo', l:'Photo', t:'image'},
+      {c:'pourquoi.surtitre', l:'Surtitre', t:'text'},
+      {c:'pourquoi.titre', l:'Titre', t:'text'},
+      {c:'pourquoi.texte', l:'Texte', t:'textarea'},
+      {c:'pourquoi.points', l:'Points (tirets rouges)', t:'liste', simple:true, ajout:'Ajouter un point'},
+      {c:'pourquoi.bouton', l:'Bouton', t:'text'}
+    ]},
+    {n:'04', titre:'Chiffres clés', champs:[
+      {c:'chiffres', l:'Quatre chiffres', t:'liste', fixe:true, sous:[{c:'valeur',l:'Nombre',t:'number'},{c:'suffixe',l:'Suffixe (min, j, %…)'},{c:'legende',l:'Légende'}]}
+    ]},
+    {n:'05', titre:'Vue à 360°', champs:[
+      {c:'vue360.surtitre', l:'Surtitre', t:'text'},
+      {c:'vue360.titre', l:'Titre', t:'text'},
+      {c:'vue360.indication', l:'Indication sous l\'image', t:'text'},
+      {c:'vue360.note', l:'Texte de l\'emplacement (tant qu\'il n\'y a pas de photos)', t:'textarea'},
+      {c:'vue360.photos', l:'Séquence de photos', t:'images', aide:'Idéalement 12 photos, une tous les 30°, dans l\'ordre. Elles sont triées par nom de fichier.'}
+    ]},
+    {n:'06', titre:'Fiche produit', champs:[
+      {c:'fiche.photo', l:'Photo principale (packshot)', t:'image'},
+      {c:'fiche.vignettes', l:'Trois vignettes', t:'liste', fixe:true, sous:[{c:'',l:'',t:'image',sans:true},{c:'titre',l:'Titre (si pas de photo)'},{c:'note',l:'Précision (si pas de photo)'}]},
+      {c:'fiche.surtitre', l:'Surtitre', t:'text'},
+      {c:'fiche.titre', l:'Nom affiché', t:'text'},
+      {c:'fiche.avis', l:'Mention à côté des étoiles', t:'text'},
+      {c:'fiche.prix', l:'Prix', t:'text'},
+      {c:'fiche.prixBarre', l:'Prix barré', t:'text'},
+      {c:'fiche.badge', l:'Badge rouge', t:'text'},
+      {c:'fiche.texte', l:'Texte', t:'textarea'},
+      {c:'fiche.atouts', l:'Atouts (coches)', t:'liste', simple:true, ajout:'Ajouter un atout', aide:'**mot** = gras.'},
+      {c:'fiche.lotsTitre', l:'Titre des lots', t:'text'},
+      {c:'fiche.lots', l:'Trois lots', t:'liste', fixe:true, sous:[{c:'nom',l:'Nom'},{c:'etiquette',l:'Étiquette rouge'},{c:'remise',l:'Remise (texte or)'},{c:'prix',l:'Prix'}]},
+      {c:'fiche.bouton', l:'Bouton d\'achat', t:'text'},
+      {c:'fiche.lienPanier', l:'Lien du bouton d\'achat', t:'text', aide:'Adresse de la page de paiement (Shopify…). # = inactif.'},
+      {c:'fiche.paiement', l:'Moyens de paiement', t:'text'},
+      {c:'fiche.garanties', l:'Trois garanties', t:'liste', fixe:true, sous:[{c:'titre',l:'Titre'},{c:'texte',l:'Texte'}]},
+      {c:'fiche.onglets', l:'Trois onglets dépliants', t:'liste', fixe:true, sous:[{c:'titre',l:'Titre'},{c:'texte',l:'Contenu',t:'textarea'}]}
+    ]},
+    {n:'07', titre:'Promesses (fond noir)', champs:[
+      {c:'promesses.surtitre', l:'Surtitre', t:'text'},
+      {c:'promesses.titre', l:'Titre', t:'text'},
+      {c:'promesses.cartes', l:'Quatre cartes', t:'liste', fixe:true, sous:[{c:'icone',l:'Icône (un symbole : ☀ ♥ ✓ ⛟ ✦ ★)'},{c:'titre',l:'Titre'},{c:'texte',l:'Texte'}]}
+    ]},
+    {n:'08', titre:'Avis clients', champs:[
+      {c:'avis.surtitre', l:'Surtitre', t:'text'},
+      {c:'avis.nombre', l:'Nombre de clients', t:'number'},
+      {c:'avis.titre', l:'Suite du titre (après le nombre)', t:'text'},
+      {c:'avis.texte', l:'Texte', t:'textarea'},
+      {c:'avis.liste', l:'Trois avis', t:'liste', fixe:true, aide:'Un avis vide affiche l\'étiquette « avis réel à insérer ». N\'inventez jamais un avis.', sous:[{c:'texte',l:'Avis',t:'textarea'},{c:'nom',l:'Prénom N.'},{c:'ville',l:'Ville'}]}
+    ]},
+    {n:'09', titre:'Questions fréquentes', champs:[
+      {c:'faq.surtitre', l:'Surtitre', t:'text'},
+      {c:'faq.titre', l:'Titre', t:'text'},
+      {c:'faq.texte', l:'Texte', t:'textarea'},
+      {c:'faq.bouton', l:'Bouton', t:'text'},
+      {c:'faq.lienContact', l:'Lien du bouton', t:'text', aide:'Ex. mailto:contact@belmains.fr'},
+      {c:'faq.questions', l:'Questions', t:'liste', ajout:'Ajouter une question', sous:[{c:'question',l:'Question'},{c:'reponse',l:'Réponse',t:'textarea'}]}
+    ]},
+    {n:'10', titre:'Appel final (fond rouge)', champs:[
+      {c:'final.titre', l:'Titre', t:'text'},
+      {c:'final.texte', l:'Texte', t:'textarea'},
+      {c:'final.bouton', l:'Bouton', t:'text'}
+    ]},
+    {n:'11', titre:'Pied de page', champs:[
+      {c:'pied.slogan', l:'Slogan', t:'textarea'},
+      {c:'pied.lienProduit', l:'Lien « Boutique » vers le produit', t:'text'},
+      {c:'pied.newsletter', l:'Texte newsletter', t:'text'},
+      {c:'pied.copyright', l:'Copyright', t:'text'}
+    ]}
+  ];
+
+  /* ================= utilitaires ================= */
+  function get(o,p){ var c=o; p.split('.').forEach(function(k){ c=(c==null)?undefined:c[k]; }); return c; }
+  function set(o,p,v){ var ks=p.split('.'),c=o; ks.slice(0,-1).forEach(function(k){ if(c[k]==null||typeof c[k]!=='object') c[k]={}; c=c[k]; }); c[ks[ks.length-1]]=v; }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function slugifie(s){ return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60)||'produit'; }
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+  function h(html){ var t=document.createElement('template'); t.innerHTML=html.trim(); return t.content.firstChild; }
+
+  /* ================= chargement d'une fiche ================= */
+  function chargerDepuisSite(slug){
+    return new Promise(function(res,rej){
+      var s=document.createElement('script'); s.src='produits/'+slug+'.js?'+Date.now();
+      s.onload=function(){ var p=window.PRODUIT; window.PRODUIT=null; s.remove(); p?res(p):rej(new Error('fichier sans fiche')); };
+      s.onerror=function(){ s.remove(); rej(new Error('introuvable')); };
+      document.head.appendChild(s);
+    });
+  }
+  function parseFichier(txt){
+    var a=txt.indexOf('{'), b=txt.lastIndexOf('}');
+    if(a<0||b<0) throw new Error('Ce fichier ne contient pas de fiche produit.');
+    return JSON.parse(txt.slice(a,b+1));
+  }
+
+  /* ================= formulaire ================= */
+  function construire(){
+    form.querySelectorAll('.sec').forEach(function(s){s.remove();});
+    SECTIONS.forEach(function(sec,i){
+      var d=h('<details class="sec"'+(i===1?' open':'')+'><summary><i>'+sec.n+'</i>'+esc(sec.titre)+'</summary><div></div></details>');
+      var box=d.lastChild;
+      sec.champs.forEach(function(ch){ box.appendChild(champ(ch, ch.c)); });
+      form.appendChild(d);
+    });
+  }
+  function entete(ch){
+    return '<span>'+esc(ch.l)+'</span>'+(ch.aide?'<small>'+esc(ch.aide)+'</small>':'');
+  }
+  function champ(ch, chemin){
+    var t=ch.t||'text', el;
+    if(t==='text'||t==='number'){
+      el=h('<label class="ch">'+entete(ch)+'<input type="'+t+'"></label>');
+      var inp=el.querySelector('input'); inp.value=get(D,chemin)==null?'':get(D,chemin);
+      inp.addEventListener('input',function(){
+        set(D,chemin,t==='number'?(inp.value===''?'':Number(inp.value)):inp.value);
+        if(chemin==='nom' && !D._slugManuel){ D.slug=slugifie(inp.value); var s=form.querySelector('[data-chemin="slug"]'); if(s) s.value=D.slug; }
+        if(chemin==='slug'){ D._slugManuel=true; D.slug=slugifie(inp.value); }
+        modifie();
+      });
+      inp.setAttribute('data-chemin',chemin);
+      return el;
+    }
+    if(t==='textarea'){
+      el=h('<label class="ch">'+entete(ch)+'<textarea'+(/texte|reponse|titre/.test(chemin)&&/onglets|questions|hero/.test(chemin)?' class="grand"':'')+'></textarea></label>');
+      var ta=el.querySelector('textarea'); ta.value=get(D,chemin)||'';
+      ta.addEventListener('input',function(){ set(D,chemin,ta.value); modifie(); });
+      return el;
+    }
+    if(t==='image') return champImage(ch, chemin);
+    if(t==='images') return champImages(ch, chemin);
+    if(t==='liste') return champListe(ch, chemin);
+    return h('<div></div>');
+  }
+
+  function champImage(ch, chemin){
+    var val=get(D,chemin); if(val==null||typeof val!=='object'){ val={src:typeof val==='string'?val:'',alt:'',note:''}; set(D,chemin,val); }
+    var el=h('<div class="gr"><span class="lbl">'+esc(ch.l)+'</span>'+(ch.aide?'<small>'+esc(ch.aide)+'</small>':'')+
+      '<div class="img"><div class="vue">✦</div><div class="gr"><div class="acts"><button type="button" class="btn petit">Choisir une photo…</button><button type="button" class="btn petit txt">Retirer</button></div><div class="nom"></div></div></div>'+
+      '<input type="file" accept="image/*"></div>');
+    var vue=el.querySelector('.vue'), nom=el.querySelector('.nom'), file=el.querySelector('input[type=file]');
+    var bChoisir=el.querySelectorAll('button')[0], bRetirer=el.querySelectorAll('button')[1];
+    function peindre(){
+      var v=get(D,chemin)||{};
+      vue.innerHTML=v.src?'<img src="'+esc(v.src)+'" alt="">':'✦';
+      nom.textContent=v.src?(v.src.indexOf('data:')===0?'Nouvelle photo (sera enregistrée dans le pack)':v.src):'Aucune photo : l\'emplacement « Photo à fournir » reste affiché.';
+    }
+    bChoisir.addEventListener('click',function(){file.click();});
+    bRetirer.addEventListener('click',function(){ get(D,chemin).src=''; peindre(); modifie(); });
+    file.addEventListener('change',function(){
+      var f=file.files[0]; if(!f) return;
+      lireImage(f).then(function(url){ get(D,chemin).src=url; peindre(); modifie(); });
+      file.value='';
+    });
+    peindre();
+    if(!ch.sans){
+      var sous=el.querySelector('.img > .gr');
+      [{c:'alt',l:'Description (accessibilité & Google)'},{c:'note',l:'Texte de l\'emplacement si pas de photo'}].forEach(function(s){
+        var sub=champ({l:s.l,t:s.c==='note'?'textarea':'text'}, chemin+'.'+s.c); sous.appendChild(sub);
+      });
+    }
+    return el;
+  }
+
+  function champImages(ch, chemin){
+    if(!Array.isArray(get(D,chemin))) set(D,chemin,[]);
+    var el=h('<div class="gr"><span class="lbl">'+esc(ch.l)+'</span>'+(ch.aide?'<small>'+esc(ch.aide)+'</small>':'')+
+      '<div class="galerie"></div><div class="acts" style="display:flex;gap:6px"><button type="button" class="btn petit">Ajouter des photos…</button><button type="button" class="btn petit txt">Tout retirer</button></div>'+
+      '<input type="file" accept="image/*" multiple></div>');
+    var gal=el.querySelector('.galerie'), file=el.querySelector('input[type=file]');
+    function peindre(){
+      var arr=get(D,chemin);
+      gal.innerHTML=arr.map(function(src,i){ return '<div class="v"><img src="'+esc(src)+'" alt=""><b>'+(i+1)+'</b><button type="button" data-i="'+i+'" title="Retirer">✕</button></div>'; }).join('');
+    }
+    gal.addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; get(D,chemin).splice(+b.getAttribute('data-i'),1); peindre(); modifie(); });
+    el.querySelectorAll('.acts button')[0].addEventListener('click',function(){file.click();});
+    el.querySelectorAll('.acts button')[1].addEventListener('click',function(){ set(D,chemin,[]); peindre(); modifie(); });
+    file.addEventListener('change',function(){
+      var fs=[].slice.call(file.files).sort(function(a,b){return a.name.localeCompare(b.name,'fr',{numeric:true});});
+      Promise.all(fs.map(lireImage)).then(function(urls){ var arr=get(D,chemin); urls.forEach(function(u){arr.push(u);}); peindre(); modifie(); });
+      file.value='';
+    });
+    peindre();
+    return el;
+  }
+
+  function champListe(ch, chemin){
+    if(!Array.isArray(get(D,chemin))) set(D,chemin,[]);
+    var el=h('<div class="gr"><span class="lbl">'+esc(ch.l)+'</span>'+(ch.aide?'<small>'+esc(ch.aide)+'</small>':'')+'<div class="items"></div></div>');
+    var items=el.querySelector('.items');
+    function peindre(){
+      items.innerHTML='';
+      var arr=get(D,chemin);
+      arr.forEach(function(v,i){
+        var it=h('<div class="item"><div class="num"><span>'+(i+1)+'</span>'+(ch.fixe?'':'<button type="button" title="Retirer">✕</button>')+'</div></div>');
+        if(!ch.fixe) it.querySelector('button').addEventListener('click',function(){ arr.splice(i,1); peindre(); modifie(); });
+        if(ch.simple){
+          var ta=h('<textarea></textarea>'); ta.value=v||''; ta.addEventListener('input',function(){ arr[i]=ta.value; modifie(); }); it.appendChild(ta);
+        }else{
+          if(v==null||typeof v!=='object') arr[i]=v={};
+          ch.sous.forEach(function(s){
+            if(s.t==='image'){ it.appendChild(champImage({l:s.l||'Photo',sans:true}, chemin+'.'+i)); }
+            else it.appendChild(champ({l:s.l,t:s.t||'text'}, chemin+'.'+i+'.'+s.c));
+          });
+        }
+        items.appendChild(it);
+      });
+    }
+    peindre();
+    if(!ch.fixe){
+      var b=h('<button type="button" class="btn petit ajout">+ '+esc(ch.ajout||'Ajouter')+'</button>');
+      b.addEventListener('click',function(){
+        var arr=get(D,chemin); arr.push(ch.simple?'':{}); peindre(); modifie();
+        var last=items.lastChild; if(last){ var f=last.querySelector('input,textarea'); if(f) f.focus(); }
+      });
+      el.appendChild(b);
+    }
+    return el;
+  }
+
+  function lireImage(f){
+    return new Promise(function(res,rej){ var r=new FileReader(); r.onload=function(){res(r.result);}; r.onerror=rej; r.readAsDataURL(f); });
+  }
+
+  /* ================= brouillon + aperçu ================= */
+  var timer=null;
+  function modifie(){
+    clearTimeout(timer);
+    timer=setTimeout(function(){ envoyer(); sauver(); },120);
+  }
+  function envoyer(){
+    if(iframe.contentWindow) iframe.contentWindow.postMessage({type:'belmains:produit',produit:D},'*');
+  }
+  function sauver(){
+    try{ localStorage.setItem(CLE_BROUILLON, JSON.stringify(D)); etat.textContent='Brouillon enregistré'; etat.className='etat ok'; }
+    catch(e){ etat.textContent='Brouillon trop lourd pour être conservé (photos) : téléchargez le pack avant de fermer'; etat.className='etat'; }
+  }
+  iframe.addEventListener('load', envoyer);
+
+  function demarrer(p){
+    D=p; construire(); iframe.src='index.html?apercu=1&produit='+encodeURIComponent(window.PRODUIT_ACTIF||''); envoyer();
+  }
+
+  /* ================= export ================= */
+  function ext(dataUrl){ var m=/^data:image\/(\w+)/.exec(dataUrl); var e=(m?m[1]:'jpg').toLowerCase(); return e==='jpeg'?'jpg':e; }
+  function b64(dataUrl){ return dataUrl.slice(dataUrl.indexOf(',')+1); }
+  function nomImage(chemin){
+    return chemin.replace(/\.src$/,'').replace(/^seo\.image$/,'partage').replace(/^fiche\.vignettes\.(\d+)$/,function(_,i){return 'vignette-'+(+i+1);})
+      .replace(/^vue360\.photos\.(\d+)$/,function(_,i){return '360-'+String(+i+1).padStart(2,'0');})
+      .replace(/\.photo$/,'').replace(/\./g,'-');
+  }
+  /* parcourt la fiche, remplace les photos nouvelles (data:) par un chemin, renvoie [{chemin, data}] */
+  function extraireImages(p, slug){
+    var fichiers=[];
+    (function marche(o, prefixe){
+      Object.keys(o).forEach(function(k){
+        var v=o[k], chemin=prefixe?prefixe+'.'+k:k;
+        if(typeof v==='string' && v.indexOf('data:image/')===0){
+          var f='images/'+slug+'/'+nomImage(chemin)+'.'+ext(v);
+          fichiers.push({chemin:f, data:b64(v)}); o[k]=f;
+        }else if(v && typeof v==='object') marche(v, chemin);
+      });
+    })(p,'');
+    return fichiers;
+  }
+  function fichierProduit(p){
+    var tete='/* ============================================================\n'+
+      '   FICHE PRODUIT — '+(p.nom||p.slug)+'\n'+
+      '   ------------------------------------------------------------\n'+
+      '   Généré par editeur.html le '+new Date().toLocaleDateString('fr-FR')+'.\n'+
+      '   Tous les textes et photos du site pour ce produit.\n'+
+      '   • Activer : dans produit.js, PRODUIT_ACTIF = "'+p.slug+'"\n'+
+      '   • Prévisualiser : index.html?produit='+p.slug+'\n'+
+      '   • Modifier : editeur.html → « Ouvrir un fichier produit »\n'+
+      '   Mise en forme : *italique rouge*, **gras**, ligne vide = paragraphe.\n'+
+      '   ============================================================ */\n';
+    return tete+'window.PRODUIT = '+JSON.stringify(p,null,2)+';\n';
+  }
+  function telecharger(nom, blob){
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=nom; document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },2000);
+  }
+  function exporter(){
+    var p=clone(D); delete p._slugManuel;
+    p.slug=slugifie(p.slug||p.nom);
+    var images=extraireImages(p, p.slug);
+    var js=fichierProduit(p);
+    var actif='/* ============================================================\n   PRODUIT ACTIF DU SITE\n   Une seule ligne à changer pour passer d\'un produit à l\'autre.\n   La valeur = nom d\'un fichier de produits/ (sans le .js).\n   ============================================================ */\nvar PRODUIT_ACTIF = "'+p.slug+'";\n';
+    if(window.JSZip){
+      var zip=new JSZip();
+      zip.file('produits/'+p.slug+'.js', js);
+      zip.file('produit.js', actif);
+      images.forEach(function(f){ zip.file(f.chemin, f.data, {base64:true}); });
+      zip.generateAsync({type:'blob'}).then(function(b){
+        telecharger('belmains-'+p.slug+'.zip', b);
+        document.getElementById('mNom').textContent='belmains-'+p.slug+'.zip';
+        document.querySelectorAll('.mSlug').forEach(function(e){e.textContent=p.slug;});
+        document.getElementById('voile').classList.add('on');
+      });
+    }else{
+      /* sans connexion : on livre les fichiers un par un */
+      telecharger(p.slug+'.js', new Blob([js],{type:'text/javascript'}));
+      setTimeout(function(){ telecharger('produit.js', new Blob([actif],{type:'text/javascript'})); },400);
+      images.forEach(function(f,i){ setTimeout(function(){
+        var bin=atob(f.data), arr=new Uint8Array(bin.length); for(var j=0;j<bin.length;j++) arr[j]=bin.charCodeAt(j);
+        telecharger(f.chemin.split('/').pop(), new Blob([arr]));
+      }, 800+i*400); });
+      alert('Le pack .zip n\'a pas pu être créé (pas de connexion). Les fichiers sont téléchargés un par un :\n• '+p.slug+'.js → dossier produits/\n• produit.js → à la racine\n• les photos → dossier images/'+p.slug+'/');
+    }
+  }
+
+  /* ================= boutons ================= */
+  document.getElementById('bPack').addEventListener('click', exporter);
+  document.getElementById('bFermer').addEventListener('click', function(){ document.getElementById('voile').classList.remove('on'); });
+  document.getElementById('bRecharger').addEventListener('click', function(){ iframe.src=iframe.src; });
+  document.querySelectorAll('.apercu-bar .seg button').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.apercu-bar .seg button').forEach(function(x){x.classList.remove('on');}); b.classList.add('on');
+      document.getElementById('cadre').classList.toggle('mobile', b.getAttribute('data-w')==='mobile');
+    });
+  });
+  document.getElementById('bNouveau').addEventListener('click', function(){
+    if(!confirm('Repartir d\'une copie du produit actuellement en ligne ? Le brouillon en cours sera remplacé.')) return;
+    chargerDepuisSite(window.PRODUIT_ACTIF).then(function(p){
+      p=clone(p); p.nom='Nouveau produit'; p.slug='nouveau-produit'; delete p._slugManuel;
+      demarrer(p); sauver(); form.scrollTop=0;
+    }).catch(function(){ alert('Impossible de lire produits/'+window.PRODUIT_ACTIF+'.js'); });
+  });
+  document.getElementById('bOuvrir').addEventListener('click', function(){ document.getElementById('fOuvrir').click(); });
+  document.getElementById('fOuvrir').addEventListener('change', function(){
+    var f=this.files[0]; if(!f) return;
+    var r=new FileReader(); r.onload=function(){
+      try{ var p=parseFichier(r.result); p._slugManuel=true; demarrer(p); sauver(); }
+      catch(e){ alert('Fichier illisible : '+e.message); }
+    }; r.readAsText(f); this.value='';
+  });
+
+  /* ================= démarrage ================= */
+  var brouillon=null;
+  try{ brouillon=JSON.parse(localStorage.getItem(CLE_BROUILLON)||'null'); }catch(e){}
+  if(brouillon && brouillon.slug){
+    demarrer(brouillon);
+    etat.innerHTML='Brouillon restauré — <a href="#" id="aOublier" style="color:var(--rouge)">repartir du produit en ligne</a>';
+    document.getElementById('aOublier').addEventListener('click',function(e){
+      e.preventDefault(); localStorage.removeItem(CLE_BROUILLON);
+      chargerDepuisSite(window.PRODUIT_ACTIF).then(function(p){ demarrer(p); sauver(); });
+    });
+  }else{
+    chargerDepuisSite(window.PRODUIT_ACTIF).then(function(p){ p._slugManuel=true; demarrer(p); })
+      .catch(function(){ form.insertAdjacentHTML('beforeend','<p class="intro" style="color:var(--rouge)">Impossible de lire produits/'+esc(window.PRODUIT_ACTIF)+'.js. Vérifiez produit.js.</p>'); });
+  }
+})();
+</script>
+</body>
+</html>
