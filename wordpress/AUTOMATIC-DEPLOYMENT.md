@@ -9,15 +9,40 @@ La branche de publication est `codex/version-3-bordeaux` du dépôt public `noua
 3. Le workflow de notification, situé sur la branche GitHub par défaut, appelle l'entrée fixe `https://belmains.com/belmains-deploy-check.php` après la validation de la branche de publication. Il n'utilise ni secret ni code de la révision déclenchante.
 4. Le récepteur utilise un programme PHP de confiance installé hors du Web, dans `~/belmains-deployment`. Il vérifie indépendamment la branche, le SHA, la réussite du workflow et les empreintes des archives. Il ignore tous les paramètres reçus.
 5. Il compare le code en ligne à son état enregistré, sauvegarde les trois composants hors du Web, prépare les nouveaux fichiers et remplace uniquement le thème Belmains et les extensions Belmains Commerce et CRM.
-6. L'accueil doit répondre 200, l'API anonyme doit conserver la réponse 503 de préparation et le CSS public doit correspondre aux octets déployés. Un échec entraîne le retour au code précédent, sans restauration de base.
+6. L'accueil doit répondre 200 et le CSS public doit correspondre aux octets déployés. L'API anonyme doit répondre selon l'état enregistré de la boutique : 503 de préparation tant que la vitrine est fermée, réponse normale une fois les ventes ouvertes. Un échec entraîne le retour au code précédent, sans restauration de base.
 
 Une tâche native Infomaniak, `Belmains - publication GitHub`, vérifie aussi toutes les quinze minutes en secours. Les e-mails de cette tâche sont désactivés. La notification GitHub est le déclenchement principal.
 
 ## Périmètre préservé
 
-Les publications n'écrivent ni dans la base WordPress/WooCommerce, ni dans `uploads/`, `wp-config.php`, les autres extensions ou les MU plugins. L'empreinte du garde `belmains-staging-guard.php` doit rester identique. Les achats, paiements, notifications commerciales et expéditions restent fermés jusqu'à une demande explicite d'ouverture.
+Les publications n'écrivent ni dans la base WordPress/WooCommerce, ni dans `uploads/`, `wp-config.php`, les autres extensions ou les MU plugins. L'empreinte du garde `belmains-staging-guard.php` doit rester identique, que la boutique soit fermée ou ouverte. Les achats, paiements, notifications commerciales et expéditions restent fermés jusqu'à une demande explicite d'ouverture, exécutée avec l'outil décrit plus bas.
 
 Un changement direct des fichiers en ligne bloque la publication suivante : comparer et réintégrer ce changement dans Git avant de réconcilier l'état. Ne pas remplacer aveuglément l'état enregistré. Les changements de version du CRM susceptibles de migrer son schéma doivent être validés dans un environnement isolé avant publication.
+
+## Ouverture des ventes
+
+L'ouverture ne se fait jamais en supprimant le garde à la main : le récepteur exige ce fichier, compare son empreinte à l'état enregistré et, tant qu'il attend une boutique fermée, annulerait chaque publication suivante. Elle passe par l'outil `wordpress/tools/open-shop.php`, lancé en ligne de commande depuis la copie relue `~/belmains-deployment/source/wordpress/tools`, avec `php open-shop.php` ou `wp eval-file open-shop.php`.
+
+| Commande | Effet |
+|---|---|
+| `BELMAINS_SHOP=check` | Rapport en lecture seule. Ne modifie rien. Code de sortie 1 s'il reste un point bloquant. |
+| `BELMAINS_SHOP=open BELMAINS_SHOP_REVISION=SHA_COMPLET` | Ouvre les ventes. |
+| `BELMAINS_SHOP=close BELMAINS_SHOP_REVISION=SHA_COMPLET` | Remet la vitrine d'avant ouverture. |
+
+Le rapport contrôle le récepteur (révision, dérive, copie relue), les moyens de paiement activés, la TVA, la livraison, le produit et son stock, les quatre pages légales, les textes de l'éditeur qui deviendront publics, le mode « bientôt disponible » de WooCommerce, le référencement, les e-mails, la publicité Meta, une éventuelle balise Google hors bandeau et les tâches de fond en attente. Un point bloquant empêche l'ouverture ; rien n'est alors modifié. Sont bloquants : aucun moyen de paiement, TVA non calculée, aucune livraison, produit absent ou épuisé, page légale absente, presque vide ou encore à l'état de modèle (mention « Document de travail » ou champ entre crochets), politique de confidentialité sans mention de Meta alors que le pixel est connecté, compte Google Ads relié.
+
+Options de l'ouverture : `BELMAINS_SHOP_ENABLE_GATEWAYS=id,id` active les moyens de paiement nommés ; `BELMAINS_SHOP_INDEX=1` rend le site indexable ; `BELMAINS_SHOP_ALLOW=taxes,google` accepte un point bloquant nommé après une décision explicite.
+
+L'ouverture prend les deux verrous du récepteur, sauvegarde le garde, l'état, le moteur de confiance et les réglages dans `opening-backups/` hors du Web, puis :
+
+1. remplace le moteur de confiance `~/belmains-deployment/deploy-runtime.php` par celui de la révision relue, qui sait reconnaître une boutique ouverte ;
+2. remplace le garde par `tools/open-guard.php`, qui ne restreint rien, et enregistre dans `current.json` sa nouvelle empreinte et `"mode":"open"` ;
+3. désactive le mode « bientôt disponible », rattache les pages CGV et confidentialité à la commande et au bandeau, publie les pages légales en brouillon et active les moyens de paiement nommés ;
+4. vérifie que le récepteur accepte le nouvel état, puis attend que l'API publique réponde normalement (le serveur garde le PHP compilé quelques secondes).
+
+Un échec en cours de route rétablit le garde, l'état, le moteur et les réglages ; ce qui n'a pas pu être rétabli est nommé. La fermeture remet `tools/public-catalog-guard.php` et l'état de préparation ; les pages publiées et les réglages restent en place, le garde les masque.
+
+L'outil refuse tout autre site que `https://belmains.com`, sauf la copie isolée `bcrm_validation_`. Il ne passe aucune commande, n'encaisse rien et ne modifie ni prix ni fiscalité : la première commande réelle et son remboursement restent un essai manuel, à faire juste après l'ouverture. `tests/open-shop-integration.php` rejoue l'ensemble sur la copie isolée, avec un état de déploiement jetable.
 
 ## Exploitation
 

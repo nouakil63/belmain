@@ -33,6 +33,8 @@ WORKFLOW = '.github/workflows/wordpress-checks.yml'
 ORIGIN = 'https://github.com/' + REPOSITORY + '.git'
 SITE_URL = 'https://belmains.com'
 COMPONENTS = {'belmains': 'themes', 'belmains-commerce': 'plugins', 'belmains-crm': 'plugins'}
+# Shop states the receiver knows. The state file carries one; an absent value means preparation.
+MODES = ('preparation', 'open')
 PHP = '/opt/php8.4/bin/php'
 SHA = re.compile(r'[0-9a-f]{40}')
 _spec = importlib.util.spec_from_file_location('belmains_package', Path(__file__).with_name('package-release.py'))
@@ -186,8 +188,27 @@ class Deploy:
     def baseline(self) -> dict:
         return json.loads(self.current.read_text())
 
+    @staticmethod
+    def mode(baseline: dict) -> str:
+        """Shop state recorded with a baseline: sales stay closed unless it says otherwise."""
+        mode = baseline.get('mode', 'preparation')
+        if mode not in MODES:
+            raise DeploymentError('Unknown shop mode in private state')
+        return mode
+
+    @staticmethod
+    def files(baseline: dict) -> dict:
+        Deploy.mode(baseline)
+        return {key: value for key, value in baseline.items() if key != 'mode'}
+
+    @staticmethod
+    def rest_matches_mode(mode: str, status: int, body: bytes) -> bool:
+        """Preparation: the guard closes the anonymous REST API. Open: it must answer normally."""
+        closed = b'belmains_preparation' in body
+        return (status == 200 and not closed) if mode == 'open' else (status == 503 and closed)
+
     def verify(self, baseline: dict) -> None:
-        if self.snapshot(baseline['revision']) != baseline:
+        if self.snapshot(baseline['revision']) != self.files(baseline):
             raise DeploymentError('Live files or closure guard changed outside deployment; reconcile first')
 
     def lint(self, source: Path) -> None:
@@ -204,18 +225,19 @@ class Deploy:
                     if result.returncode:
                         raise DeploymentError(f'Lint failed: {component}/{relative}: {result.stderr or result.stdout}')
 
-    def smoke(self, revision: str) -> None:
+    def smoke(self, revision: str, mode: str = 'preparation') -> None:
         query = '?belmains_revision=' + revision
         with urllib.request.urlopen(request(SITE_URL + '/' + query), timeout=30) as response:
             body = response.read(5 * 1024 * 1024)
             if response.status != 200 or b'Belmains' not in body:
                 raise DeploymentError('Homepage smoke check failed')
         try:
-            with urllib.request.urlopen(request(SITE_URL + '/wp-json/' + query), timeout=30):
-                raise DeploymentError('REST closure check failed: expected HTTP 503')
+            with urllib.request.urlopen(request(SITE_URL + '/wp-json/' + query), timeout=30) as response:
+                status, body = response.status, response.read(5 * 1024 * 1024)
         except urllib.error.HTTPError as error:
-            if error.code != 503 or b'belmains_preparation' not in error.read():
-                raise DeploymentError('REST closure check failed') from error
+            status, body = error.code, error.read()
+        if not self.rest_matches_mode(mode, status, body):
+            raise DeploymentError('REST availability check failed' if mode == 'open' else 'REST closure check failed')
         asset = self.live('belmains') / 'style.css'
         with urllib.request.urlopen(request(SITE_URL + '/wp-content/themes/belmains/style.css' + query), timeout=30) as response:
             if hashlib.sha256(response.read()).hexdigest() != digest(asset):
@@ -254,6 +276,7 @@ class Deploy:
             raise DeploymentError('Invalid revision')
         baseline = self.baseline()
         self.verify(baseline)
+        mode = self.mode(baseline)
         source = source.resolve()
         for c in COMPONENTS:
             validator.collect_files(source / c, c)
@@ -286,7 +309,9 @@ class Deploy:
                 candidate = self.snapshot(revision)
                 if candidate['manifests'] != expected or candidate['guard_sha256'] != baseline['guard_sha256']:
                     raise DeploymentError('Post-publication hash verification failed')
-                self.smoke(revision)
+                self.smoke(revision, mode)
+                if 'mode' in baseline:
+                    candidate['mode'] = mode
                 atomic_json(self.current, candidate)
                 self.pending.unlink()
             except BaseException:

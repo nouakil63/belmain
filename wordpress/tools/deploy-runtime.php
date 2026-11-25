@@ -5,6 +5,8 @@ final class Belmains_Deploy_Runtime {
     private const BRANCH = 'codex/version-3-bordeaux';
     private const WORKFLOW = '.github/workflows/wordpress-checks.yml';
     private const COMPONENTS = array( 'belmains' => 'themes', 'belmains-commerce' => 'plugins', 'belmains-crm' => 'plugins' );
+    /** Shop states the receiver knows. The state file carries one; an absent value means preparation. */
+    public const MODES = array( 'preparation', 'open' );
     private string $site;
     private string $state;
     private string $guard;
@@ -79,10 +81,40 @@ final class Belmains_Deploy_Runtime {
         if ( ! rename( $temp, $file ) ) { throw new RuntimeException( 'Private state replacement failed' ); }
     }
 
+    /** The shop state recorded with a baseline: sales stay closed unless it says otherwise. */
+    public static function mode( array $baseline ): string {
+        $mode = $baseline['mode'] ?? 'preparation';
+        if ( ! in_array( $mode, self::MODES, true ) ) { throw new RuntimeException( 'Unknown shop mode in private state' ); }
+        return $mode;
+    }
+
+    /** Revision, guard fingerprint and manifests: what a snapshot of the live files can be compared with. */
+    private static function files( array $baseline ): array {
+        self::mode( $baseline );
+        unset( $baseline['mode'] );
+        return $baseline;
+    }
+
     private function verify( array $baseline ): void {
-        if ( $this->snapshot( $baseline['revision'] ) != $baseline ) {
+        if ( $this->snapshot( $baseline['revision'] ) != self::files( $baseline ) ) {
             throw new RuntimeException( 'Live drift or closure guard change: reconcile before deployment' );
         }
+    }
+
+    /** Read-only: the recorded state when the live files still match it. Throws on any drift. */
+    public function status(): array {
+        $baseline = $this->json( $this->state . '/current.json' );
+        $this->verify( $baseline );
+        return array( 'revision' => $baseline['revision'], 'mode' => self::mode( $baseline ), 'guard_sha256' => $baseline['guard_sha256'] );
+    }
+
+    /**
+     * What the anonymous REST API must answer after a publication. In preparation the guard closes
+     * it (503); once the shop is open it must answer normally and must not carry the closure code.
+     */
+    public static function rest_matches_mode( string $mode, int $status, string $body ): bool {
+        $closed = false !== strpos( $body, 'belmains_preparation' );
+        return 'open' === $mode ? ( 200 === $status && ! $closed ) : ( 503 === $status && $closed );
     }
 
     private function get( string $url, int $limit = 8388608 ): array {
@@ -288,22 +320,22 @@ final class Belmains_Deploy_Runtime {
         $pending = $this->state . '/pending.json';
         if ( ! is_file( $pending ) ) { return; }
         $journal = $this->json( $pending ); $current = $this->json( $this->state . '/current.json' );
-        if ( $current['revision'] === $journal['revision'] && $this->snapshot( $current['revision'] ) == $current ) { unlink( $pending ); return; }
+        if ( $current['revision'] === $journal['revision'] && $this->snapshot( $current['revision'] ) == self::files( $current ) ) { unlink( $pending ); return; }
         $this->restore( $journal );
     }
 
-    private function smoke( string $sha ): void {
+    private function smoke( string $sha, string $mode ): void {
         $query = '?belmains_revision=' . $sha;
         list( $status, $body ) = $this->get( 'https://belmains.com/' . $query );
         if ( 200 !== $status || false === strpos( $body, 'Belmains' ) ) { throw new RuntimeException( 'Homepage check failed' ); }
         list( $status, $body ) = $this->get( 'https://belmains.com/wp-json/' . $query );
-        if ( 503 !== $status || false === strpos( $body, 'belmains_preparation' ) ) { throw new RuntimeException( 'REST closure check failed' ); }
+        if ( ! self::rest_matches_mode( $mode, $status, $body ) ) { throw new RuntimeException( 'open' === $mode ? 'REST availability check failed' : 'REST closure check failed' ); }
         list( $status, $body ) = $this->get( 'https://belmains.com/wp-content/themes/belmains/style.css' . $query );
         if ( 200 !== $status || hash( 'sha256', $body ) !== hash_file( 'sha256', $this->live( 'belmains' ) . '/style.css' ) ) { throw new RuntimeException( 'Public asset checksum check failed' ); }
     }
 
     private function publish( string $sha, string $stage, array $baseline ): void {
-        $this->verify( $baseline ); $expected = array();
+        $this->verify( $baseline ); $expected = array(); $mode = self::mode( $baseline );
         foreach ( self::COMPONENTS as $c => $_ ) { $expected[ $c ] = self::manifest( $stage . '/' . $c ); }
         $backups = $this->state . '/backups';
         if ( ! is_dir( $backups ) ) { mkdir( $backups, 0700 ); }
@@ -323,10 +355,11 @@ final class Belmains_Deploy_Runtime {
             $candidate = $this->snapshot( $sha );
             if ( $candidate['manifests'] != $expected || $candidate['guard_sha256'] !== $baseline['guard_sha256'] ) { throw new RuntimeException( 'Post-publication manifest mismatch' ); }
             $this->invalidate_opcache();
-            $this->smoke( $sha );
+            $this->smoke( $sha, $mode );
+            if ( isset( $baseline['mode'] ) ) { $candidate['mode'] = $mode; }
             $this->write_json( $this->state . '/current.json', $candidate );
             unlink( $this->state . '/pending.json' );
-            $this->log( 'DEPLOYED ' . $sha );
+            $this->log( 'DEPLOYED ' . $sha . ' ' . $mode );
         } catch ( Throwable $error ) { $this->restore( $journal ); throw $error; }
     }
 
