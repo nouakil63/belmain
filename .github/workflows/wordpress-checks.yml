@@ -113,6 +113,9 @@ jobs:
           wp plugin activate facebook-for-woocommerce
           wp --user=validation_admin eval-file "$GITHUB_WORKSPACE/wordpress/tests/meta-integration.php" | tee artifacts/gallery/meta-checks.txt
           grep -q 'Meta gate checks passed with the official extension' artifacts/gallery/meta-checks.txt
+          # Ouverture des ventes : rejouée sur cette copie isolée avec un état de déploiement jetable.
+          wp --user=validation_admin eval-file "$GITHUB_WORKSPACE/wordpress/tests/open-shop-integration.php" | tee artifacts/gallery/open-shop-checks.txt
+          grep -q 'opening checks passed' artifacts/gallery/open-shop-checks.txt
           wp option update wc_facebook_pixel_id 123456789012345
           wp option update facebook_config '{"pixel_id":"123456789012345"}' --format=json
           wp option update wc_facebook_access_token ci-validation-only

@@ -164,6 +164,50 @@ class PullDeploymentTests(unittest.TestCase):
         self.assertEqual("<?php // untouched third-party plugin\n", self.other_plugin.read_text())
         self.assertIn(NEW, (self.state / "current.json").read_text())
 
+    def test_open_mode_is_recorded_checked_and_kept(self):
+        current = self.state / "current.json"
+        self.assertNotIn("mode", json.loads(current.read_text()))
+        opened = json.loads(current.read_text())
+        opened["mode"] = "open"
+        current.write_text(json.dumps(opened))
+        self.deployment.verify(self.deployment.baseline())
+        with patch.object(self.deployment, "lint"), patch.object(self.deployment, "smoke") as smoke:
+            self.deployment.deploy(NEW, self.source)
+        smoke.assert_called_once_with(NEW, "open")
+        self.assertEqual("open", self.deployment.baseline()["mode"])
+        self.assertEqual(NEW, self.deployment.baseline()["revision"])
+
+    def test_preparation_mode_stays_implicit(self):
+        with patch.object(self.deployment, "lint"), patch.object(self.deployment, "smoke") as smoke:
+            self.deployment.deploy(NEW, self.source)
+        smoke.assert_called_once_with(NEW, "preparation")
+        self.assertNotIn("mode", self.deployment.baseline())
+
+    def test_guard_drift_blocks_an_open_shop(self):
+        current = self.state / "current.json"
+        opened = json.loads(current.read_text())
+        opened["mode"] = "open"
+        current.write_text(json.dumps(opened))
+        self.guard.write_text("<?php // edited online")
+        with patch.object(self.deployment, "lint"), patch.object(self.deployment, "smoke"):
+            with self.assertRaises(DEPLOY.DeploymentError):
+                self.deployment.deploy(NEW, self.source)
+
+    def test_unknown_mode_is_refused(self):
+        with self.assertRaises(DEPLOY.DeploymentError):
+            DEPLOY.Deploy.mode({"mode": "maintenance"})
+
+    def test_rest_answer_must_match_the_mode(self):
+        closed, opened = b'{"code":"belmains_preparation"}', b'{"namespaces":["wp/v2"]}'
+        check = DEPLOY.Deploy.rest_matches_mode
+        self.assertTrue(check("preparation", 503, closed))
+        self.assertFalse(check("preparation", 200, opened))
+        self.assertFalse(check("preparation", 503, b"Service unavailable"))
+        self.assertTrue(check("open", 200, opened))
+        self.assertFalse(check("open", 503, closed))
+        self.assertFalse(check("open", 200, closed))
+        self.assertFalse(check("open", 500, opened))
+
     def test_unexpected_source_path_blocks_deployment(self):
         (self.source / "belmains" / "wp-config.php").write_text("<?php // forbidden\n")
         before = self.snapshot()

@@ -60,6 +60,27 @@ try {
     verify_test( ! file_exists( $state . '/pending.json' ), 'Interrupted publication journal recovered' );
     private_call( $engine, 'verify', $baseline ); verify_test( true, 'All code restored to baseline' );
     verify_test( 'retain' === file_get_contents( $site . '/wp-content/uploads/sentinel' ), 'Uploads preserved' );
+    // Shop mode lives in the private state; it never excuses a change of the live files.
+    $open = $baseline; $open['mode'] = 'open';
+    verify_test( 'preparation' === Belmains_Deploy_Runtime::mode( $baseline ) && 'open' === Belmains_Deploy_Runtime::mode( $open ), 'Mode defaults to preparation and reads open' );
+    refuses( static function () use ( $baseline ) { $bad = $baseline; $bad['mode'] = 'maintenance'; Belmains_Deploy_Runtime::mode( $bad ); }, 'Unknown shop mode refused' );
+    private_call( $engine, 'verify', $open ); verify_test( true, 'Open baseline passes on unchanged files' );
+    file_put_contents( $guard, '<?php // drift' );
+    refuses( static function () use ( $engine, $open ) { private_call( $engine, 'verify', $open ); }, 'Changed guard blocks deployment of an open shop too' );
+    file_put_contents( $guard, '<?php // keep closed' );
+    file_put_contents( $state . '/current.json', json_encode( $open ) );
+    $status = $engine->status();
+    verify_test( 'open' === $status['mode'] && $old === $status['revision'] && $baseline['guard_sha256'] === $status['guard_sha256'], 'Status reports the recorded open mode' );
+    file_put_contents( $state . '/pending.json', json_encode( array( 'revision' => $old, 'backup' => $backup, 'baseline' => $open ) ) );
+    private_call( $engine, 'recover' );
+    verify_test( ! file_exists( $state . '/pending.json' ) && 'open' === $engine->status()['mode'], 'Completed publication of an open shop is recognised without rollback' );
+    file_put_contents( $state . '/current.json', json_encode( $baseline ) );
+    verify_test( 'preparation' === $engine->status()['mode'], 'Status reports preparation when no mode is recorded' );
+    $closed_body = '{"code":"belmains_preparation"}'; $open_body = '{"namespaces":["wp/v2"]}';
+    verify_test( Belmains_Deploy_Runtime::rest_matches_mode( 'preparation', 503, $closed_body ), 'Preparation expects the closed REST answer' );
+    verify_test( ! Belmains_Deploy_Runtime::rest_matches_mode( 'preparation', 200, $open_body ) && ! Belmains_Deploy_Runtime::rest_matches_mode( 'preparation', 503, 'Service unavailable' ), 'Preparation refuses an open or unrelated REST answer' );
+    verify_test( Belmains_Deploy_Runtime::rest_matches_mode( 'open', 200, $open_body ), 'Open shop expects a normal REST answer' );
+    verify_test( ! Belmains_Deploy_Runtime::rest_matches_mode( 'open', 503, $closed_body ) && ! Belmains_Deploy_Runtime::rest_matches_mode( 'open', 200, $closed_body ) && ! Belmains_Deploy_Runtime::rest_matches_mode( 'open', 500, $open_body ), 'Open shop refuses a closed or failing REST answer' );
     if ( class_exists( 'ZipArchive' ) ) {
         $archive = $state . '/malformed.zip'; $zip = new ZipArchive(); $zip->open( $archive, ZipArchive::CREATE ); $zip->addFromString( 'belmains/../evil.php', '<?php die();' ); $zip->close();
         $stage = $state . '/stage'; mkdir( $stage, 0700 );
