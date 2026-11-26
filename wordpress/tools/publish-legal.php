@@ -76,7 +76,7 @@ final class Belmains_Legal_Pages {
         return $page && 'page' === $page->post_type && in_array( $page->post_status, array( 'draft', 'publish' ), true ) ? $page : null;
     }
 
-    /** Address the page has, or will have once published. */
+    /** Address the page has, or will have once published. Without readable addresses, a page that does not exist yet has none. */
     private function address( string $kind ): string {
         $page = $this->page( $kind );
         if ( ! get_option( 'permalink_structure' ) ) { return $page ? (string) get_permalink( $page ) : home_url( '/' ); }
@@ -158,14 +158,19 @@ final class Belmains_Legal_Pages {
         self::atomic_write( $dir . '/pages.json', wp_json_encode( $saved, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . "\n" );
 
         $result = array( 'status' => 'legal_pages_written', 'written' => array(), 'created' => array(), 'published' => array(), 'kept' => array(), 'backup' => basename( $dir ) );
+        if ( ! $plan['withdrawal']['page'] ) {
+            // The texts print the address of this page: it must exist before they are rendered.
+            $id = wp_insert_post( wp_slash( array( 'post_type' => 'page', 'post_title' => self::PAGES['withdrawal'][0], 'post_name' => self::PAGES['withdrawal'][1], 'post_content' => $plan['withdrawal']['source'], 'post_status' => 'draft' ) ), true );
+            if ( is_wp_error( $id ) ) { throw new RuntimeException( 'Création impossible (' . self::PAGES['withdrawal'][0] . ') : ' . $id->get_error_message() ); }
+            update_option( 'belmains_withdrawal_page_id', $id, false );
+            $result['created'][] = $id;
+            $report = $this->lines;
+            $plan = $this->inspect();
+            $this->lines = $report;
+        }
         foreach ( $plan as $kind => $item ) {
             $page = $item['page'];
-            if ( ! $page ) {
-                $id = wp_insert_post( wp_slash( array( 'post_type' => 'page', 'post_title' => self::PAGES[ $kind ][0], 'post_name' => self::PAGES[ $kind ][1], 'post_content' => $item['source'], 'post_status' => 'draft' ) ), true );
-                if ( is_wp_error( $id ) ) { throw new RuntimeException( 'Création impossible (' . self::PAGES[ $kind ][0] . ') : ' . $id->get_error_message() ); }
-                update_option( 'belmains_' . $kind . '_page_id', $id, false );
-                $result['created'][] = $id;
-            } elseif ( 'edited' === $item['state'] && ! $overwrite ) {
+            if ( 'edited' === $item['state'] && ! $overwrite ) {
                 $result['kept'][] = $page->ID; continue;
             } elseif ( 'current' === $item['state'] ) {
                 $id = $page->ID;
