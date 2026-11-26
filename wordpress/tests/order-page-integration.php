@@ -22,6 +22,9 @@ add_filter( 'belmains_catalog_only', $catalog, PHP_INT_MAX );
 $checkout = false;
 $as_checkout = static function ( $is ) use ( &$checkout ) { return $checkout ? true : $is; };
 add_filter( 'woocommerce_is_checkout', $as_checkout, PHP_INT_MAX );
+// The duo offer only exists in euros, whatever currency this disposable installation started with.
+$euros = static function () { return 'EUR'; };
+add_filter( 'pre_option_woocommerce_currency', $euros, PHP_INT_MAX );
 $call = static function ( array $data, $method = 'POST' ) {
     $_POST = $data; $_SERVER['REQUEST_METHOD'] = $method;
     $handler = static function () { return static function () { throw new Belmains_Order_Page_Test_Json_End(); }; };
@@ -97,6 +100,7 @@ try {
     echo implode( "\n", $log ) . "\n";
     remove_filter( 'belmains_catalog_only', $catalog, PHP_INT_MAX );
     remove_filter( 'woocommerce_is_checkout', $as_checkout, PHP_INT_MAX );
+    remove_filter( 'pre_option_woocommerce_currency', $euros, PHP_INT_MAX );
     $_POST = $saved['post']; $_SERVER['REQUEST_METHOD'] = $saved['method'];
     if ( WC()->cart ) { WC()->cart->empty_cart( false ); }
     wc_clear_notices();
