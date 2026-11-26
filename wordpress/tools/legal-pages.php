@@ -20,6 +20,9 @@ return static function ( array $facts, array $site ): array {
         ? 'Nous prenons en charge les frais de renvoi du produit : nous vous transmettons une étiquette de retour.'
         : 'Les frais directs de renvoi du produit sont à votre charge.';
     $version = '<p><em>Version en vigueur au ' . $f['version_date'] . '.</em></p>';
+    // Printed only when a mediator is actually named; otherwise the pages stay silent about mediation.
+    $mediator = is_string( $facts['mediator_name'] ?? null ) && is_string( $facts['mediator_address'] ?? null ) && is_string( $facts['mediator_url'] ?? null )
+        ? $f['mediator_name'] . ', ' . $f['mediator_address'] . ' — <a href="' . esc_url( $facts['mediator_url'] ) . '">' . $f['mediator_url'] . '</a>' : '';
     $seller = $f['seller_name'] . ', ' . $f['seller_form'] . ', dont le siège social est situé ' . $f['seller_address'] . ', immatriculée auprès de ' . $f['seller_registration'];
 
     $form = '<p>À l’attention de ' . $f['seller_name'] . ', ' . $f['seller_address'] . ' — ' . $f['email'] . ' :</p>'
@@ -47,8 +50,8 @@ return static function ( array $facts, array $site ): array {
         . '<p>Les ventes conclues sur le site sont régies par nos <a href="' . $url['terms'] . '">conditions générales de vente</a>. Les modalités de livraison, de rétractation et de retour sont détaillées sur la page <a href="' . $url['returns'] . '">Livraison et retours</a>.</p>'
         . '<h2>Données personnelles et traceurs</h2>'
         . '<p>Le traitement de vos données et l’usage des traceurs sont décrits dans notre <a href="' . $url['privacy'] . '">politique de confidentialité</a>.</p>'
-        . '<h2>Réclamations et médiation</h2>'
-        . '<p>Pour toute réclamation, écrivez-nous à ' . $mail . '. À défaut de solution, vous pouvez saisir gratuitement le médiateur de la consommation : ' . $f['mediator_name'] . ', ' . $f['mediator_address'] . ' — <a href="' . esc_url( (string) $facts['mediator_url'] ) . '">' . $f['mediator_url'] . '</a>.</p>'
+        . '<h2>' . ( $mediator ? 'Réclamations et médiation' : 'Réclamations' ) . '</h2>'
+        . '<p>Pour toute réclamation, écrivez-nous à ' . $mail . '.' . ( $mediator ? ' À défaut de solution, vous pouvez saisir gratuitement le médiateur de la consommation : ' . $mediator . '.' : '' ) . '</p>'
         . $version;
 
     $pages['terms'] = '<h2>1. Vendeur</h2>'
@@ -92,8 +95,8 @@ return static function ( array $facts, array $site ): array {
         . '<p>Le vendeur qui fait obstacle de mauvaise foi à la mise en œuvre de la garantie légale de conformité encourt une amende civile d’un montant maximal de 300 000 euros, qui peut être porté jusqu’à 10 % du chiffre d’affaires moyen annuel (article L. 241-5 du code de la consommation).</p>'
         . '<p>Le consommateur bénéficie également de la garantie légale des vices cachés en application des articles 1641 à 1649 du code civil, pendant une durée de deux ans à compter de la découverte du défaut. Cette garantie donne droit à une réduction de prix si le bien est conservé ou à un remboursement intégral contre restitution du bien.</p>'
         . '</div>'
-        . '<h2>10. Réclamations et médiation</h2>'
-        . '<p>Pour toute réclamation, écrivez-nous à ' . $mail . '. Si aucune solution n’est trouvée après cette réclamation écrite, vous pouvez recourir gratuitement, dans un délai d’un an, au médiateur de la consommation dont nous relevons : ' . $f['mediator_name'] . ', ' . $f['mediator_address'] . ' — <a href="' . esc_url( (string) $facts['mediator_url'] ) . '">' . $f['mediator_url'] . '</a>.</p>'
+        . '<h2>10. ' . ( $mediator ? 'Réclamations et médiation' : 'Réclamations' ) . '</h2>'
+        . '<p>Pour toute réclamation, écrivez-nous à ' . $mail . ' en indiquant votre numéro de commande.' . ( $mediator ? ' Si aucune solution n’est trouvée après cette réclamation écrite, vous pouvez recourir gratuitement, dans un délai d’un an, au médiateur de la consommation dont nous relevons : ' . $mediator . '.' : '' ) . '</p>'
         . '<h2>11. Données personnelles</h2>'
         . '<p>Les données recueillies lors de la commande sont traitées dans les conditions décrites par notre <a href="' . $url['privacy'] . '">politique de confidentialité</a>.</p>'
         . '<h2>12. Droit applicable et litiges</h2>'

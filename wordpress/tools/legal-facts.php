@@ -29,12 +29,17 @@ return array(
         'Colissimo'  => 'Mazet pour IBS, 10 rue des oliviers de serres, 66600 Rivesaltes, France',
     ),
 
-    // Host, from its own legal notice (infomaniak.com/fr/cgv/mentions-legales). The notice gives no telephone number.
+    // Host, from its own legal notice (infomaniak.com/fr/cgv/mentions-legales). Neither that notice nor its
+    // support pages print a telephone number: this one is the company's own record in the RIPE database
+    // (organisation ORG-INS5-RIPE, read on 26 November 2026). A Swiss business directory lists 022 820 35 44.
     'host_name'             => 'Infomaniak Network SA',
     'host_address'          => 'Rue Eugène-Marziano 25, 1227 Les Acacias (Genève), Suisse',
-    'host_phone'            => null,
+    'host_phone'            => '+41 22 820 35 40',
 
-    // Mandatory consumer mediator: the one the seller has actually subscribed to.
+    // Consumer mediator the seller has actually subscribed to. Naming one is mandatory for a seller dealing
+    // with consumers. Norman decided on 26 November 2026 to publish without any: the pages then say nothing
+    // about mediation. Fill the three values as soon as a mediator is chosen; they are printed once all set.
+    'without_mediator'      => true,
     'mediator_name'         => null,
     'mediator_address'      => null,
     'mediator_url'          => null,

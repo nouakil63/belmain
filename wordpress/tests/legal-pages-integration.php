@@ -27,7 +27,7 @@ $made_state = ! is_dir( $state );
 $known_backups = is_dir( $state . '/legal-backups' ) ? scandir( $state . '/legal-backups' ) : array();
 $pages = array();
 $repository = require $tools . '/legal-facts.php';
-$complete = array_merge( $repository, array( 'host_phone' => '+41 00 000 00 00', 'mediator_name' => 'Médiateur de validation', 'mediator_address' => '1 rue de la Validation, 75001 Paris', 'mediator_url' => 'https://mediateur-validation.example' ) );
+$complete = array_merge( $repository, array( 'without_mediator' => false, 'host_phone' => '+41 00 000 00 00', 'mediator_name' => 'Médiateur de validation', 'mediator_address' => '1 rue de la Validation, 75001 Paris', 'mediator_url' => 'https://mediateur-validation.example' ) );
 $raw = static function ( $id ) { clean_post_cache( $id ); return (string) get_post_field( 'post_content', $id, 'raw' ); };
 $placeholders = static function ( $content ) {
     preg_match_all( '/\[([^\[\]]{3,200})\]/u', $content, $matches );
@@ -71,6 +71,17 @@ try {
     $check( false !== strpos( $plain['terms'], 'Médiateur de validation' ) && false !== strpos( $texts['terms'], 'href="https://mediateur-validation.example"' ) && false !== strpos( $plain['terms'], '48 à 72 heures' ) && false !== strpos( $plain['terms'], 'Revolut Pay' ), 'terms: mediator, delivery time and payment methods' );
     $check( false !== strpos( $plain['privacy'], 'Meta Platforms Ireland' ) && false !== strpos( $plain['privacy'], (int) BCRM_App::settings()['retention_days'] . ' jours' ) && false !== strpos( $plain['privacy'], 'CNIL' ) && false !== strpos( $plain['privacy'], 'Renoncer au contrat ici' ), 'privacy: Meta, the audience retention actually configured, the withdrawal form and the CNIL' );
     $check( false !== strpos( $plain['returns'], '4 Rue Lucien Vidie, 66600 Rivesaltes' ) && false !== strpos( $plain['returns'], '10 rue des oliviers de serres' ) && false !== strpos( $plain['returns'], 'Je/nous (*) vous notifie/notifions (*)' ) && false !== strpos( $plain['returns'], 'À l’attention de ECO EXPRESS LIMITED' ), 'delivery and returns: both return addresses and the model withdrawal form' );
+    // Publishing without a mediator is a recorded decision, never a default: the pages then say nothing about mediation.
+    $bare = array_merge( $complete, array( 'mediator_name' => null, 'mediator_address' => null, 'mediator_url' => null ) );
+    $check( array( 'mediator_address', 'mediator_name', 'mediator_url' ) === ( static function ( $keys ) { sort( $keys ); return $keys; } )( array_keys( ( new Belmains_Legal_Pages( $bare ) )->missing() ) ), 'without a recorded decision, a missing mediator blocks' );
+    $decided = new Belmains_Legal_Pages( array_merge( $bare, array( 'without_mediator' => true ) ) );
+    $silent = implode( ' ', array_map( 'wp_strip_all_tags', $decided->render() ) );
+    $decided->check();
+    $check( array() === $decided->missing() && ! preg_match( '/(?<!\p{L})médiat(?:eur|ion)/iu', $silent ) && false !== strpos( $silent, '10. Réclamations' ) && in_array( 'Médiateur de la consommation', $subjects( $decided, 'ATTENTION' ), true ) && array() === $subjects( $decided, 'BLOQUANT' ), 'with the recorded decision the pages say nothing about mediation and the report says so' );
+    $partial = new Belmains_Legal_Pages( array_merge( $bare, array( 'without_mediator' => true, 'mediator_name' => 'Médiateur de validation' ) ) );
+    $check( 2 === count( $partial->missing() ), 'a mediator named in part blocks, whatever the decision' );
+    $shipped = new Belmains_Legal_Pages();
+    $check( array() === $shipped->missing() && false === stripos( implode( ' ', array_map( 'wp_strip_all_tags', $shipped->render() ) ), 'À COMPLÉTER' ), 'the facts recorded in the repository are complete enough to write the pages' );
     $seller_pays = ( new Belmains_Legal_Pages( array_merge( $complete, array( 'return_costs' => 'seller' ) ) ) )->render();
     $check( false !== strpos( $seller_pays['terms'], 'Nous prenons en charge les frais de renvoi' ) && false === strpos( $seller_pays['returns'], 'à votre charge' ), 'the return costs sentence follows the recorded decision' );
 

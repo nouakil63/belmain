@@ -43,9 +43,10 @@ final class Belmains_Legal_Pages {
     private const REQUIRED = array(
         'publication_director' => 'responsable de la publication', 'phone' => 'téléphone du vendeur', 'host_phone' => 'téléphone de l’hébergeur',
         'delivery_delay' => 'délai de livraison', 'return_costs' => 'frais de retour', 'payment_methods' => 'moyens de paiement',
-        'mediator_name' => 'nom du médiateur de la consommation', 'mediator_address' => 'adresse du médiateur', 'mediator_url' => 'site du médiateur',
         'version_date' => 'date de la version',
     );
+    /** Required too, unless the recorded decision is to publish without a mediator. */
+    private const MEDIATOR = array( 'mediator_name' => 'nom du médiateur de la consommation', 'mediator_address' => 'adresse du médiateur', 'mediator_url' => 'site du médiateur' );
     private const SOURCE = '_belmains_legal_source_sha256';
     private const STORED = '_belmains_legal_stored_sha256';
 
@@ -62,11 +63,15 @@ final class Belmains_Legal_Pages {
     /** @return array<string,string> missing or unusable fact => what it is */
     public function missing(): array {
         $missing = array();
-        foreach ( self::REQUIRED as $key => $label ) {
-            if ( ! is_string( $this->facts[ $key ] ?? null ) || '' === trim( $this->facts[ $key ] ) ) { $missing[ $key ] = $label; }
+        $filled = static function ( $value ) { return is_string( $value ) && '' !== trim( $value ); };
+        $named = array_filter( array_intersect_key( $this->facts, self::MEDIATOR ), $filled );
+        // A mediator named in part is a mistake to correct, whatever the decision.
+        $required = self::REQUIRED + ( $named || true !== ( $this->facts['without_mediator'] ?? false ) ? self::MEDIATOR : array() );
+        foreach ( $required as $key => $label ) {
+            if ( ! $filled( $this->facts[ $key ] ?? null ) ) { $missing[ $key ] = $label; }
         }
         if ( ! isset( $missing['return_costs'] ) && ! in_array( $this->facts['return_costs'], array( 'customer', 'seller' ), true ) ) { $missing['return_costs'] = 'frais de retour (customer ou seller)'; }
-        if ( ! isset( $missing['mediator_url'] ) && ! preg_match( '#\Ahttps://[a-z0-9.-]+\.[a-z]{2,}(?:/\S*)?\z#i', $this->facts['mediator_url'] ) ) { $missing['mediator_url'] = 'site du médiateur (adresse complète en https://)'; }
+        if ( isset( $required['mediator_url'] ) && ! isset( $missing['mediator_url'] ) && ! preg_match( '#\Ahttps://[a-z0-9.-]+\.[a-z]{2,}(?:/\S*)?\z#i', $this->facts['mediator_url'] ) ) { $missing['mediator_url'] = 'site du médiateur (adresse complète en https://)'; }
         return $missing;
     }
 
@@ -113,7 +118,8 @@ final class Belmains_Legal_Pages {
     private function inspect(): array {
         $missing = $this->missing();
         foreach ( $missing as $label ) { $this->note( 'BLOQUANT', 'Information manquante', $label . ' — à renseigner dans tools/legal-facts.php.' ); }
-        if ( ! $missing ) { $this->note( 'OK', 'Informations', 'toutes les informations obligatoires sont renseignées.' ); }
+        if ( ! $missing ) { $this->note( 'OK', 'Informations', 'toutes les informations demandées sont renseignées.' ); }
+        if ( ! $missing && ! is_string( $this->facts['mediator_name'] ?? null ) ) { $this->note( 'ATTENTION', 'Médiateur de la consommation', 'aucun médiateur renseigné, par décision enregistrée dans tools/legal-facts.php : les pages ne diront rien de la médiation, alors que cette mention est obligatoire. À compléter dès qu’un médiateur est choisi.' ); }
         if ( ! shortcode_exists( 'belmains_retractation' ) ) { $this->note( 'BLOQUANT', 'Rétractation en ligne', 'fonction absente du site : publier d’abord Belmains CRM 0.5.0 ou plus récent.' ); }
         $sources = $missing ? array() : $this->render();
         $plan = array();

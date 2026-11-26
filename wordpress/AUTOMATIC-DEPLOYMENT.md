@@ -46,7 +46,7 @@ L'outil refuse tout autre site que `https://belmains.com`, sauf la copie isolée
 
 ### Pages légales
 
-Les textes des mentions légales, des conditions générales de vente, de la politique de confidentialité et de la page « Livraison et retours » sont versionnés dans `tools/legal-pages.php` ; les informations qu'ils citent (vendeur, téléphone, délais, frais de retour, médiateur, hébergeur) sont dans `tools/legal-facts.php`. Une information laissée à `null` n'est pas connue : l'outil refuse alors d'écrire les pages plutôt que de publier une supposition. Corriger un texte ou une information se fait dans ces fichiers, puis par une nouvelle application.
+Les textes des mentions légales, des conditions générales de vente, de la politique de confidentialité et de la page « Livraison et retours » sont versionnés dans `tools/legal-pages.php` ; les informations qu'ils citent (vendeur, téléphone, délais, frais de retour, médiateur, hébergeur) sont dans `tools/legal-facts.php`. Une information laissée à `null` n'est pas connue : l'outil refuse alors d'écrire les pages plutôt que de publier une supposition. Corriger un texte ou une information se fait dans ces fichiers, puis par une nouvelle application. Seule exception enregistrée : `without_mediator`, décision de publier sans médiateur de la consommation ; les pages ne disent alors rien de la médiation et le rapport le rappelle à chaque passage. Dès qu'un médiateur est choisi, renseigner ses trois valeurs suffit à l'imprimer.
 
 Depuis la copie relue `~/belmains-deployment/source/wordpress/tools`, à jour de la révision publiée :
 
