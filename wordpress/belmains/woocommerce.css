@@ -15,13 +15,16 @@
 .belmains-commerce-page .woocommerce :is(a.button,button.button,input.button):hover,
 .belmains-commerce-page .woocommerce :is(a.button.alt,button.button.alt,input.button.alt):hover{background:#431321;border-color:#431321;color:#fff}
 .belmains-commerce-page .woocommerce button.button:disabled,.belmains-commerce-page .woocommerce button.button:disabled[disabled]{background:#ece6e0;border-color:#d7cdc3;color:#746b64;padding:13px 24px;opacity:1;cursor:not-allowed}
-.belmains-commerce-page .woocommerce :is(.woocommerce-info,.woocommerce-message,.woocommerce-error){padding:18px 22px 18px 48px;margin:0 0 26px;background:#f5eee8;color:#382b2c;border-top:3px solid var(--belmains-brand, #63182e);border-radius:10px;box-shadow:none;font-size:14px;line-height:1.65;list-style:none}
-.belmains-commerce-page .woocommerce :is(.woocommerce-info,.woocommerce-message,.woocommerce-error)::before{top:19px;left:20px;color:var(--belmains-brand, #63182e);font-family:Arial,sans-serif;font-weight:700}
-.belmains-commerce-page .woocommerce .woocommerce-info::before{content:"i"}
-.belmains-commerce-page .woocommerce .woocommerce-message{background:#edf3ed;border-top-color:#416847}
-.belmains-commerce-page .woocommerce .woocommerce-message::before{content:"\2713";color:#416847}
-.belmains-commerce-page .woocommerce .woocommerce-error{background:#fff2ef;border-top-color:#a02a22}
-.belmains-commerce-page .woocommerce .woocommerce-error::before{content:"!";color:#a02a22}
+.belmains-commerce-page .woocommerce :is(.woocommerce-info,.woocommerce-message,.woocommerce-error){position:relative;display:block;width:fit-content;max-width:100%;min-height:60px;padding:19px 24px 19px 70px;margin:0 0 26px;background:#fff;color:#181d25;border:0;border-radius:16px;box-shadow:0 0 0 1px #efe6dc,0 16px 40px -24px rgba(67,19,33,.4);font-size:14px;line-height:1.6;list-style:none}
+.belmains-commerce-page .woocommerce :is(.woocommerce-info,.woocommerce-message,.woocommerce-error):focus{outline:none}
+.belmains-commerce-page .woocommerce :is(.woocommerce-info,.woocommerce-message,.woocommerce-error)::before{content:"i";position:absolute;top:50%;left:16px;display:grid;place-items:center;width:38px;height:38px;margin-top:-19px;border-radius:11px;background:#f4e9ed;color:var(--belmains-brand, #63182e);font-family:var(--font-body-family);font-size:15px;font-weight:700;line-height:1}
+.belmains-commerce-page .woocommerce .woocommerce-message::before{content:"\2713"}
+.belmains-commerce-page .woocommerce .woocommerce-error{color:#431321}
+.belmains-commerce-page .woocommerce .woocommerce-error::before{content:"!";background:var(--belmains-brand, #63182e);color:#fff}
+.belmains-commerce-page .woocommerce .woocommerce-error li+li{margin-top:6px}
+/* The coupon prompt is a quiet line, not a notice. */
+.belmains-commerce-page .woocommerce .woocommerce-form-coupon-toggle .woocommerce-info{width:auto;min-height:0;padding:0;margin:0 0 24px;background:none;box-shadow:none;border-radius:0;color:var(--bc-muted)}
+.belmains-commerce-page .woocommerce .woocommerce-form-coupon-toggle .woocommerce-info::before{content:none}
 .belmains-commerce-page .woocommerce .woocommerce-message .button{float:right;margin:0 0 4px 16px;min-height:40px;padding:8px 16px;font-size:13px}
 .belmains-commerce-page .woocommerce form .form-row{padding:0;margin:0 0 20px}
 .belmains-commerce-page .woocommerce form .form-row label{display:block;font-size:14px;line-height:1.5;margin-bottom:8px;color:#352f2c;font-weight:500}
@@ -75,19 +78,65 @@ body.belmains-page .select2-container--default .select2-results__option--highlig
 .belmains-commerce-page .woocommerce ul#shipping_method label{display:inline;font-weight:400}
 .belmains-commerce-page .woocommerce .woocommerce-shipping-destination{font-size:12px;color:var(--bc-muted);line-height:1.6;margin:12px 0}
 .belmains-commerce-page .woocommerce .shipping-calculator-button{font-size:13px}
-.belmains-commerce-page .woocommerce .return-to-shop{margin-top:28px}
-.belmains-commerce-page .woocommerce form.checkout #customer_details{float:left;width:55%;margin-bottom:32px}
+.belmains-commerce-page .woocommerce .belmains-empty-cart{margin:6px 0 0;font-family:var(--font-heading-family);font-size:clamp(22px,3vw,28px);line-height:1.3;color:#431321}
+.belmains-commerce-page .woocommerce .return-to-shop{margin-top:26px}
+/* The landing page's price pill must not dress WooCommerce's table cells. */
+.belmains-commerce-page .woocommerce table.shop_table :is(th,td).product-price{display:table-cell;margin:0;border-radius:0;background:transparent;font-size:inherit;font-weight:inherit;color:inherit}
+.belmains-commerce-page .woocommerce table.shop_table td.product-price{padding:18px 16px}
+.belmains-commerce-page .woocommerce table.shop_table th.product-price{padding:16px;font-weight:600;color:#3e3333}
+/* One-page order. #order_review keeps its markup and gives its children to the grid. */
+.belmains-commerce-page .woocommerce form.checkout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(340px,.8fr);grid-template-rows:auto auto auto 1fr auto auto auto;column-gap:clamp(28px,4.5vw,64px);align-items:start}
+.belmains-commerce-page .woocommerce form.checkout::after{content:none}
+.belmains-commerce-page .woocommerce form.checkout>*{grid-column:1 / -1;min-width:0}
+.belmains-commerce-page .woocommerce form.checkout .woocommerce-NoticeGroup{grid-row:1;width:100%}
+.belmains-commerce-page .woocommerce form.checkout #customer_details{grid-column:1;grid-row:2 / span 3;float:none;width:auto;margin:0}
 .belmains-commerce-page .woocommerce form.checkout #customer_details>.col-1,.belmains-commerce-page .woocommerce form.checkout #customer_details>.col-2{float:none;width:100%}
-.belmains-commerce-page .woocommerce form.checkout :is(.woocommerce-billing-fields,.woocommerce-shipping-fields,.woocommerce-additional-fields){padding:28px;background:#fff;border:1px solid var(--bc-border);border-radius:16px;margin-bottom:22px}
+.belmains-commerce-page .woocommerce form.checkout :is(.woocommerce-billing-fields,.woocommerce-shipping-fields,.woocommerce-additional-fields){padding:28px;background:#fff;border:1px solid var(--bc-border);border-radius:20px;margin-bottom:22px}
 .belmains-commerce-page .woocommerce form.checkout .woocommerce-shipping-fields:empty{display:none}
-.belmains-commerce-page .woocommerce form.checkout #order_review_heading{float:right;width:40%;margin:0 0 20px}
-.belmains-commerce-page .woocommerce form.checkout #order_review{float:right;width:40%}
-.belmains-commerce-page .woocommerce form.checkout .woocommerce-NoticeGroup{clear:both;width:100%}
+.belmains-commerce-page .woocommerce form.checkout #order_review_heading{grid-column:2;grid-row:2;float:none;width:auto;margin:0 0 18px}
+.belmains-commerce-page .woocommerce form.checkout .belmains-cart-feedback{grid-column:2;grid-row:3;margin:0 0 14px;font-size:13px;line-height:1.5;color:#416847}
+.belmains-commerce-page .woocommerce form.checkout .belmains-cart-feedback:empty{display:none}
+.belmains-commerce-page .woocommerce form.checkout .belmains-cart-feedback.is-error{color:#a02a22;font-weight:500}
+.belmains-commerce-page .woocommerce form.checkout #order_review{display:contents}
+.belmains-commerce-page .woocommerce form.checkout #order_review>*{min-width:0}
+.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table{grid-column:2;grid-row:4 / span 4;position:sticky;top:24px}
+.belmains-commerce-page .woocommerce form.checkout .belmains-payment-heading{grid-column:1;grid-row:5;margin:14px 0 18px}
+.belmains-commerce-page .woocommerce form.checkout #payment{grid-column:1;grid-row:6}
+.belmains-commerce-page .woocommerce form.checkout .belmains-order-assurances{grid-column:1;grid-row:7}
 .belmains-commerce-page .woocommerce form.checkout #ship-to-different-address{margin-bottom:0}
 .belmains-commerce-page .woocommerce form.checkout .shipping_address{padding-top:22px}
 .belmains-commerce-page .woocommerce form.checkout .woocommerce-account-fields{margin:24px 0}
-.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table :is(td,th){padding:16px 20px}
-.belmains-commerce-page .woocommerce-checkout #payment{border:1px solid var(--bc-border);border-radius:14px;background:#fff;overflow:hidden}
+.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table{display:table;width:100%;margin:0;border:0;border-radius:22px;background:#fff;box-shadow:0 0 0 1px #efe6dc,0 26px 60px -38px rgba(67,19,33,.45);transition:opacity .15s}
+.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table.is-updating{opacity:.55}
+.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table thead th{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table tbody td{padding:24px;border-top:0;vertical-align:top}
+.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table td.product-name{position:relative;height:132px;padding-left:114px;padding-right:12px;font-size:14px}
+.belmains-commerce-page .woocommerce form.checkout .belmains-line-thumb{position:absolute;top:24px;left:24px;width:72px;height:84px;border-radius:14px;background:#f6f1eb;overflow:hidden}
+.belmains-commerce-page .woocommerce form.checkout .belmains-line-thumb img{display:block;width:100%;height:100%;margin:0;object-fit:contain}
+.belmains-commerce-page .woocommerce form.checkout .belmains-line-name{display:block;font-size:15px;font-weight:600;line-height:1.4;color:#181d25}
+.belmains-commerce-page .woocommerce form.checkout .belmains-line-controls{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin-top:12px}
+.belmains-commerce-page .woocommerce form.checkout .belmains-line-qty{display:inline-flex;align-items:center;border:1px solid #d9cdc2;border-radius:999px;background:#fff}
+.belmains-commerce-page .woocommerce form.checkout .belmains-qty-step{width:40px;height:40px;padding:0;border:0;border-radius:999px;background:transparent;color:var(--belmains-brand, #63182e);font-family:var(--font-body-family);font-size:19px;line-height:1;cursor:pointer}
+.belmains-commerce-page .woocommerce form.checkout .belmains-qty-step:hover:not(:disabled){background:#f4e9ed}
+.belmains-commerce-page .woocommerce form.checkout .belmains-qty-step:disabled{color:#c9bdb2;cursor:not-allowed}
+.belmains-commerce-page .woocommerce form.checkout .belmains-qty-input{width:42px;min-height:40px;height:40px;padding:0;border:0;border-radius:0;background:transparent;text-align:center;font-size:15px;font-weight:600;appearance:textfield;-moz-appearance:textfield}
+.belmains-commerce-page .woocommerce form.checkout .belmains-qty-input::-webkit-inner-spin-button,.belmains-commerce-page .woocommerce form.checkout .belmains-qty-input::-webkit-outer-spin-button{appearance:none;margin:0}
+.belmains-commerce-page .woocommerce form.checkout .belmains-line-remove{min-height:40px;padding:0 2px;border:0;background:none;color:var(--bc-muted);font-family:var(--font-body-family);font-size:13px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.belmains-commerce-page .woocommerce form.checkout .belmains-line-remove:hover{color:var(--belmains-brand, #63182e)}
+.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table dl.variation{display:inline-block;margin:14px 0 0;padding:7px 11px;border-radius:9px;background:#f8f1e4;color:#5f4a1f;font-size:12px;line-height:1.5}
+.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table dl.variation :is(dt,dd,p){display:inline;float:none;margin:0;padding:0}
+.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table dl.variation dt{font-weight:600}
+.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table td.product-total{padding-left:0;text-align:right;font-size:15px;font-weight:600;white-space:nowrap}
+.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table tfoot :is(th,td){padding:15px 24px;border-top:1px solid #f1e9e0;font-size:14px;font-weight:500;color:#3e3333;vertical-align:baseline}
+.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table tfoot td{text-align:right}
+.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table tfoot .order-total :is(th,td){padding-top:22px;padding-bottom:26px;font-size:16px;font-weight:600;color:#181d25}
+.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table tfoot .order-total td strong{font-family:var(--font-heading-family);font-size:30px;line-height:1.1;color:var(--belmains-brand, #63182e)}
+.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table tfoot .order-total small{margin-top:6px}
+.belmains-commerce-page .woocommerce form.checkout .belmains-order-assurances{display:flex;flex-wrap:wrap;gap:8px 26px;margin:22px 0 0;padding:0;list-style:none;font-size:13px;line-height:1.5;color:#4b3f38}
+.belmains-commerce-page .woocommerce form.checkout .belmains-order-assurances li{position:relative;padding-left:22px}
+.belmains-commerce-page .woocommerce form.checkout .belmains-order-assurances li::before{content:"";position:absolute;top:.38em;left:1px;width:11px;height:6px;border-left:2px solid var(--belmains-accent, #bf9756);border-bottom:2px solid var(--belmains-accent, #bf9756);transform:rotate(-45deg)}
+.belmains-commerce-page .woocommerce form.checkout .belmains-order-assurances a{color:inherit}
+.belmains-commerce-page .woocommerce-checkout #payment{border:1px solid var(--bc-border);border-radius:20px;background:#fff;overflow:hidden}
 .belmains-commerce-page .woocommerce-checkout #payment ul.payment_methods{padding:22px;border-color:var(--bc-border);list-style:none}
 .belmains-commerce-page .woocommerce-checkout #payment ul.payment_methods li{margin:0 0 12px}
 .belmains-commerce-page .woocommerce-checkout #payment ul.payment_methods li:last-child{margin-bottom:0}
@@ -126,8 +175,7 @@ body.belmains-page .select2-container--default .select2-results__option--highlig
 @media(max-width:1100px){
  .belmains-commerce-page .woocommerce-cart-form,.belmains-commerce-page .woocommerce .cart-collaterals{float:none;width:100%}
  .belmains-commerce-page .woocommerce .cart-collaterals .cart_totals{max-width:540px;margin-left:auto;margin-top:28px}
- .belmains-commerce-page .woocommerce form.checkout #customer_details{width:53%}
- .belmains-commerce-page .woocommerce form.checkout #order_review_heading,.belmains-commerce-page .woocommerce form.checkout #order_review{width:43%}
+ .belmains-commerce-page .woocommerce form.checkout{grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);column-gap:28px}
  .belmains-commerce-page .woocommerce form.checkout :is(.woocommerce-billing-fields,.woocommerce-shipping-fields,.woocommerce-additional-fields){padding:22px}
 }
 @media(max-width:780px){
@@ -135,7 +183,6 @@ body.belmains-page .select2-container--default .select2-results__option--highlig
  .belmains-page-header{gap:14px;padding:18px 24px}
  .belmains-page-header img{width:175px}
  .belmains-commerce-nav{gap:4px 20px;font-size:13px}
- .belmains-commerce-page .woocommerce form.checkout #customer_details,.belmains-commerce-page .woocommerce form.checkout #order_review_heading,.belmains-commerce-page .woocommerce form.checkout #order_review{float:none;width:100%}
  .belmains-commerce-page .woocommerce .woocommerce-MyAccount-navigation,.belmains-commerce-page .woocommerce .woocommerce-MyAccount-content{float:none;width:100%;margin-bottom:28px}
  .belmains-commerce-page .woocommerce .woocommerce-MyAccount-navigation ul{display:flex;flex-wrap:wrap;gap:0}
  .belmains-commerce-page .woocommerce .woocommerce-MyAccount-navigation li{flex:1 1 auto;border:0}
@@ -163,4 +210,26 @@ body.belmains-page .select2-container--default .select2-results__option--highlig
  .belmains-commerce-page .woocommerce .woocommerce-order-overview li{padding:0;border:0;overflow-wrap:anywhere}
  .belmains-commerce-page .woocommerce .woocommerce-order-overview li strong{font-size:14px}
  .belmains-commerce-page .woocommerce .woocommerce-order-overview li.woocommerce-order-overview__payment-method{grid-column:1/-1}
+}
+/* One column: the summary first, then the details, then the payment. */
+@media(max-width:960px){
+ .belmains-commerce-page .woocommerce form.checkout{display:flex;flex-direction:column;align-items:stretch}
+ .belmains-commerce-page .woocommerce form.checkout .woocommerce-NoticeGroup{order:0}
+ .belmains-commerce-page .woocommerce form.checkout #order_review_heading{order:1;margin-bottom:14px}
+ .belmains-commerce-page .woocommerce form.checkout .belmains-cart-feedback{order:2}
+ .belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table{order:3;position:static;margin-bottom:30px}
+ .belmains-commerce-page .woocommerce form.checkout #customer_details{order:4}
+ .belmains-commerce-page .woocommerce form.checkout .belmains-payment-heading{order:5}
+ .belmains-commerce-page .woocommerce form.checkout #payment{order:6}
+ .belmains-commerce-page .woocommerce form.checkout .belmains-order-assurances{order:7;flex-direction:column}
+ .belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table tbody td{padding:20px 18px}
+ .belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table td.product-name{padding-left:102px}
+ .belmains-commerce-page .woocommerce form.checkout .belmains-line-thumb{left:18px;top:20px}
+ .belmains-commerce-page .woocommerce :is(.woocommerce-info,.woocommerce-message,.woocommerce-error){width:auto}
+ .belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table,.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table :is(thead,tbody,tfoot,tr,td,th){display:block}
+ .belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table tfoot tr{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:15px 18px;border-top:1px solid #f1e9e0}
+ .belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table tfoot :is(th,td),.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table tfoot .order-total :is(th,td){padding:0;border-top:0}
+ .belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table tfoot tr.order-total{padding-top:22px;padding-bottom:26px}
+ .belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table td.product-name{height:auto;min-height:124px;padding-bottom:4px}
+ .belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table td.product-total{padding:6px 18px 22px 102px;text-align:left}
 }

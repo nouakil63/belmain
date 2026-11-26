@@ -2,6 +2,7 @@
 /** Belmains storefront theme. Products and pages are provisioned separately. */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 require_once get_theme_file_path( 'inc/storefront.php' );
+require_once get_theme_file_path( 'inc/checkout.php' );
 
 function belmains_setup() {
     add_theme_support( 'title-tag' );
