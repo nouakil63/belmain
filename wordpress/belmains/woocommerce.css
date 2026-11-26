@@ -15,16 +15,13 @@
 .belmains-commerce-page .woocommerce :is(a.button,button.button,input.button):hover,
 .belmains-commerce-page .woocommerce :is(a.button.alt,button.button.alt,input.button.alt):hover{background:#431321;border-color:#431321;color:#fff}
 .belmains-commerce-page .woocommerce button.button:disabled,.belmains-commerce-page .woocommerce button.button:disabled[disabled]{background:#ece6e0;border-color:#d7cdc3;color:#746b64;padding:13px 24px;opacity:1;cursor:not-allowed}
-.belmains-commerce-page .woocommerce :is(.woocommerce-info,.woocommerce-message,.woocommerce-error){position:relative;display:block;width:fit-content;max-width:100%;min-height:60px;padding:19px 24px 19px 70px;margin:0 0 26px;background:#fff;color:#181d25;border:0;border-radius:16px;box-shadow:0 0 0 1px #efe6dc,0 16px 40px -24px rgba(67,19,33,.4);font-size:14px;line-height:1.6;list-style:none}
+/* WooCommerce messages are sentences in the site's typography: no card, no banner, no icon. */
+.belmains-commerce-page .woocommerce :is(.woocommerce-info,.woocommerce-message,.woocommerce-error){position:static;display:block;width:auto;max-width:720px;min-height:0;padding:0;margin:0 0 24px;background:none;color:#352f2c;border:0;border-radius:0;box-shadow:none;font-size:15px;line-height:1.65;list-style:none}
 .belmains-commerce-page .woocommerce :is(.woocommerce-info,.woocommerce-message,.woocommerce-error):focus{outline:none}
-.belmains-commerce-page .woocommerce :is(.woocommerce-info,.woocommerce-message,.woocommerce-error)::before{content:"i";position:absolute;top:50%;left:16px;display:grid;place-items:center;width:38px;height:38px;margin-top:-19px;border-radius:11px;background:#f4e9ed;color:var(--belmains-brand, #63182e);font-family:var(--font-body-family);font-size:15px;font-weight:700;line-height:1}
-.belmains-commerce-page .woocommerce .woocommerce-message::before{content:"\2713"}
-.belmains-commerce-page .woocommerce .woocommerce-error{color:#431321}
-.belmains-commerce-page .woocommerce .woocommerce-error::before{content:"!";background:var(--belmains-brand, #63182e);color:#fff}
+.belmains-commerce-page .woocommerce :is(.woocommerce-info,.woocommerce-message,.woocommerce-error)::before{content:none}
+.belmains-commerce-page .woocommerce .woocommerce-error{color:#8a1f2b;font-size:16px;font-weight:600}
 .belmains-commerce-page .woocommerce .woocommerce-error li+li{margin-top:6px}
-/* The coupon prompt is a quiet line, not a notice. */
-.belmains-commerce-page .woocommerce .woocommerce-form-coupon-toggle .woocommerce-info{width:auto;min-height:0;padding:0;margin:0 0 24px;background:none;box-shadow:none;border-radius:0;color:var(--bc-muted)}
-.belmains-commerce-page .woocommerce .woocommerce-form-coupon-toggle .woocommerce-info::before{content:none}
+.belmains-commerce-page .woocommerce .woocommerce-form-coupon-toggle .woocommerce-info{color:var(--bc-muted);font-size:14px}
 .belmains-commerce-page .woocommerce .woocommerce-message .button{float:right;margin:0 0 4px 16px;min-height:40px;padding:8px 16px;font-size:13px}
 .belmains-commerce-page .woocommerce form .form-row{padding:0;margin:0 0 20px}
 .belmains-commerce-page .woocommerce form .form-row label{display:block;font-size:14px;line-height:1.5;margin-bottom:8px;color:#352f2c;font-weight:500}
@@ -225,7 +222,6 @@ body.belmains-page .select2-container--default .select2-results__option--highlig
  .belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table tbody td{padding:20px 18px}
  .belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table td.product-name{padding-left:102px}
  .belmains-commerce-page .woocommerce form.checkout .belmains-line-thumb{left:18px;top:20px}
- .belmains-commerce-page .woocommerce :is(.woocommerce-info,.woocommerce-message,.woocommerce-error){width:auto}
  .belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table,.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table :is(thead,tbody,tfoot,tr,td,th){display:block}
  .belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table tfoot tr{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:15px 18px;border-top:1px solid #f1e9e0}
  .belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table tfoot :is(th,td),.belmains-commerce-page .woocommerce form.checkout .woocommerce-checkout-review-order-table tfoot .order-total :is(th,td){padding:0;border-top:0}

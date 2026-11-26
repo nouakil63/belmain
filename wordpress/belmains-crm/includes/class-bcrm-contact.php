@@ -207,9 +207,9 @@ class BCRM_Contact {
         <div id="belmains-contact" class="belmains-contact">
             <p>Une question sur le gant, une commande ou une livraison ? Écrivez-nous ici. Votre demande sera transmise à notre service client.</p>
             <?php if ( ! empty( $feedback['success'] ) ) : ?>
-                <div class="woocommerce-message belmains-contact-success" role="status" tabindex="-1">Votre demande a bien été enregistrée auprès du service client. Nous vous répondrons à l’adresse e-mail indiquée.</div>
+                <div class="belmains-confirmation belmains-contact-success" role="status" tabindex="-1"><h2>Votre message est bien arrivé</h2><p>Votre demande a bien été enregistrée auprès du service client. Nous vous répondrons à l’adresse e-mail indiquée.</p></div>
             <?php elseif ( ! empty( $feedback['message'] ) ) : ?>
-                <div class="woocommerce-error belmains-contact-error" role="alert" tabindex="-1"><p><?php echo esc_html( $feedback['message'] ); ?></p><?php if ( $fields ) : ?><ul><?php foreach ( $fields as $field => $error ) : ?><li><a href="#bcrm-contact-<?php echo esc_attr( $field ); ?>"><?php echo esc_html( $error ); ?></a></li><?php endforeach; ?></ul><?php endif; ?></div>
+                <div class="belmains-form-errors belmains-contact-error" role="alert" tabindex="-1"><p><?php echo esc_html( $feedback['message'] ); ?></p><?php if ( $fields ) : ?><ul><?php foreach ( $fields as $field => $error ) : ?><li><a href="#bcrm-contact-<?php echo esc_attr( $field ); ?>"><?php echo esc_html( $error ); ?></a></li><?php endforeach; ?></ul><?php endif; ?></div>
             <?php endif; ?>
             <form class="belmains-contact-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
                 <input type="hidden" name="action" value="bcrm_contact_submit">

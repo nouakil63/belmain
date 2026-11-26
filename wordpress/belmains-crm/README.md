@@ -2,7 +2,7 @@
 
 Belmains CRM ajoute un espace de pilotage privé dans WordPress pour suivre la boutique WooCommerce, son audience consentie, ses clients et ses expéditions. Le module fonctionne sans abonnement CRM, sans bibliothèque distante et sans extension de suivi payante. Seule exception : la publicité Meta, confiée à l’extension officielle Meta for WooCommerce, que le CRM ne laisse fonctionner qu’après l’accord du visiteur. L’hébergement, les paiements, la publicité et les prestations Iziship conservent leurs propres coûts.
 
-Version 0.5.0 — WordPress 6.3 minimum, PHP 8.0 minimum. WooCommerce est nécessaire pour les commandes, clients, stocks et expéditions. Le module utilise les interfaces WooCommerce et déclare sa compatibilité avec le stockage des commandes HPOS.
+Version 0.5.1 — WordPress 6.3 minimum, PHP 8.0 minimum. WooCommerce est nécessaire pour les commandes, clients, stocks et expéditions. Le module utilise les interfaces WooCommerce et déclare sa compatibilité avec le stockage des commandes HPOS.
 
 ## Installation et premier accès
 
