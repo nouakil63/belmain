@@ -201,11 +201,14 @@ class BCRM_Withdrawal extends BCRM_Contact {
         $get = static function ( $name ) { return isset( $_GET[ $name ] ) && is_string( $_GET[ $name ] ) ? wp_unslash( $_GET[ $name ] ) : ''; };
         $status = $get( 'retractation' );
         if ( 'recue' === $status && ctype_digit( $get( 'le' ) ) && in_array( $get( 'mail' ), array( '0', '1' ), true ) && hash_equals( self::sign( $get( 'le' ), $get( 'mail' ) ), $get( 'preuve' ) ) ) {
-            $text = 'Votre déclaration de rétractation a bien été reçue le ' . esc_html( self::stamp( $get( 'le' ) ) ) . '. '
+            // Written as part of the page, in the site's own typography: a confirmation is not an alert box.
+            $text = '<h2>Votre rétractation est enregistrée</h2>'
+                . '<p>Nous avons bien reçu votre déclaration le ' . esc_html( self::stamp( $get( 'le' ) ) ) . '.</p>'
                 . ( '1' === $get( 'mail' )
-                    ? 'Un accusé de réception reprenant son contenu vient d’être envoyé à l’adresse e-mail indiquée. Nous revenons vers vous avec les modalités de retour.'
-                    : 'L’accusé de réception n’a pas pu être envoyé par e-mail : conservez une copie de cette page et écrivez-nous à ' . $contact . ' pour le recevoir.' );
-            return '<div id="belmains-retractation" class="belmains-contact"><div class="woocommerce-message belmains-contact-success" role="status" tabindex="-1">' . $text . '</div></div>';
+                    ? '<p>Un accusé de réception reprenant son contenu vient d’être envoyé à l’adresse e-mail indiquée. Nous revenons vers vous avec les modalités de retour.</p>'
+                    : '<p>L’accusé de réception n’a pas pu être envoyé par e-mail : conservez une copie de cette page et écrivez-nous à ' . $contact . ' pour le recevoir.</p>' )
+                . '<p><a class="belmains-confirmation-link" href="' . esc_url( home_url( '/' ) ) . '">Retour à l’accueil</a></p>';
+            return '<div id="belmains-retractation" class="belmains-contact"><div class="belmains-confirmation" role="status" tabindex="-1">' . $text . '</div></div>';
         }
 
         $feedback = array();
@@ -233,7 +236,7 @@ class BCRM_Withdrawal extends BCRM_Contact {
         <div id="belmains-retractation" class="belmains-contact">
             <p>Vous disposez de 14 jours à compter de la réception de votre commande pour vous rétracter, sans avoir à motiver votre décision. Remplissez cette déclaration puis cliquez sur « <?php echo esc_html( self::CONFIRM_LABEL ); ?> » : un accusé de réception indiquant la date et l’heure de votre déclaration vous est envoyé aussitôt par e-mail.</p>
             <?php if ( ! empty( $feedback['message'] ) ) : ?>
-                <div class="woocommerce-error belmains-contact-error" role="alert" tabindex="-1"><p><?php echo esc_html( $feedback['message'] ); ?></p><?php if ( $fields ) : ?><ul><?php foreach ( $fields as $field => $error ) : ?><li><a href="#bcrm-withdrawal-<?php echo esc_attr( $field ); ?>"><?php echo esc_html( $error ); ?></a></li><?php endforeach; ?></ul><?php endif; ?></div>
+                <div class="belmains-form-errors belmains-contact-error" role="alert" tabindex="-1"><p><?php echo esc_html( $feedback['message'] ); ?></p><?php if ( $fields ) : ?><ul><?php foreach ( $fields as $field => $error ) : ?><li><a href="#bcrm-withdrawal-<?php echo esc_attr( $field ); ?>"><?php echo esc_html( $error ); ?></a></li><?php endforeach; ?></ul><?php endif; ?></div>
             <?php endif; ?>
             <form class="belmains-contact-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
                 <input type="hidden" name="action" value="bcrm_withdrawal_submit">
