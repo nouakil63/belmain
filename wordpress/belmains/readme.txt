@@ -1,4 +1,4 @@
-Belmains — thème WordPress 0.4.5
+Belmains — thème WordPress 0.5.0
 
 Installer le ZIP dans Apparence > Thèmes > Ajouter > Téléverser un thème.
 Activer sur un WordPress de préparation. L’accueil s’affiche automatiquement.
@@ -30,3 +30,6 @@ La page est créée séparément dans WordPress ; l’option belmains_gallery_pa
 la désigne. Les liens de menu apparaissent seulement pour une page publiée,
 sans mot de passe et utilisant page-galerie.php. Le thème ne modifie aucun
 contrôle d’accès : l’autorisation publique reste gérée par le garde du site.
+
+Commande sur une seule page (0.5.0)
+Un panier rempli n'a plus de page à lui : l'ajout au panier et le lien « Panier » mènent à la page de commande, où la quantité se modifie et l'article se retire dans le récapitulatif (inc/checkout.php, assets/checkout.js). La page « Panier » ne sert plus qu'au panier vide. Le balisage de la commande WooCommerce est conservé tel quel, la mise en page est faite en CSS : les extensions de paiement n'y voient aucune différence.

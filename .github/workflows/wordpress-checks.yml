@@ -121,6 +121,9 @@ jobs:
           grep -q 'withdrawal checks passed' artifacts/gallery/withdrawal-checks.txt
           wp --user=validation_admin eval-file "$GITHUB_WORKSPACE/wordpress/tests/legal-pages-integration.php" | tee artifacts/gallery/legal-pages-checks.txt
           grep -q 'legal page checks passed' artifacts/gallery/legal-pages-checks.txt
+          # Page de commande unique : quantité, retrait et panier vide, sur un produit jetable.
+          wp --user=validation_admin eval-file "$GITHUB_WORKSPACE/wordpress/tests/order-page-integration.php" | tee artifacts/gallery/order-page-checks.txt
+          grep -q 'order page checks passed' artifacts/gallery/order-page-checks.txt
           wp option update wc_facebook_pixel_id 123456789012345
           wp option update facebook_config '{"pixel_id":"123456789012345"}' --format=json
           wp option update wc_facebook_access_token ci-validation-only
