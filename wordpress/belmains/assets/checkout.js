@@ -64,6 +64,26 @@
     .on('click', '.belmains-line-remove', function () {
       send($(this).closest('.belmains-line-controls').data('cart-key'), 0, null);
     })
+    // WooCommerce lists every error in a box above the form and repeats each field error under its
+    // field. The box only keeps what has no field to sit under (a refused payment, for instance); when
+    // nothing is left it goes, and the first field to correct is brought into view instead.
+    .on('checkout_error', function () {
+      // WooCommerce writes the field errors right after this event: wait for them, before the next paint.
+      window.requestAnimationFrame(function () {
+        var $group = $('.woocommerce-NoticeGroup-checkout');
+        if (!$group.length) { return; }
+        $group.find('li[data-id]').each(function () {
+          if (document.getElementById($(this).attr('data-id') + '_description')) { $(this).remove(); }
+        });
+        if ($group.find('li').length || $.trim($group.text())) { return; }
+        $group.remove();
+        var $row = $('form.checkout .checkout-inline-error-message').first().closest('.form-row');
+        if (!$row.length) { return; }
+        $('html, body').stop(true);
+        $row[0].scrollIntoView({ block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+        $row.find('input:visible, textarea:visible, .select2-selection').first().trigger('focus');
+      });
+    })
     // The summary is rebuilt after each refresh: hand the focus back to the control just used.
     .on('updated_checkout', function () {
       if (!refocus) { return; }
