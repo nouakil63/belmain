@@ -10,4 +10,6 @@ Lire `wordpress/AUTOMATIC-DEPLOYMENT.md` avant de modifier le mécanisme de dép
 
 Ne pas réinstaller WordPress ni importer une ancienne base. Préserver contenus, brouillons, commandes, stocks, médias et réglages. Les achats, paiements, notifications commerciales et expéditions réels restent fermés jusqu'à une instruction explicite d'ouverture ; l'ouverture passe uniquement par `wordpress/tools/open-shop.php` (voir « Ouverture des ventes » dans `wordpress/AUTOMATIC-DEPLOYMENT.md`), jamais par une suppression manuelle du garde. Ne pas lancer les tests d'intégration sur la production ; utiliser uniquement une base isolée `bcrm_validation_`. Les tests de déploiement utilisent une boutique factice et ne contactent pas la production.
 
+Les pages légales (mentions légales, CGV, confidentialité, livraison et retours) se corrigent dans `wordpress/tools/legal-pages.php` et `wordpress/tools/legal-facts.php`, puis s'appliquent avec `wordpress/tools/publish-legal.php` ; une information inconnue y reste à `null`, jamais devinée.
+
 Ne pas committer de secrets, sessions, exports SQL ou sauvegardes privées. Les caractéristiques confirmées sont 5 modes, 3 niveaux de chaleur, 42 °C maximum et séances de 15 minutes (pas une durée de recharge). Ne pas inventer de promesse médicale ni modifier les prix ou la fiscalité sans demande.

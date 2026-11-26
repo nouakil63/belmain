@@ -29,7 +29,7 @@ L'ouverture ne se fait jamais en supprimant le garde à la main : le récepteur 
 | `BELMAINS_SHOP=open BELMAINS_SHOP_REVISION=SHA_COMPLET` | Ouvre les ventes. |
 | `BELMAINS_SHOP=close BELMAINS_SHOP_REVISION=SHA_COMPLET` | Remet la vitrine d'avant ouverture. |
 
-Le rapport contrôle le récepteur (révision, dérive, copie relue), les moyens de paiement activés, la TVA, la livraison, le produit et son stock, les quatre pages légales, les textes de l'éditeur qui deviendront publics, le mode « bientôt disponible » de WooCommerce, le référencement, les e-mails, la publicité Meta, une éventuelle balise Google hors bandeau et les tâches de fond en attente. Un point bloquant empêche l'ouverture ; rien n'est alors modifié. Sont bloquants : aucun moyen de paiement, TVA non calculée, aucune livraison, produit absent ou épuisé, page légale absente, presque vide ou encore à l'état de modèle (mention « Document de travail » ou champ entre crochets), politique de confidentialité sans mention de Meta alors que le pixel est connecté, compte Google Ads relié.
+Le rapport contrôle le récepteur (révision, dérive, copie relue), les moyens de paiement activés, la TVA, la livraison, le produit et son stock, les quatre pages légales et la fonction de rétractation en ligne, les textes de l'éditeur qui deviendront publics, le mode « bientôt disponible » de WooCommerce, le référencement, les e-mails, la publicité Meta, une éventuelle balise Google hors bandeau et les tâches de fond en attente. Un point bloquant empêche l'ouverture ; rien n'est alors modifié. Sont bloquants : aucun moyen de paiement, TVA non calculée, aucune livraison, produit absent ou épuisé, page légale absente, presque vide ou encore à l'état de modèle (mention « Document de travail » ou champ entre crochets), politique de confidentialité sans mention de Meta alors que le pixel est connecté, compte Google Ads relié.
 
 Options de l'ouverture : `BELMAINS_SHOP_ENABLE_GATEWAYS=id,id` active les moyens de paiement nommés ; `BELMAINS_SHOP_INDEX=1` rend le site indexable ; `BELMAINS_SHOP_ALLOW=taxes,google` accepte un point bloquant nommé après une décision explicite.
 
@@ -43,6 +43,22 @@ L'ouverture prend les deux verrous du récepteur, sauvegarde le garde, l'état, 
 Un échec en cours de route rétablit le garde, l'état, le moteur et les réglages ; ce qui n'a pas pu être rétabli est nommé. La fermeture remet `tools/public-catalog-guard.php` et l'état de préparation ; les pages publiées et les réglages restent en place, le garde les masque.
 
 L'outil refuse tout autre site que `https://belmains.com`, sauf la copie isolée `bcrm_validation_`. Il ne passe aucune commande, n'encaisse rien et ne modifie ni prix ni fiscalité : la première commande réelle et son remboursement restent un essai manuel, à faire juste après l'ouverture. `tests/open-shop-integration.php` rejoue l'ensemble sur la copie isolée, avec un état de déploiement jetable.
+
+### Pages légales
+
+Les textes des mentions légales, des conditions générales de vente, de la politique de confidentialité et de la page « Livraison et retours » sont versionnés dans `tools/legal-pages.php` ; les informations qu'ils citent (vendeur, téléphone, délais, frais de retour, médiateur, hébergeur) sont dans `tools/legal-facts.php`. Une information laissée à `null` n'est pas connue : l'outil refuse alors d'écrire les pages plutôt que de publier une supposition. Corriger un texte ou une information se fait dans ces fichiers, puis par une nouvelle application. Seule exception enregistrée : `without_mediator`, décision de publier sans médiateur de la consommation ; les pages ne disent alors rien de la médiation et le rapport le rappelle à chaque passage. Dès qu'un médiateur est choisi, renseigner ses trois valeurs suffit à l'imprimer.
+
+Depuis la copie relue `~/belmains-deployment/source/wordpress/tools`, à jour de la révision publiée :
+
+| Commande | Effet |
+|---|---|
+| `php publish-legal.php` | Rapport en lecture seule : informations manquantes, état de chaque page. |
+| `BELMAINS_LEGAL=show php publish-legal.php` | Affiche les textes tels qu'ils seraient écrits. Ne modifie rien. |
+| `BELMAINS_LEGAL=apply php publish-legal.php` | Sauvegarde les contenus actuels dans `~/belmains-deployment/legal-backups/`, écrit les quatre textes et crée en brouillon la page « Rétractation ». Les statuts sont conservés. |
+
+`BELMAINS_LEGAL_PUBLISH=1` publie en plus les quatre textes sans attendre l'ouverture ; la page « Rétractation » reste toujours en brouillon jusqu'à l'ouverture. Une page modifiée à la main depuis la dernière application est conservée et signalée ; `BELMAINS_LEGAL_OVERWRITE=1` la remplace. L'outil ne modifie que le contenu de ces pages : aucun fichier, aucun réglage de paiement, de TVA ou de livraison.
+
+Le rapport d'ouverture exige ensuite les quatre textes rédigés, la mention de la fonction « Renoncer au contrat ici » dans les conditions de vente et la page du formulaire de rétractation ; l'ouverture publie les cinq pages.
 
 ## Exploitation
 

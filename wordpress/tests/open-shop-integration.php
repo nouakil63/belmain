@@ -49,7 +49,7 @@ $stored = static function ( $name ) use ( $wpdb ) { return $wpdb->get_var( $wpdb
 $saved = array( 'guard' => is_file( $guard ) ? file_get_contents( $guard ) : null, 'options' => array(), 'gateways' => array(), 'env' => array() );
 $fixtures = array( 'pages' => array(), 'products' => array(), 'rates' => array(), 'zones' => array(), 'filters' => array() );
 $touched = array( 'woocommerce_coming_soon', 'woocommerce_terms_page_id', 'wp_page_for_privacy_policy', 'blog_public', 'woocommerce_cheque_settings',
-    'belmains_legal_page_id', 'belmains_terms_page_id', 'belmains_privacy_page_id', 'belmains_returns_page_id', 'belmains_contact_page_id', 'belmains_product_id' );
+    'belmains_legal_page_id', 'belmains_terms_page_id', 'belmains_privacy_page_id', 'belmains_returns_page_id', 'belmains_withdrawal_page_id', 'belmains_contact_page_id', 'belmains_product_id' );
 foreach ( $touched as $name ) { $saved['options'][ $name ] = $stored( $name ); }
 foreach ( array( 'BELMAINS_SHOP_ENABLE_GATEWAYS', 'BELMAINS_SHOP_INDEX' ) as $name ) { $saved['env'][ $name ] = getenv( $name ); putenv( $name ); }
 $filter = static function ( $hook, $callback ) use ( &$fixtures ) { add_filter( $hook, $callback, PHP_INT_MAX ); $fixtures['filters'][] = array( $hook, $callback ); return $callback; };
@@ -81,7 +81,7 @@ try {
     $filter( 'pre_option_woocommerce_calc_taxes', static function () use ( &$taxes_on ) { return $taxes_on ? 'yes' : 'no'; } );
     $filter( 'pre_option_wc_facebook_pixel_id', static function () use ( &$pixel ) { return $pixel; } );
     update_option( 'woocommerce_coming_soon', 'yes' );
-    delete_option( 'woocommerce_terms_page_id' ); delete_option( 'belmains_product_id' );
+    delete_option( 'woocommerce_terms_page_id' ); delete_option( 'belmains_product_id' ); delete_option( 'belmains_withdrawal_page_id' );
     $template = '<p><strong>Document de travail — à compléter et valider avant publication.</strong></p><p>Belmains est une marque exploitée par [nom légal], dont le siège est situé [adresse professionnelle].</p>';
     foreach ( array( 'legal', 'terms', 'privacy', 'returns' ) as $kind ) {
         $id = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'draft', 'post_title' => 'Validation ' . $kind, 'post_content' => $template ), true );
@@ -98,7 +98,7 @@ try {
     // Read-only report: every missing prerequisite is named, nothing is modified.
     $tool = new Belmains_Shop_Opening(); $tool->check();
     $blocking = $subjects( $tool, 'BLOQUANT' );
-    $check( ! array_diff( array( 'Paiement', 'TVA', 'Produit', 'Mentions légales', 'Conditions générales de vente', 'Politique de confidentialité', 'Livraison et retours' ), $blocking ), 'report blocks on payment, VAT, product and the four template legal pages' );
+    $check( ! array_diff( array( 'Paiement', 'TVA', 'Produit', 'Mentions légales', 'Conditions générales de vente', 'Politique de confidentialité', 'Livraison et retours', 'Rétractation en ligne' ), $blocking ), 'report blocks on payment, VAT, product, the four template legal pages and the missing withdrawal function page' );
     $check( in_array( 'Récepteur de publication', $subjects( $tool, 'OK' ), true ) && in_array( 'Copie relue', $subjects( $tool, 'OK' ), true ), 'report recognises the receiver baseline and the reviewed checkout' );
     $check( in_array( 'Moteur de publication', $subjects( $tool, 'ATTENTION' ), true ), 'report announces the replacement of the previous trusted engine' );
     $check( file_get_contents( $guard ) === $closed_guard && file_get_contents( $state . '/current.json' ) === $initial_state && file_get_contents( $state . '/deploy-runtime.php' ) === $previous_engine && ! is_dir( $state . '/opening-backups' ), 'the report changes no file' );
@@ -120,7 +120,16 @@ try {
     $check( in_array( 'Mentions légales', $subjects( $tool, 'BLOQUANT' ), true ) && ! in_array( 'Livraison et retours', $subjects( $tool, 'BLOQUANT' ), true ), 'a nearly empty legal page blocks; a registered shortcode is not mistaken for a template field' );
     wp_update_post( array( 'ID' => $fixtures['pages']['legal'], 'post_content' => $text ) );
     $tool = new Belmains_Shop_Opening(); $tool->check();
-    $check( array( 'Paiement', 'TVA' ) === $subjects( $tool, 'BLOQUANT' ), 'only payment and VAT still block once product and legal pages are ready' );
+    $check( array( 'Paiement', 'TVA', 'Conditions générales de vente', 'Rétractation en ligne' ) === $subjects( $tool, 'BLOQUANT' ), 'terms of sale silent about the online withdrawal function block, and so does its missing page' );
+    wp_update_post( array( 'ID' => $fixtures['pages']['terms'], 'post_content' => $text . '<p>Rétractation en ligne : lien « Renoncer au contrat ici » en bas de chaque page.</p>' ) );
+    $withdrawal = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'draft', 'post_title' => 'Validation rétractation', 'post_content' => '<p>Formulaire à venir.</p>' ), true );
+    if ( is_wp_error( $withdrawal ) ) { throw new RuntimeException( $withdrawal->get_error_message() ); }
+    $fixtures['pages']['withdrawal'] = $withdrawal; update_option( 'belmains_withdrawal_page_id', $withdrawal, false );
+    $tool = new Belmains_Shop_Opening(); $tool->check();
+    $check( in_array( 'Rétractation en ligne', $subjects( $tool, 'BLOQUANT' ), true ), 'a withdrawal page without the statement form still blocks' );
+    wp_update_post( array( 'ID' => $withdrawal, 'post_content' => '[belmains_retractation]' ) );
+    $tool = new Belmains_Shop_Opening(); $tool->check();
+    $check( array( 'Paiement', 'TVA' ) === $subjects( $tool, 'BLOQUANT' ), 'only payment and VAT still block once product, legal pages and the withdrawal function are ready' );
     $allowing = new Belmains_Shop_Opening( array( 'taxes', 'unknown' ) ); $allowing->check();
     $check( ! in_array( 'TVA', $subjects( $allowing, 'BLOQUANT' ), true ) && in_array( 'TVA', $subjects( $allowing, 'ATTENTION' ), true ), 'missing VAT can only be accepted by naming it' );
     $taxes_on = true;
@@ -183,7 +192,7 @@ try {
     putenv( 'BELMAINS_SHOP_INDEX=1' );
     $wpdb->update( $wpdb->options, array( 'option_value' => '0' ), array( 'option_name' => 'blog_public' ) ); wp_cache_delete( 'blog_public', 'options' ); wp_cache_delete( 'alloptions', 'options' );
     $result = ( new Belmains_Shop_Opening() )->open( $revision );
-    $check( 'shop_open' === $result['status'] && $revision === $result['revision'] && array( 'cheque' ) === $result['enabled_gateways'] && 4 === count( $result['published_pages'] ), 'opening reports the open shop, the published pages and the enabled gateway' );
+    $check( 'shop_open' === $result['status'] && $revision === $result['revision'] && array( 'cheque' ) === $result['enabled_gateways'] && 5 === count( $result['published_pages'] ), 'opening reports the open shop, the published pages and the enabled gateway' );
     $open_guard = file_get_contents( $tools . '/open-guard.php' );
     $recorded = json_decode( file_get_contents( $state . '/current.json' ), true );
     $check( file_get_contents( $guard ) === $open_guard && 'open' === $recorded['mode'] && hash( 'sha256', $open_guard ) === $recorded['guard_sha256'] && $recorded['manifests'] === $baseline['manifests'] && $revision === $recorded['revision'], 'the open guard is installed and recorded with the open mode; revision and manifests are unchanged' );
@@ -192,6 +201,7 @@ try {
     $check( false === strpos( $open_guard, 'belmains_catalog_only' ) && false === strpos( $open_guard, 'pre_wp_mail' ) && false === strpos( $open_guard, 'rest_authentication_errors' ), 'the open guard restricts nothing' );
     $statuses = array_map( 'get_post_status', array_intersect_key( $fixtures['pages'], array_flip( array( 'legal', 'terms', 'privacy', 'returns' ) ) ) );
     $check( array( 'publish' ) === array_values( array_unique( $statuses ) ), 'the four legal pages are published' );
+    $check( 'publish' === get_post_status( $fixtures['pages']['withdrawal'] ), 'the withdrawal function page is published with the opening' );
     $check( 'no' === $stored( 'woocommerce_coming_soon' ) && '1' === $stored( 'blog_public' ), 'coming-soon mode is off and indexing is allowed as requested' );
     $check( (string) $fixtures['pages']['terms'] === $stored( 'woocommerce_terms_page_id' ) && (string) $fixtures['pages']['privacy'] === $stored( 'wp_page_for_privacy_policy' ), 'checkout terms and privacy links point to the published Belmains pages' );
     $check( 'yes' === ( maybe_unserialize( $stored( 'woocommerce_cheque_settings' ) )['enabled'] ?? '' ), 'the named payment gateway is enabled' );

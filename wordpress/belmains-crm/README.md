@@ -2,7 +2,7 @@
 
 Belmains CRM ajoute un espace de pilotage privé dans WordPress pour suivre la boutique WooCommerce, son audience consentie, ses clients et ses expéditions. Le module fonctionne sans abonnement CRM, sans bibliothèque distante et sans extension de suivi payante. Seule exception : la publicité Meta, confiée à l’extension officielle Meta for WooCommerce, que le CRM ne laisse fonctionner qu’après l’accord du visiteur. L’hébergement, les paiements, la publicité et les prestations Iziship conservent leurs propres coûts.
 
-Version 0.4.0 — WordPress 6.3 minimum, PHP 8.0 minimum. WooCommerce est nécessaire pour les commandes, clients, stocks et expéditions. Le module utilise les interfaces WooCommerce et déclare sa compatibilité avec le stockage des commandes HPOS.
+Version 0.5.0 — WordPress 6.3 minimum, PHP 8.0 minimum. WooCommerce est nécessaire pour les commandes, clients, stocks et expéditions. Le module utilise les interfaces WooCommerce et déclare sa compatibilité avec le stockage des commandes HPOS.
 
 ## Installation et premier accès
 
@@ -124,6 +124,19 @@ Désactiver **Belmains CRM** retire son interface, arrête son script de mesure 
 
 Pour poursuivre le développement, travailler dans ce dossier, conserver les appels WooCommerce CRUD pour les commandes et valider les changements sur une copie du site. Contrôler notamment les permissions, remboursements, consentements, coûts inconnus et états de suivi avant diffusion. Le contrat des interfaces figure dans `../crm-contract.md`.
 
+
+## Rétractation en ligne
+
+Depuis le 19 juin 2026, une boutique qui vend en ligne à des consommateurs doit leur permettre de se rétracter par une fonction en ligne. Le module la fournit avec le code court `[belmains_retractation]` :
+
+- le lien **« Renoncer au contrat ici »** apparaît dans les deux pieds de page du thème, dans les e-mails de commande adressés au client et sur ses pages de commande, dès que la page est publiée et que les ventes sont ouvertes ;
+- le client indique son nom, son e-mail et son numéro de commande, puis clique sur **« Confirmer la rétractation »** ;
+- la déclaration est enregistrée dans le SAV en priorité haute ; un accusé de réception reprenant sa date, son heure et son contenu part aussitôt à l’adresse indiquée, et la boutique est prévenue par e-mail ;
+- si l’accusé de réception n’a pas pu partir, le client le lit à l’écran et la demande passe en priorité urgente : il faut alors le lui adresser à la main.
+
+Toute déclaration est enregistrée, que la commande soit retrouvée ou non : la commande n’est rattachée que si son numéro **et** l’e-mail de facturation correspondent, et rien n’indique au visiteur si une commande existe. Les délais légaux (retour, remboursement sous quatorze jours) courent à partir de cette déclaration : traiter ces demandes sans attendre.
+
+La page est créée en brouillon par `wordpress/tools/publish-legal.php` et publiée par l’ouverture des ventes. Avant l’ouverture, ni lien ni formulaire ne sont proposés.
 
 ## Formulaire de contact et données du SAV
 
