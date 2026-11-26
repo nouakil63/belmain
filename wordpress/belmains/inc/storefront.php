@@ -91,6 +91,16 @@ function belmains_legal_url( $kind ) {
     return $id && 'publish' === get_post_status( $id ) ? get_permalink( $id ) : '';
 }
 
+/** Published legal pages in footer order. The withdrawal function keeps its statutory label and exists only once sales are open. */
+function belmains_legal_links() {
+    $links = array();
+    foreach ( array( 'legal' => 'Mentions légales', 'terms' => 'Conditions de vente', 'privacy' => 'Confidentialité', 'returns' => 'Livraison et retours', 'withdrawal' => 'Renoncer au contrat ici' ) as $kind => $label ) {
+        $url = 'withdrawal' === $kind && belmains_catalog_only() ? '' : belmains_legal_url( $kind );
+        if ( $url ) { $links[ $kind ] = array( $url, $label ); }
+    }
+    return $links;
+}
+
 function belmains_builder_colors() {
     $color = sanitize_hex_color( belmains_value( 'brand_color', '#63182e' ) ) ?: '#63182e';
     $accent = sanitize_hex_color( belmains_value( 'brand_accent', '#bf9756' ) ) ?: '#bf9756';

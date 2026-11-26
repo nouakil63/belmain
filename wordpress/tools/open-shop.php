@@ -221,10 +221,28 @@ final class Belmains_Shop_Opening {
                 $this->block( $title, 'page ' . $id . ' : aucune mention de Meta alors que le pixel est connecté. Reprendre le texte proposé dans Réglages → Confidentialité.' );
                 continue;
             }
+            if ( 'terms' === $kind && false === stripos( $text, 'Renoncer au contrat' ) ) {
+                $this->block( $title, 'page ' . $id . ' : aucune mention de la fonction de rétractation en ligne « Renoncer au contrat ici », que les conditions de vente doivent signaler.' );
+                continue;
+            }
             if ( 'draft' === $page->post_status ) { $drafts[ $kind ] = $id; $this->ok( $title, 'page ' . $id . ' rédigée, en brouillon : elle sera publiée à l’ouverture.' ); }
             else { $this->ok( $title, 'page ' . $id . ' déjà publiée.' ); }
         }
-        return $drafts;
+        return $drafts + $this->withdrawal_page();
+    }
+
+    /** Online withdrawal function, mandatory for distance contracts since 19 June 2026. */
+    private function withdrawal_page(): array {
+        $subject = 'Rétractation en ligne';
+        $id = absint( get_option( 'belmains_withdrawal_page_id' ) );
+        $page = $id ? get_post( $id ) : null;
+        if ( ! shortcode_exists( 'belmains_retractation' ) ) { $this->block( $subject, 'fonction absente du site : publier Belmains CRM 0.5.0 ou plus récent.' ); return array(); }
+        if ( ! $page || 'page' !== $page->post_type || ! in_array( $page->post_status, array( 'draft', 'publish' ), true ) || ! has_shortcode( $page->post_content, 'belmains_retractation' ) ) {
+            $this->block( $subject, 'page du formulaire « Renoncer au contrat ici » absente. La créer avec tools/publish-legal.php avant l’ouverture.' ); return array();
+        }
+        if ( 'publish' === $page->post_status ) { $this->ok( $subject, 'page ' . $id . ' publiée.' ); return array(); }
+        $this->ok( $subject, 'page ' . $id . ' prête, en brouillon : elle sera publiée à l’ouverture.' );
+        return array( 'withdrawal' => $id );
     }
 
     /** What visitors will read once the showcase no longer overrides the editor's own texts. */

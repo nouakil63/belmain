@@ -1,7 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-/** Public, mail-free entry point into the private support inbox. */
+/** Public, mail-free entry point into the private support inbox. Its request helpers are shared with BCRM_Withdrawal. */
 class BCRM_Contact {
     private const COOKIE = 'belmains_contact_feedback';
     private const WINDOW = 15 * MINUTE_IN_SECONDS;
@@ -27,17 +27,17 @@ class BCRM_Contact {
         }
     }
 
-    private static function error( $message, $status = 400, $fields = array() ) {
+    protected static function error( $message, $status = 400, $fields = array() ) {
         return new WP_Error( 'bcrm_contact', $message, array( 'status' => $status, 'fields' => $fields ) );
     }
 
-    private static function hash( $value ) { return hash_hmac( 'sha256', $value, wp_salt( 'auth' ) ); }
+    protected static function hash( $value ) { return hash_hmac( 'sha256', $value, wp_salt( 'auth' ) ); }
 
-    private static function ip( array $server ) {
+    protected static function ip( array $server ) {
         return is_string( $server['REMOTE_ADDR'] ?? null ) && filter_var( $server['REMOTE_ADDR'], FILTER_VALIDATE_IP ) ? $server['REMOTE_ADDR'] : 'unknown';
     }
 
-    private static function release_lock( $key, $lease ) {
+    protected static function release_lock( $key, $lease ) {
         global $wpdb;
         // Compare-and-delete cannot release another request's replacement lease.
         $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name = %s AND option_value = %s", $key, $lease ) );
@@ -45,7 +45,7 @@ class BCRM_Contact {
         wp_cache_delete( 'notoptions', 'options' );
     }
 
-    private static function acquire_lock( $key ) {
+    protected static function acquire_lock( $key ) {
         global $wpdb;
         $lease = ( time() + MINUTE_IN_SECONDS ) . ':' . wp_generate_uuid4();
         // add_option() can upsert a competing value after a stale absence check.
@@ -66,7 +66,7 @@ class BCRM_Contact {
         return false;
     }
 
-    private static function origin( $url ) {
+    protected static function origin( $url ) {
         $parts = wp_parse_url( $url );
         if ( ! is_array( $parts ) || empty( $parts['scheme'] ) || empty( $parts['host'] ) || ! in_array( strtolower( $parts['scheme'] ), array( 'http', 'https' ), true ) || isset( $parts['user'] ) || isset( $parts['pass'] ) ) { return ''; }
         return strtolower( $parts['scheme'] . '://' . $parts['host'] ) . ':' . ( $parts['port'] ?? ( 'https' === strtolower( $parts['scheme'] ) ? 443 : 80 ) );

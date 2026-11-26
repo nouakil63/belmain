@@ -1,7 +1,7 @@
 /*
 Theme Name: Belmains
 Description: Design Belmains validé avec fiche produit, panier et commande WooCommerce.
-Version: 0.4.4
+Version: 0.4.5
 Requires at least: 6.3
 Requires PHP: 8.0
 Author: NOK’S Consulting
@@ -21,7 +21,7 @@ body.belmains-page{background:#fdfbf8;color:#181d25}
 .belmains-page-content p{margin-bottom:18px}.belmains-page-content a{color:var(--belmains-brand, #63182e);text-decoration:underline}
 .belmains-page-content img{max-width:100%;height:auto}.belmains-page-content ul,.belmains-page-content ol{padding-left:24px}
 .belmains-page-footer{text-align:center;padding:30px 20px;background:#f5f0e7;color:var(--belmains-brand, #63182e);font-size:13px}
-.belmains-page-footer p{margin:0}.belmains-footer-nav{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 24px;margin-bottom:12px}.belmains-footer-nav a{display:inline-flex;align-items:center;min-height:44px;text-decoration:none}.belmains-footer-nav a:hover,.belmains-footer-nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:5px}
+.belmains-page-footer p{margin:0}.belmains-footer-legal{font-size:12px;gap:0 20px}.belmains-footer-nav{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 24px;margin-bottom:12px}.belmains-footer-nav a{display:inline-flex;align-items:center;min-height:44px;text-decoration:none}.belmains-footer-nav a:hover,.belmains-footer-nav a[aria-current="page"]{text-decoration:underline;text-underline-offset:5px}
 .admin-bar #shopify-section-menu_kooldogy_jpEgq8{top:32px!important}
 @media(max-width:782px){.admin-bar #shopify-section-menu_kooldogy_jpEgq8{top:46px!important}}
 @media(max-width:600px){.admin-bar #shopify-section-menu_kooldogy_jpEgq8{top:0!important}.belmains-page-header{flex-wrap:wrap}.belmains-page-content{padding:40px 20px}}
